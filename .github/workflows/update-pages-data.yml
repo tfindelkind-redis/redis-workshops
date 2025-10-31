@@ -25,10 +25,24 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
       
+      - name: Verify dependencies
+        run: |
+          echo "Checking required tools..."
+          which jq && jq --version
+          which awk && awk --version | head -1
+          which sed && sed --version | head -1
+          echo "All dependencies verified"
+      
       - name: Generate website data
         run: |
           chmod +x ./shared/tools/generate-website-data.sh
+          echo "Running generate-website-data.sh..."
           ./shared/tools/generate-website-data.sh
+          echo "Script completed successfully"
+          echo "Checking if data.js was generated..."
+          ls -la docs/data.js
+          echo "First 20 lines of data.js:"
+          head -20 docs/data.js
       
       - name: Check for changes
         id: check_changes
