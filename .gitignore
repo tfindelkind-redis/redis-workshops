@@ -1,0 +1,82 @@
+# Workspace directories (created during workshops)
+workspace/
+**/workspace/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Redis
+dump.rdb
+appendonly.aof
+*.rdb
+*.aof
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build outputs
+dist/
+build/
+*.o
+*.out
+
+# Package managers
+.npm/
+.yarn/
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Generated documentation
+_site/
+.jekyll-cache/
+
+# User-specific files (for workshop development)
+scratch/
+notes.txt
+TODO.md

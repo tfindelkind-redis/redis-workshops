@@ -1,0 +1,55 @@
+{
+  "workshopId": "redis-fundamentals",
+  "version": "1.0.0",
+  "title": "Redis Fundamentals Workshop",
+  "description": "Learn Redis basics through hands-on exercises covering installation, basic operations, and common use cases",
+  "duration": "3 hours",
+  "difficulty": "beginner",
+  "tags": ["redis", "fundamentals", "beginner", "hands-on"],
+  "chapters": [
+    {
+      "order": 1,
+      "chapterRef": "shared/chapters/chapter-01-getting-started",
+      "required": true,
+      "type": "shared",
+      "customizations": {
+        "skipSections": [],
+        "additionalNotes": "Make sure to complete all exercises before moving forward"
+      }
+    },
+    {
+      "order": 2,
+      "chapterRef": "workshops/redis-fundamentals/chapters/building-the-chat-interface",
+      "required": true,
+      "type": "workshop-specific",
+      "customizations": {
+        "skipSections": [],
+        "additionalNotes": "This chapter is specific to this workshop"
+      }
+    }
+  ],
+  "prerequisites": [
+    "Basic command-line knowledge",
+    "Understanding of basic programming concepts"
+  ],
+  "learningObjectives": [
+    "Install and configure Redis",
+    "Perform basic CRUD operations",
+    "Understand Redis data types and use cases",
+    "Implement basic caching strategies"
+  ],
+  "workshopSpecificAssets": "assets/",
+  "lastUpdated": "2025-10-31",
+  "authors": [
+    {
+      "name": "Redis Workshop Team"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-10-31",
+      "changes": ["Initial release with Chapter 1"]
+    }
+  ]
+}

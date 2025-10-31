@@ -1,0 +1,53 @@
+{
+  "workshopId": "workshop-name",
+  "version": "1.0.0",
+  "title": "Workshop Title",
+  "description": "Brief description of the workshop",
+  "duration": "4 hours",
+  "difficulty": "beginner",
+  "tags": ["redis", "workshop"],
+  "chapters": [
+    {
+      "order": 1,
+      "chapterRef": "shared/chapters/chapter-01-getting-started",
+      "required": true,
+      "customizations": {
+        "skipSections": [],
+        "additionalNotes": ""
+      }
+    },
+    {
+      "order": 2,
+      "chapterRef": "shared/chapters/chapter-XX-name",
+      "required": true,
+      "customizations": {
+        "skipSections": [],
+        "additionalNotes": ""
+      }
+    }
+  ],
+  "prerequisites": [
+    "Basic command-line knowledge",
+    "Programming fundamentals"
+  ],
+  "learningObjectives": [
+    "Objective 1",
+    "Objective 2",
+    "Objective 3"
+  ],
+  "workshopSpecificAssets": "assets/",
+  "lastUpdated": "2025-10-31",
+  "authors": [
+    {
+      "name": "Author Name",
+      "email": "author@example.com"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-10-31",
+      "changes": ["Initial release"]
+    }
+  ]
+}

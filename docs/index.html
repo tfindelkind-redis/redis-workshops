@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis Workshops - Interactive Learning</title>
+    <meta name="description" content="Hands-on Redis workshops covering fundamentals, advanced patterns, and real-world applications">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>🎓 Redis Workshops</h1>
+                <p class="tagline">Interactive, hands-on workshops to master Redis</p>
+            </div>
+            <nav>
+                <a href="#workshops">Workshops</a>
+                <a href="#chapters">Chapters</a>
+                <a href="#getting-started">Getting Started</a>
+                <a href="https://github.com/tfindelkind-redis/redis-workshops" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Learn Redis Through Practice</h2>
+            <p>Choose from curated workshops designed to take you from beginner to expert through hands-on exercises and real-world projects.</p>
+        </section>
+
+        <!-- Search & Filter Section -->
+        <section id="workshops" class="workshops-section">
+            <div class="section-header">
+                <h2>📚 Browse Workshops</h2>
+                <div class="search-filter">
+                    <input type="text" id="search" placeholder="Search workshops..." aria-label="Search workshops">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="beginner">Beginner</button>
+                        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                        <button class="filter-btn" data-filter="advanced">Advanced</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="workshop-grid" class="workshop-grid">
+                <!-- Workshops will be loaded here dynamically -->
+            </div>
+
+            <div id="no-results" class="no-results" style="display: none;">
+                <p>No workshops found matching your criteria.</p>
+            </div>
+        </section>
+
+        <!-- Chapters Section -->
+        <section id="chapters" class="chapters-section">
+            <div class="section-header">
+                <h2>🧩 Available Chapters</h2>
+                <p>Reusable learning modules that can be combined in multiple workshops</p>
+                <input type="text" id="chapter-search" placeholder="Search chapters..." aria-label="Search chapters">
+            </div>
+
+            <div id="chapters-list" class="chapters-list">
+                <!-- Chapters will be loaded here dynamically -->
+            </div>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section id="getting-started" class="getting-started">
+            <h2>🚀 Getting Started</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Clone the Repository</h3>
+                    <pre><code>git clone https://github.com/tfindelkind-redis/redis-workshops.git
+cd redis-workshops</code></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Choose a Workshop</h3>
+                    <p>Browse the workshops above and select one that matches your skill level and interests.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Run Setup</h3>
+                    <pre><code>cd workshops/workshop-name
+./setup.sh</code></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Start Learning!</h3>
+                    <p>Follow the workshop README and complete each chapter in order.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="workshop-count">0</div>
+                <div class="stat-label">Workshops</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="chapter-count">0</div>
+                <div class="stat-label">Chapters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Hands-On</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Free</div>
+                <div class="stat-label">& Open Source</div>
+            </div>
+        </section>
+
+        <!-- Contributing Section -->
+        <section class="contributing">
+            <h2>🤝 Contribute</h2>
+            <p>Help us improve Redis education! We welcome contributions of new workshops, chapters, improvements, and bug fixes.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/CONTRIBUTING.md" class="btn btn-primary" target="_blank">Contribution Guide</a>
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/issues" class="btn btn-secondary" target="_blank">Report an Issue</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Redis Workshops. Open source and freely available.</p>
+            <div class="footer-links">
+                <a href="https://github.com/tfindelkind-redis/redis-workshops">GitHub</a>
+                <a href="https://redis.io/docs/">Redis Docs</a>
+                <a href="https://university.redis.com/">Redis University</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

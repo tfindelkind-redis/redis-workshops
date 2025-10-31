@@ -1,0 +1,24 @@
+{
+  "chapterId": "chapter-XX-name",
+  "version": "1.0.0",
+  "title": "Chapter Title",
+  "description": "Brief description of the chapter",
+  "estimatedMinutes": 30,
+  "difficulty": "beginner",
+  "tags": ["redis", "basics"],
+  "prerequisites": [],
+  "lastUpdated": "2025-10-31",
+  "authors": [
+    {
+      "name": "Author Name",
+      "email": "author@example.com"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-10-31",
+      "changes": ["Initial release"]
+    }
+  ]
+}
