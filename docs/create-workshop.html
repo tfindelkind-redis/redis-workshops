@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Workshop - Redis Workshops</title>
+    <meta name="description" content="Step-by-step guide to creating your own Redis workshop">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .guide-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .guide-step {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .guide-step:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-badge {
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .code-block code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        
+        .copy-button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .copy-button.copied {
+            background: var(--success-color);
+        }
+        
+        .info-box {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .quick-link-card {
+            background: var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+        
+        .quick-link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .quick-link-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>🎨 Create Your Workshop</h1>
+                <p class="tagline">Step-by-step guide to building your own Redis workshop</p>
+            </div>
+            <nav>
+                <a href="index.html">← Back to Workshops</a>
+                <a href="#quick-start">Quick Start</a>
+                <a href="#detailed-guide">Detailed Guide</a>
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/workshop-creation-guide.md" target="_blank">Full Docs</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guide-container">
+        <!-- Hero -->
+        <section class="hero">
+            <h2>Build Your Own Redis Workshop</h2>
+            <p>Follow these steps to create a professional, hands-on workshop that others can learn from.</p>
+        </section>
+
+        <!-- Quick Start -->
+        <section id="quick-start">
+            <h2 style="margin-bottom: 1rem;">🚀 Quick Start (30 seconds)</h2>
+            
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">1</div>
+                    <h3 class="step-title">Run the Creation Command</h3>
+                </div>
+                <p>Use our automated tool to create a workshop structure instantly:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'create-cmd')">Copy</button>
+                    <code id="create-cmd">./shared/tools/create-workshop.sh "My Amazing Redis Workshop"</code>
+                </div>
+                <div class="success-box">
+                    <strong>✓ This creates:</strong> Complete folder structure, template files, and setup scripts
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">2</div>
+                    <h3 class="step-title">Customize Your Workshop</h3>
+                </div>
+                <p>Edit the generated files to add your content:</p>
+                <ul class="checklist">
+                    <li><code>README.md</code> - Workshop description and instructions</li>
+                    <li><code>workshop.config.json</code> - Workshop metadata and chapter references</li>
+                    <li><code>setup.sh</code> - Environment setup script</li>
+                </ul>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">3</div>
+                    <h3 class="step-title">Add Chapters</h3>
+                </div>
+                <p>Reference existing chapters or create new ones:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'create-chapter')">Copy</button>
+                    <code id="create-chapter"># Use shared chapter (recommended)
+# Just reference it in workshop.config.json
+
+# Or create workshop-specific chapter
+./shared/tools/create-chapter.sh "My Custom Chapter" --workshop="my-workshop"</code>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">4</div>
+                    <h3 class="step-title">Validate & Publish</h3>
+                </div>
+                <p>Ensure everything is correct before sharing:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'validate-cmd')">Copy</button>
+                    <code id="validate-cmd">./shared/tools/validate-workshop.sh workshops/my-workshop</code>
+                </div>
+                <div class="info-box">
+                    <strong>💡 Pro tip:</strong> Once validated, commit and push to GitHub. Your workshop will automatically appear on this website!
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Guide -->
+        <section id="detailed-guide" style="margin-top: 4rem;">
+            <h2 style="margin-bottom: 2rem;">📖 Detailed Guide</h2>
+
+            <!-- Planning -->
+            <div class="guide-step">
+                <h3>Planning Your Workshop</h3>
+                <p>Before creating, consider these questions:</p>
+                
+                <h4>Target Audience</h4>
+                <ul>
+                    <li><strong>Skill Level:</strong> Beginner, Intermediate, or Advanced?</li>
+                    <li><strong>Prerequisites:</strong> What should participants know beforehand?</li>
+                    <li><strong>Goals:</strong> What will they be able to do after completion?</li>
+                </ul>
+
+                <h4>Workshop Structure</h4>
+                <ul>
+                    <li><strong>Duration:</strong> 2-3 hours (short), 4-6 hours (medium), full day (long)</li>
+                    <li><strong>Format:</strong> Concept-focused, project-based, or scenario-based?</li>
+                    <li><strong>Chapters:</strong> Which existing chapters can you reuse? What new ones do you need?</li>
+                </ul>
+
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'list-chapters')">Copy</button>
+                    <code id="list-chapters"># See all available chapters to reuse
+./shared/tools/list-chapters.sh</code>
+                </div>
+            </div>
+
+            <!-- Configuration -->
+            <div class="guide-step">
+                <h3>Configuring workshop.config.json</h3>
+                <p>This file defines your workshop's metadata and structure:</p>
+                
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'config-example')">Copy</button>
+                    <code id="config-example">{
+  "workshopId": "redis-advanced-patterns",
+  "version": "1.0.0",
+  "title": "Redis Advanced Patterns",
+  "description": "Master advanced Redis patterns for production",
+  "duration": "6 hours",
+  "difficulty": "advanced",
+  "tags": ["redis", "advanced", "patterns", "production"],
+  "chapters": [
+    {
+      "order": 1,
+      "chapterRef": "shared/chapters/chapter-01-getting-started",
+      "required": true,
+      "type": "shared"
+    },
+    {
+      "order": 2,
+      "chapterRef": "workshops/redis-advanced-patterns/chapters/caching-strategies",
+      "required": true,
+      "type": "workshop-specific"
+    }
+  ],
+  "prerequisites": [
+    "Basic Redis knowledge",
+    "Command line proficiency"
+  ],
+  "learningObjectives": [
+    "Implement advanced caching patterns",
+    "Design scalable Redis architectures",
+    "Optimize Redis for production"
+  ]
+}</code>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> Ensure valid JSON! Use a validator or <code>jq</code> to check.
+                </div>
+            </div>
+
+            <!-- README Template -->
+            <div class="guide-step">
+                <h3>Writing Your Workshop README</h3>
+                <p>The README is the main guide participants will follow. Include:</p>
+                
+                <ul class="checklist">
+                    <li><strong>Overview</strong> - What the workshop covers</li>
+                    <li><strong>Learning Objectives</strong> - What participants will learn</li>
+                    <li><strong>Prerequisites</strong> - What's needed to start</li>
+                    <li><strong>Setup Instructions</strong> - How to get environment ready</li>
+                    <li><strong>Chapter List</strong> - All chapters with descriptions and links</li>
+                    <li><strong>Completion Checklist</strong> - Track progress</li>
+                </ul>
+
+                <p>A template is automatically created when you use <code>create-workshop.sh</code></p>
+            </div>
+
+            <!-- Chapter Types -->
+            <div class="guide-step">
+                <h3>Choosing Chapter Types</h3>
+                
+                <h4>Shared Chapters (Recommended)</h4>
+                <div class="success-box">
+                    <strong>✓ Best for:</strong> Generic Redis concepts that multiple workshops can use
+                </div>
+                <ul>
+                    <li>Located in <code>shared/chapters/</code></li>
+                    <li>Centrally maintained and versioned</li>
+                    <li>Updates benefit all workshops</li>
+                    <li>Automatically numbered (chapter-01, 02, etc.)</li>
+                </ul>
+
+                <h4>Workshop-Specific Chapters</h4>
+                <div class="info-box">
+                    <strong>ℹ️ Best for:</strong> Unique content specific to your workshop's narrative
+                </div>
+                <ul>
+                    <li>Located in <code>workshops/your-workshop/chapters/</code></li>
+                    <li>Tied to a specific workshop project</li>
+                    <li>Can be promoted to shared later</li>
+                </ul>
+
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'chapter-commands')">Copy</button>
+                    <code id="chapter-commands"># Create shared chapter (available to all workshops)
+./shared/tools/create-chapter.sh "Redis Persistence Patterns"
+
+# Create workshop-specific chapter
+./shared/tools/create-chapter.sh "Building the Chat Backend" --workshop="my-workshop"</code>
+                </div>
+            </div>
+
+            <!-- Testing -->
+            <div class="guide-step">
+                <h3>Testing Your Workshop</h3>
+                <p>Before publishing, ensure everything works:</p>
+
+                <h4>1. Validate Structure</h4>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'validate')">Copy</button>
+                    <code id="validate">./shared/tools/validate-workshop.sh workshops/my-workshop</code>
+                </div>
+
+                <h4>2. Test Setup Script</h4>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'test-setup')">Copy</button>
+                    <code id="test-setup">cd workshops/my-workshop
+./setup.sh</code>
+                </div>
+
+                <h4>3. Walk Through Chapters</h4>
+                <ul class="checklist">
+                    <li>Complete each chapter in order</li>
+                    <li>Verify all code examples work</li>
+                    <li>Test exercise solutions</li>
+                    <li>Check estimated times are realistic</li>
+                </ul>
+
+                <h4>4. Get Feedback</h4>
+                <ul class="checklist">
+                    <li>Have someone else try the workshop</li>
+                    <li>Note where they get stuck</li>
+                    <li>Improve unclear sections</li>
+                </ul>
+            </div>
+
+            <!-- Publishing -->
+            <div class="guide-step">
+                <h3>Publishing Your Workshop</h3>
+                
+                <h4>1. Commit to Git</h4>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'git-commit')">Copy</button>
+                    <code id="git-commit">git add workshops/my-workshop
+git commit -m "Add new workshop: My Amazing Redis Workshop"
+git push</code>
+                </div>
+
+                <h4>2. Automatic Website Update</h4>
+                <div class="success-box">
+                    <strong>✨ Magic happens:</strong> GitHub Actions automatically:
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li>Detects your new workshop</li>
+                        <li>Generates website data</li>
+                        <li>Deploys to GitHub Pages</li>
+                        <li>Your workshop appears on the catalog!</li>
+                    </ul>
+                </div>
+
+                <h4>3. Share Your Workshop</h4>
+                <ul class="checklist">
+                    <li>Share the workshop URL from GitHub Pages</li>
+                    <li>Announce in Redis community</li>
+                    <li>Gather feedback and iterate</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Best Practices -->
+        <section style="margin-top: 4rem;">
+            <h2 style="margin-bottom: 2rem;">💡 Best Practices</h2>
+            
+            <div class="guide-step">
+                <h3>Content Quality</h3>
+                <ul class="checklist">
+                    <li>Start with clear, achievable learning objectives</li>
+                    <li>Provide hands-on exercises, not just theory</li>
+                    <li>Include working code examples</li>
+                    <li>Offer solutions to all exercises</li>
+                    <li>Add troubleshooting sections for common issues</li>
+                    <li>Link to official Redis documentation</li>
+                    <li>Keep explanations clear and concise</li>
+                </ul>
+            </div>
+
+            <div class="guide-step">
+                <h3>Structure & Organization</h3>
+                <ul class="checklist">
+                    <li>Build difficulty progressively</li>
+                    <li>Reuse existing chapters when possible</li>
+                    <li>Keep workshops focused (2-6 hours ideal)</li>
+                    <li>Number chapters in logical order</li>
+                    <li>Provide estimated completion times</li>
+                </ul>
+            </div>
+
+            <div class="guide-step">
+                <h3>Maintenance</h3>
+                <ul class="checklist">
+                    <li>Test with latest Redis version</li>
+                    <li>Update when Redis features change</li>
+                    <li>Respond to learner feedback</li>
+                    <li>Keep metadata (version, changelog) current</li>
+                    <li>Fix broken links or outdated references</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Quick Links -->
+        <section style="margin-top: 4rem;">
+            <h2 style="margin-bottom: 2rem;">📚 Helpful Resources</h2>
+            
+            <div class="quick-links">
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/workshop-creation-guide.md" class="quick-link-card" target="_blank">
+                    <h4>📖 Full Workshop Guide</h4>
+                    <p>Comprehensive guide with examples</p>
+                </a>
+                
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/chapter-authoring-guide.md" class="quick-link-card" target="_blank">
+                    <h4>✍️ Chapter Authoring</h4>
+                    <p>How to create great chapters</p>
+                </a>
+                
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/workshop-specific-chapters.md" class="quick-link-card" target="_blank">
+                    <h4>🔧 Workshop-Specific Chapters</h4>
+                    <p>When and how to use them</p>
+                </a>
+                
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/CONTRIBUTING.md" class="quick-link-card" target="_blank">
+                    <h4>🤝 Contributing Guide</h4>
+                    <p>Contribution guidelines</p>
+                </a>
+                
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/QUICK-REFERENCE.md" class="quick-link-card" target="_blank">
+                    <h4>⚡ Quick Reference</h4>
+                    <p>Command cheat sheet</p>
+                </a>
+                
+                <a href="https://redis.io/docs/" class="quick-link-card" target="_blank">
+                    <h4>📕 Redis Docs</h4>
+                    <p>Official Redis documentation</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="contributing" style="margin-top: 4rem;">
+            <h2>Ready to Create?</h2>
+            <p>Start building your workshop today and share your Redis knowledge with the world!</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/tfindelkind-redis/redis-workshops" class="btn btn-primary" target="_blank">Clone Repository</a>
+                <a href="index.html" class="btn btn-secondary">Browse Workshops</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Redis Workshops. Open source and freely available.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="https://github.com/tfindelkind-redis/redis-workshops">GitHub</a>
+                <a href="https://redis.io/docs/">Redis Docs</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode(button, codeId) {
+            const code = document.getElementById(codeId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
