@@ -16,8 +16,8 @@ def main():
         print("Error: Empty or invalid YAML", file=sys.stderr)
         sys.exit(1)
     
-    # Check required fields
-    required_fields = ['workshopId', 'version', 'title', 'description', 'duration', 'difficulty']
+    # Check required fields - ONLY essentials
+    required_fields = ['workshopId', 'title', 'description', 'duration', 'difficulty']
     for field in required_fields:
         if not data.get(field):
             print(f"Error: Missing required field: {field}", file=sys.stderr)
@@ -37,21 +37,31 @@ def main():
             'type': chapter_type
         })
     
+    # Auto-generate repository URL from workshopId
+    workshop_id = data['workshopId']
+    repository_url = f'https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/{workshop_id}'
+    
+    # Auto-generate tags from title and difficulty
+    auto_tags = ['redis', 'workshop', data['difficulty']]
+    # Add words from title (lowercase, filter common words)
+    title_words = [w.lower() for w in data['title'].split() if len(w) > 3 and w.lower() not in ['workshop', 'redis', 'the', 'and', 'for']]
+    auto_tags.extend(title_words[:3])  # Add up to 3 meaningful words from title
+    
     # Build config
     config = {
         'workshopId': data['workshopId'],
-        'version': data['version'],
+        'version': data.get('version', '1.0.0'),  # Default to 1.0.0 if not specified
         'title': data['title'],
         'description': data['description'],
         'duration': data['duration'],
         'difficulty': data['difficulty'],
-        'tags': data.get('tags', []),
+        'tags': auto_tags,  # Auto-generated
         'chapters': chapters,
-        'prerequisites': data.get('prerequisites', []),
-        'learningObjectives': data.get('learningObjectives', []),
-        'author': data.get('author', ''),
+        'prerequisites': [],  # Removed - can be in README content instead
+        'learningObjectives': [],  # Removed - can be in README content instead
+        'author': data.get('author', ''),  # Optional
         'lastUpdated': datetime.now().strftime('%Y-%m-%d'),
-        'repository': data.get('repository', 'https://github.com/tfindelkind-redis/redis-workshops')
+        'repository': repository_url  # Auto-generated from workshopId
     }
     
     print(json.dumps(config, indent=2))

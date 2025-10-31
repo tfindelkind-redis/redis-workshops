@@ -67,6 +67,8 @@
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9rem;
             line-height: 1.5;
+            white-space: pre;
+            display: block;
         }
         
         .copy-button {
@@ -211,21 +213,17 @@
                 </div>
                 <p>✨ <strong>New!</strong> Edit only the <code>README.md</code> frontmatter - the config file is auto-generated!</p>
                 <div class="success-box">
-                    <strong>💡 Pro Tip:</strong> You only need to edit the YAML frontmatter at the top of README.md. The workshop.config.json is automatically generated from it!
+                    <strong>💡 Super Simple:</strong> Only 5 required fields! Tags, repository URL, and other metadata are auto-generated.
                 </div>
                 <p>Edit this at the top of your README.md:</p>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'frontmatter')">Copy</button>
                     <code id="frontmatter">---
 workshopId: my-workshop
-version: 1.0.0
-title: "My Workshop Title"
-description: "Brief description"
+title: My Workshop Title
+description: Brief description
 duration: 4 hours
 difficulty: intermediate
-tags:
-  - redis
-  - workshop
 chapters:
   - chapter: shared/chapters/chapter-01-getting-started
     required: true
@@ -235,6 +233,9 @@ chapters:
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'sync-cmd')">Copy</button>
                     <code id="sync-cmd">./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
+                </div>
+                <div class="info-box">
+                    <strong>Auto-generated for you:</strong> tags, repository URL, version number, last updated date
                 </div>
             </div>
 

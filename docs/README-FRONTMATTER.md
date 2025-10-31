@@ -22,16 +22,14 @@
 
 ### After (Frontmatter)
 ```yaml
+### After (Frontmatter)
+```yaml
 ---
 workshopId: my-workshop
-version: 1.0.0
 title: My Workshop
-description: "Learn amazing things"
+description: Learn amazing things
 duration: 4 hours
 difficulty: intermediate
-tags:
-  - redis
-  - workshop
 chapters:
   - chapter: shared/chapters/chapter-01-getting-started
     required: true
@@ -40,6 +38,14 @@ chapters:
 # My Workshop
 
 Content starts here...
+```
+✅ Write in user-friendly YAML  
+✅ Auto-validates and converts to JSON  
+✅ Single source of truth (README.md)  
+✅ Auto-syncs when you run the script  
+✅ **Only 5 required fields!**  
+✅ Tags, repository URL auto-generated  
+
 ```
 ✅ Write in user-friendly YAML  
 ✅ Auto-validates and converts to JSON  
@@ -55,27 +61,15 @@ At the very top of your workshop's `README.md`, add YAML frontmatter between `--
 ```markdown
 ---
 workshopId: redis-advanced-patterns
-version: 1.0.0
-title: "Redis Advanced Patterns"
-description: "Master advanced Redis patterns for production"
+title: Redis Advanced Patterns
+description: Master advanced Redis patterns for production
 duration: 6 hours
 difficulty: advanced
-tags:
-  - redis
-  - advanced
-  - patterns
-prerequisites:
-  - Basic Redis knowledge
-  - Command line proficiency
-learningObjectives:
-  - Implement advanced caching patterns
-  - Design scalable Redis architectures
 chapters:
   - chapter: shared/chapters/chapter-01-getting-started
     required: true
   - chapter: workshops/redis-advanced-patterns/chapters/caching-strategies
     required: false
-author: Your Name
 ---
 
 # Redis Advanced Patterns
@@ -98,21 +92,27 @@ That's it! The script will:
 
 ## 📝 Frontmatter Fields
 
-### Required Fields
+### ✅ Required Fields (Only 5!)
 - `workshopId` - Unique identifier (lowercase-with-dashes)
-- `version` - Semantic version (e.g., "1.0.0")
 - `title` - Workshop title
-- `description` - Brief description (use quotes if multi-line)
+- `description` - Brief description
 - `duration` - Estimated time (e.g., "4 hours")
 - `difficulty` - One of: beginner, intermediate, advanced
 
-### Optional Fields
-- `tags` - List of keywords for searchability
-- `prerequisites` - List of what participants need to know
-- `learningObjectives` - List of what they'll learn
+### 📋 Chapters (Recommended)
 - `chapters` - List of chapters (ref and required status)
+
+### 🔧 Optional Fields
+- `version` - Semantic version (defaults to "1.0.0" if not specified)
 - `author` - Your name or team name
-- `repository` - GitHub repository URL
+
+### 🤖 Auto-Generated Fields
+These are automatically created - don't add them to your frontmatter:
+- `tags` - Auto-generated from title and difficulty
+- `repository` - Auto-generated from workshopId
+- `lastUpdated` - Auto-set to current date
+- `prerequisites` - Can be written in README content instead
+- `learningObjectives` - Can be written in README content instead
 
 ### Chapter Format
 ```yaml
@@ -153,33 +153,40 @@ The script automatically detects:
 
 ## 💡 Tips
 
-### Quote Multi-line or Special Strings
+### Minimal Frontmatter
+Keep it simple! Only 5 fields are required:
 ```yaml
-title: "Redis: The Complete Guide"  # Has colon, needs quotes
-description: "This is a long description
-that spans multiple lines"  # Multi-line, needs quotes
+---
+workshopId: my-workshop
+title: My Workshop Title
+description: What this workshop teaches
+duration: 4 hours
+difficulty: beginner
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+---
 ```
 
-### Use Lists for Arrays
-```yaml
-tags:
-  - redis
-  - caching
-  - beginner
+### Everything Else is Auto-Generated
+- **Tags**: Extracted from your title and difficulty
+- **Repository URL**: Built from your workshopId
+- **Version**: Defaults to 1.0.0 (can override if needed)
+- **Last Updated**: Always set to today's date
 
-prerequisites:
-  - Basic command line knowledge
-  - Docker installed
+### Prerequisites & Learning Objectives
+Instead of YAML lists, just write them in your README content:
+```markdown
+## 📚 Prerequisites
+- Basic command line knowledge
+- Docker installed
+
+## 🎯 Learning Objectives
+- Learn Redis basics
+- Build a cache
 ```
 
-### Preserve Backup Files
-The script creates `workshop.config.json.backup` before overwriting. Keep these for safety until you verify the new config works.
-
-### Validate After Syncing
-The sync script generates JSON, but always validate your workshop:
-```bash
-./shared/tools/validate-workshop.sh workshops/my-workshop
-```
+This is more readable and easier to maintain!
 
 ## 🎯 Example: Full Workflow
 

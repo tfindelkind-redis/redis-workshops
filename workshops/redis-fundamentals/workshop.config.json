@@ -7,9 +7,9 @@
   "difficulty": "beginner",
   "tags": [
     "redis",
-    "fundamentals",
+    "workshop",
     "beginner",
-    "caching"
+    "fundamentals"
   ],
   "chapters": [
     {
@@ -25,19 +25,9 @@
       "type": "workshop-specific"
     }
   ],
-  "prerequisites": [
-    "Basic command-line knowledge",
-    "Understanding of basic programming concepts",
-    "Computer with macOS, Linux, or Windows WSL"
-  ],
-  "learningObjectives": [
-    "Install and configure Redis",
-    "Perform basic CRUD operations",
-    "Understand Redis data types",
-    "Implement caching strategies",
-    "Work with data expiration and persistence"
-  ],
-  "author": "Redis Team",
+  "prerequisites": [],
+  "learningObjectives": [],
+  "author": "",
   "lastUpdated": "2025-10-31",
-  "repository": "https://github.com/tfindelkind-redis/redis-workshops"
+  "repository": "https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/redis-fundamentals"
 }

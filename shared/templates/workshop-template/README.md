@@ -1,34 +1,18 @@
 ---
 workshopId: WORKSHOP_ID_PLACEHOLDER
-version: 1.0.0
 title: WORKSHOP_NAME_PLACEHOLDER
 description: Brief description of the workshop
 duration: 4 hours
 difficulty: intermediate
-tags:
-  - redis
-  - workshop
-  - learning
-prerequisites:
-  - Basic Redis knowledge
-  - Command line proficiency
-  - Docker installed
-learningObjectives:
-  - Learn key Redis concepts
-  - Build practical applications
-  - Master best practices
 chapters:
   - chapter: shared/chapters/chapter-01-getting-started
     required: true
-author: Your Name
-repository: https://github.com/tfindelkind-redis/redis-workshops
 ---
 
 # WORKSHOP_NAME_PLACEHOLDER
 
 **Duration:** 4 hours  
-**Difficulty:** Intermediate  
-**Prerequisites:** Basic Redis knowledge
+**Difficulty:** Intermediate
 
 ## 📋 Overview
 
