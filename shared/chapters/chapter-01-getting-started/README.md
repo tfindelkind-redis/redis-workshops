@@ -228,12 +228,18 @@ Key takeaways from this chapter:
 - redis-cli is the command-line interface for Redis
 - Redis stores data in memory for high performance
 
-## ➡️ Next Steps
+## 🧭 Navigation
 
-After completing this chapter:
-- Explore Redis data structures (Lists, Sets, Hashes) in the next chapter
-- Try the [Interactive Redis Tutorial](https://try.redis.io/)
-- Read about Redis persistence options
+**Workshop:** [Redis Fundamentals](../../../workshops/redis-fundamentals/README.md)
+
+**Previous:** [← Workshop Overview](../../../workshops/redis-fundamentals/README.md)  
+**Next:** [Chapter 2: Building the Chat Interface →](../../../workshops/redis-fundamentals/chapters/building-the-chat-interface/README.md)
+
+---
+
+📚 **Workshop Chapters:**
+1. **Getting Started with Redis** (Current)
+2. [Building the Chat Interface](../../../workshops/redis-fundamentals/chapters/building-the-chat-interface/README.md)
 
 ## 📝 Changelog
 

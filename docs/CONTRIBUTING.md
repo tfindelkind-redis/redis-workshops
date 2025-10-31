@@ -30,13 +30,54 @@ There are several ways to contribute:
 
 ### Quick Start
 
-Use our automation tool:
+Use our automation tool that **automatically creates a new branch** for your workshop:
 
 ```bash
 ./shared/tools/create-workshop.sh "Your Workshop Name"
 ```
 
-This creates a workshop structure from the template.
+**What this does:**
+- ✅ Creates a new branch: `workshop/your-workshop-name`
+- ✅ Generates workshop structure from template
+- ✅ Sets up initial README.md with frontmatter
+- ✅ Auto-generates workshop.config.json
+
+**Important:** You are now on a new branch! All your workshop work should be done on this branch before creating a Pull Request.
+
+### Workshop Development Workflow
+
+1. **Create workshop** (automatically creates branch)
+   ```bash
+   ./shared/tools/create-workshop.sh "Your Workshop Name"
+   ```
+
+2. **Edit workshop content**
+   ```bash
+   cd workshops/your-workshop-name
+   # Edit README.md frontmatter and content
+   ```
+
+3. **Sync configuration**
+   ```bash
+   ./shared/tools/sync-workshop-config.sh workshops/your-workshop-name
+   ```
+
+4. **Validate workshop**
+   ```bash
+   ./shared/tools/validate-workshop.sh workshops/your-workshop-name
+   ```
+
+5. **Commit changes**
+   ```bash
+   git add workshops/your-workshop-name
+   git commit -m "Add Your Workshop Name workshop"
+   ```
+
+6. **Push and create Pull Request**
+   ```bash
+   git push -u origin workshop/your-workshop-name
+   # Then create a PR on GitHub to merge into main
+   ```
 
 ### Workshop Structure
 
@@ -126,34 +167,102 @@ When updating a workshop:
 
 ### Pull Request Process
 
-1. **Fork** the repository
-2. **Create a branch** for your changes
+**For New Workshops:**
+
+The `create-workshop.sh` script automatically creates a branch for you:
+
+```bash
+./shared/tools/create-workshop.sh "Your Workshop Name"
+# Automatically creates branch: workshop/your-workshop-name
+```
+
+Then follow the workflow:
+
+1. **Develop your workshop** on the created branch
+2. **Edit README.md** frontmatter and content
+3. **Sync configuration**
    ```bash
-   git checkout -b feature/your-feature-name
+   ./shared/tools/sync-workshop-config.sh workshops/your-workshop-name
    ```
-3. **Make your changes** following our guidelines
-4. **Test thoroughly**
+4. **Validate workshop**
    ```bash
-   ./shared/tools/validate-workshop.sh workshops/your-workshop
+   ./shared/tools/validate-workshop.sh workshops/your-workshop-name
    ```
-5. **Commit with clear messages**
+5. **Commit changes**
    ```bash
-   git commit -m "Add chapter on Redis Streams"
+   git add workshops/your-workshop-name
+   git commit -m "Add Your Workshop Name workshop"
    ```
-6. **Push to your fork**
+6. **Push to GitHub**
    ```bash
-   git push origin feature/your-feature-name
+   git push -u origin workshop/your-workshop-name
    ```
-7. **Open a Pull Request** with:
+7. **Create Pull Request** on GitHub
+   - Title: `Add workshop: Your Workshop Name`
+   - Description: Workshop overview, objectives, target audience
+   - Complete the PR checklist
+
+**For Chapters, Updates, or Fixes:**
+
+1. **Create a branch** for your changes
+   ```bash
+   git checkout -b chapter/your-chapter-name
+   # or
+   git checkout -b fix/description
+   ```
+2. **Make your changes** following our guidelines
+3. **Test thoroughly**
+   ```bash
+   ./shared/tools/validate-workshop.sh workshops/affected-workshop
+   ```
+4. **Commit with clear messages**
+   ```bash
+   git commit -m "Add chapter: Redis Streams basics"
+   ```
+5. **Push to GitHub**
+   ```bash
+   git push -u origin chapter/your-chapter-name
+   ```
+6. **Open a Pull Request** with:
    - Clear description of changes
    - Why the changes are needed
    - Any testing performed
 
+### Branch Naming Convention
+
+- **New Workshops:** `workshop/workshop-id` (auto-created by script)
+- **New Chapters:** `chapter/chapter-name`
+- **Updates:** `update/workshop-or-chapter-name`
+- **Fixes:** `fix/brief-description`
+- **Features:** `feature/brief-description`
+
+### PR Title Format
+
+- **New Workshop:** `Add workshop: Workshop Name`
+- **New Chapter:** `Add chapter: Chapter Name`
+- **Update:** `Update: Workshop/Chapter Name - Description`
+- **Fix:** `Fix: Brief description of issue`
+
+### PR Checklist
+
+Before submitting, ensure:
+
+- [ ] README.md frontmatter is complete
+- [ ] All chapters listed in frontmatter (comma-separated)
+- [ ] Ran sync script: `./shared/tools/sync-workshop-config.sh`
+- [ ] Ran validation: `./shared/tools/validate-workshop.sh`
+- [ ] Navigation links work correctly
+- [ ] All scripts tested and executable
+- [ ] No sensitive data committed
+- [ ] Markdown properly formatted
+- [ ] No broken links
+
 ### Review Process
 
-- Maintainers will review your PR
+- Maintainers will review your PR within 2-3 business days
 - Address any feedback or requested changes
-- Once approved, your contribution will be merged
+- Once approved, your contribution will be merged to `main`
+- Your workshop will automatically deploy to GitHub Pages
 
 ## 📝 Style Guidelines
 

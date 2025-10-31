@@ -202,7 +202,15 @@
                     <code id="create-cmd">./shared/tools/create-workshop.sh "My Amazing Redis Workshop"</code>
                 </div>
                 <div class="success-box">
-                    <strong>✓ This creates:</strong> Complete folder structure, template files, and setup scripts
+                    <strong>✓ This automatically:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        <li>Creates a new branch: <code>workshop/my-amazing-redis-workshop</code></li>
+                        <li>Generates complete folder structure and template files</li>
+                        <li>Sets up initial README.md with frontmatter</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <strong>🌿 Branch Workflow:</strong> You're now on a new branch! Develop your workshop here, then create a Pull Request to merge into main.
                 </div>
             </div>
 
@@ -265,15 +273,25 @@ chapters: shared/chapters/chapter-01-getting-started
             <div class="guide-step">
                 <div class="step-header">
                     <div class="step-badge">4</div>
-                    <h3 class="step-title">Validate & Publish</h3>
+                    <h3 class="step-title">Validate & Submit</h3>
                 </div>
-                <p>Ensure everything is correct before sharing:</p>
+                <p>Before creating your Pull Request, validate everything:</p>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'validate-cmd')">Copy</button>
                     <code id="validate-cmd">./shared/tools/validate-workshop.sh workshops/my-workshop</code>
                 </div>
+                <p>Then commit and push your changes:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'submit-cmd')">Copy</button>
+                    <code id="submit-cmd">git add workshops/my-workshop
+git commit -m "Add My Workshop"
+git push -u origin workshop/my-workshop</code>
+                </div>
+                <div class="success-box">
+                    <strong>🎉 Final Step:</strong> Go to GitHub and create a Pull Request to merge your branch into <code>main</code>. Once approved, your workshop goes live!
+                </div>
                 <div class="info-box">
-                    <strong>💡 Pro tip:</strong> Once validated, commit and push to GitHub. Your workshop will automatically appear on this website!
+                    <strong>💡 Pro tip:</strong> Your workshop will automatically appear on this website after the PR is merged!
                 </div>
             </div>
         </section>

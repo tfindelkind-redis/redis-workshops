@@ -119,12 +119,18 @@ Key takeaways from this chapter:
 - Takeaway 2
 - Takeaway 3
 
-## ➡️ Next Steps
+## 🧭 Navigation
 
-After completing this chapter:
-- Move to the next chapter in your workshop
-- Explore [related chapter name]
-- Try the advanced exercises in `scripts/advanced/`
+**Workshop:** [Redis Fundamentals](../../../README.md)
+
+**Previous:** [← Chapter 1: Getting Started with Redis](../../../../shared/chapters/chapter-01-getting-started/README.md)  
+**Next:** [Return to Workshop Overview →](../../../README.md)
+
+---
+
+📚 **Workshop Chapters:**
+1. [Getting Started with Redis](../../../../shared/chapters/chapter-01-getting-started/README.md)
+2. **Building the Chat Interface** (Current)
 
 ## 📝 Changelog
 

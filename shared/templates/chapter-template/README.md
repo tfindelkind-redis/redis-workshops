@@ -119,12 +119,19 @@ Key takeaways from this chapter:
 - Takeaway 2
 - Takeaway 3
 
-## ➡️ Next Steps
+## 🧭 Navigation
 
-After completing this chapter:
-- Move to the next chapter in your workshop
-- Explore [related chapter name]
-- Try the advanced exercises in `scripts/advanced/`
+**Workshop:** [Workshop Title](../../../workshops/WORKSHOP_ID/README.md)
+
+**Previous:** [← Workshop Overview](../../../workshops/WORKSHOP_ID/README.md) | [← Chapter X](../../chapter-XX-name/README.md)  
+**Next:** [Chapter X: Next Chapter Name →](../../chapter-XX-name/README.md) | [Next Chapter →](../../../workshops/WORKSHOP_ID/chapters/chapter-name/README.md)
+
+---
+
+📚 **Workshop Chapters:**
+1. [Chapter 1 Title](../../chapter-01-name/README.md)
+2. **Chapter X Title** (Current)
+3. [Chapter 3 Title](../../chapter-03-name/README.md)
 
 ## 📝 Changelog
 
