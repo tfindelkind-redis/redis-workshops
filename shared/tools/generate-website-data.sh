@@ -174,8 +174,14 @@ EOF
 
 # Update date
 TODAY=$(date +%Y-%m-%d)
-sed -i.bak "s/DATE_PLACEHOLDER/$TODAY/" "$OUTPUT_FILE"
-rm "$OUTPUT_FILE.bak" 2>/dev/null || true
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i.bak "s/DATE_PLACEHOLDER/$TODAY/" "$OUTPUT_FILE"
+    rm "$OUTPUT_FILE.bak" 2>/dev/null || true
+else
+    # Linux
+    sed -i "s/DATE_PLACEHOLDER/$TODAY/" "$OUTPUT_FILE"
+fi
 
 echo ""
 echo "✅ Generated data.js successfully!"
