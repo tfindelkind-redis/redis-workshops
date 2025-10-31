@@ -96,11 +96,10 @@ for CHAPTER_DIR in "$REPO_ROOT/shared/chapters"/*; do
             TITLE_ESC=$(echo "$TITLE" | sed 's/"/\\"/g')
             DESCRIPTION_ESC=$(echo "$DESCRIPTION" | sed 's/"/\\"/g')
             
-            # Add comma before this entry if not the first
+            # Add comma and newline after previous entry if not the first
             if [ "$FIRST_CHAPTER" = false ]; then
                 printf ",\n" >> "$OUTPUT_FILE"
             fi
-            FIRST_CHAPTER=false
             
             cat >> "$OUTPUT_FILE" << EOF
     {
@@ -115,6 +114,7 @@ for CHAPTER_DIR in "$REPO_ROOT/shared/chapters"/*; do
         workshopSpecific: false
     }
 EOF
+            FIRST_CHAPTER=false
             ((CHAPTER_COUNT++))
         fi
     fi
@@ -177,7 +177,7 @@ cat >> "$OUTPUT_FILE" << 'EOF'
 ];
 EOF
 
-# Update date
+# Update date and fix formatting
 TODAY=$(date +%Y-%m-%d)
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
@@ -187,6 +187,9 @@ else
     # Linux
     sed -i "s/DATE_PLACEHOLDER/$TODAY/" "$OUTPUT_FILE"
 fi
+
+# Fix comma formatting: change "    }\n,\n" to "    },\n" using awk
+awk 'BEGIN{prev=""} {if(prev ~ /^[[:space:]]*}$/ && $0==","){print prev","; prev=""; next} else if(prev!=""){print prev} prev=$0} END{if(prev!="")print prev}' "$OUTPUT_FILE" > "$OUTPUT_FILE.tmp" && mv "$OUTPUT_FILE.tmp" "$OUTPUT_FILE"
 
 echo ""
 echo "✅ Generated data.js successfully!"

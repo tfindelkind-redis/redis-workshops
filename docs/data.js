@@ -1,7 +1,6 @@
 // Workshop and Chapter Data
 // This file is auto-generated. Do not edit manually.
 // Generated on: 2025-10-31
-
 const workshopsData = [
     {
         id: "redis-fundamentals",
@@ -14,9 +13,7 @@ const workshopsData = [
         path: "workshops/redis-fundamentals",
         lastUpdated: "2025-10-31"
     }
-
 ];
-
 const chaptersData = [
     {
         id: "chapter-01-getting-started",
@@ -28,8 +25,7 @@ const chaptersData = [
         path: "shared/chapters/chapter-01-getting-started",
         version: "1.0.0",
         workshopSpecific: false
-    }
-,
+    },
     {
         id: "building-the-chat-interface",
         title: "Building the Chat Interface",
@@ -42,5 +38,4 @@ const chaptersData = [
         workshopSpecific: true,
         workshop: "redis-fundamentals"
     }
-
 ];
