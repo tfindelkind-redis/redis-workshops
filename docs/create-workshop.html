@@ -251,10 +251,14 @@ chapters: shared/chapters/chapter-01-getting-started
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'create-chapter')">Copy</button>
                     <code id="create-chapter"># Use shared chapter (recommended)
-# Just add it to the frontmatter in README.md
+# Just add the path to frontmatter in README.md
 
 # Or create workshop-specific chapter
-./shared/tools/create-chapter.sh "My Custom Chapter" --workshop="my-workshop"</code>
+./shared/tools/create-chapter.sh "My Custom Chapter" --workshop="my-workshop"
+# Then add it to frontmatter: chapters: ..., workshops/my-workshop/chapters/my-custom-chapter</code>
+                </div>
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> After creating a chapter, you MUST add it to the <code>chapters:</code> line in your README.md frontmatter, then run the sync command!
                 </div>
             </div>
 
