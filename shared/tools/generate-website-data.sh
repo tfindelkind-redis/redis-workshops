@@ -72,7 +72,7 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
         lastUpdated: "$LAST_UPDATED"
     }
 EOF
-            ((WORKSHOP_COUNT++))
+            WORKSHOP_COUNT=$((WORKSHOP_COUNT + 1))
         fi
     fi
 done
@@ -124,7 +124,7 @@ for CHAPTER_DIR in "$REPO_ROOT/shared/chapters"/*; do
     }
 EOF
             FIRST_CHAPTER=false
-            ((CHAPTER_COUNT++))
+            CHAPTER_COUNT=$((CHAPTER_COUNT + 1))
         fi
     fi
 done
@@ -172,7 +172,7 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
         workshop: "$WORKSHOP_ID"
     }
 EOF
-                        ((CHAPTER_COUNT++))
+                        CHAPTER_COUNT=$((CHAPTER_COUNT + 1))
                     fi
                 fi
             done
