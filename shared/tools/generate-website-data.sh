@@ -3,9 +3,11 @@
 # Generate GitHub Pages Data
 # This script scans workshops and chapters and generates data.js for the website
 
-set -e
+set -euo pipefail
 
-REPO_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
+# Determine repository root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
+REPO_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
 OUTPUT_FILE="$REPO_ROOT/docs/data.js"
 
 echo "🔍 Scanning repository for workshops and chapters..."
