@@ -119,19 +119,42 @@ Key takeaways from this chapter:
 - Takeaway 2
 - Takeaway 3
 
+---
+
 ## 🧭 Navigation
 
-**Workshop:** [Workshop Title](../../../workshops/WORKSHOP_ID/README.md)
+<table>
+<tr>
+<td width="33%" align="center">
 
-**Previous:** [← Workshop Overview](../../../workshops/WORKSHOP_ID/README.md) | [← Chapter X](../../chapter-XX-name/README.md)  
-**Next:** [Chapter X: Next Chapter Name →](../../chapter-XX-name/README.md) | [Next Chapter →](../../../workshops/WORKSHOP_ID/chapters/chapter-name/README.md)
+### [◀️ Previous](../../../workshops/WORKSHOP_ID/README.md)
+**Previous Chapter or Overview**
+
+</td>
+<td width="34%" align="center">
+
+### [🏠 Workshop Home](../../../workshops/WORKSHOP_ID/README.md)
+**Workshop Title**
+
+</td>
+<td width="33%" align="center">
+
+### [Next ▶️](../../chapter-XX-name/README.md)
+**Next Chapter Title**
+
+</td>
+</tr>
+</table>
 
 ---
 
-📚 **Workshop Chapters:**
+### 📚 Workshop Chapters
+
 1. [Chapter 1 Title](../../chapter-01-name/README.md)
-2. **Chapter X Title** (Current)
+2. **Chapter X Title** ← *You are here*
 3. [Chapter 3 Title](../../chapter-03-name/README.md)
+
+---
 
 ## 📝 Changelog
 

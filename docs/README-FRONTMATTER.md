@@ -88,11 +88,36 @@ That's it! The script will:
 ## 📝 Frontmatter Fields
 
 ### ✅ Required Fields (Only 5!)
-- `workshopId` - Unique identifier (lowercase-with-dashes)
-- `title` - Workshop title
-- `description` - Brief description
-- `duration` - Estimated time (e.g., "4 hours")
-- `difficulty` - One of: beginner, intermediate, advanced
+
+#### `workshopId` - Unique identifier
+- **Format:** `lowercase-with-hyphens-only`
+- **Rules:**
+  - ✅ Only lowercase letters (a-z)
+  - ✅ Numbers (0-9)
+  - ✅ Hyphens (-)
+  - ❌ NO spaces
+  - ❌ NO uppercase
+  - ❌ NO special characters (@, _, !, etc.)
+- **Example:** `redis-fundamentals`, `redis-streams-2025`
+- **Error if invalid:** The sync script will show helpful error messages
+
+#### `title` - Workshop title
+- Human-readable name
+- Can contain spaces, capitals, any characters
+- **Example:** `Redis Fundamentals Workshop`
+
+#### `description` - Brief description
+- One or two sentences describing the workshop
+- **Example:** `Introduction to Redis through hands-on exercises`
+
+#### `duration` - Estimated time
+- Include unit (hours, minutes, days)
+- **Example:** `4 hours`, `90 minutes`, `2 days`
+
+#### `difficulty` - Difficulty level
+- **Must be one of:** `beginner`, `intermediate`, `advanced`
+- **Case-insensitive** (but use lowercase for consistency)
+- **Error if invalid:** Sync script will show valid options
 
 ### 📋 Chapters (Simple!)
 - `chapters` - Comma-separated list of chapter paths
@@ -173,6 +198,65 @@ chapters: shared/chapters/chapter-01, shared/chapters/chapter-02, workshops/my-w
 - **Tags**: Extracted from your title and difficulty
 - **Repository URL**: Built from your workshopId
 - **Version**: Defaults to 1.0.0 (can override if needed)
+- **Last Updated**: Automatically set to current date
+- **Chapter Order/Type**: Auto-detected from paths
+
+## ⚠️ Validation & Error Messages
+
+The sync script validates your frontmatter and shows helpful errors:
+
+### Common Validation Errors
+
+**❌ Spaces in workshopId:**
+```
+Error: workshopId cannot contain spaces. Use hyphens instead: 'my workshop' → 'my-workshop'
+```
+**Fix:** Use hyphens: `workshopId: my-workshop`
+
+---
+
+**❌ Uppercase in workshopId:**
+```
+Error: workshopId must be lowercase: 'MyWorkshop' → 'myworkshop'
+```
+**Fix:** Use lowercase: `workshopId: myworkshop`
+
+---
+
+**❌ Invalid characters:**
+```
+Error: workshopId can only contain lowercase letters, numbers, and hyphens: 'my_workshop@2025'
+```
+**Fix:** Only use a-z, 0-9, and hyphens: `workshopId: my-workshop-2025`
+
+---
+
+**❌ Invalid difficulty:**
+```
+Error: difficulty must be one of: beginner, intermediate, advanced
+```
+**Fix:** Use one of the valid values: `difficulty: intermediate`
+
+---
+
+**❌ Missing required field:**
+```
+Error: Missing required field: description
+```
+**Fix:** Add the missing field to your frontmatter
+
+### Valid Format Example
+
+```yaml
+---
+workshopId: redis-streams-2025        # ✅ lowercase, hyphens only
+title: Redis Streams Workshop         # ✅ any format
+description: Learn Redis Streams      # ✅ any text
+duration: 3 hours                     # ✅ include unit
+difficulty: intermediate              # ✅ one of: beginner/intermediate/advanced
+chapters: shared/chapters/chapter-01  # ✅ comma-separated paths
+---
+```
 - **Last Updated**: Always set to today's date
 - **Chapter order**: Numbered in the order you list them
 - **Chapter type**: Auto-detected from path

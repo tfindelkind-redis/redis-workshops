@@ -248,6 +248,16 @@ chapters: shared/chapters/chapter-01-getting-started
                 <div class="info-box">
                     <strong>Auto-generated for you:</strong> tags, repository URL, version number, last updated date, chapter ordering
                 </div>
+                <div class="warning-box">
+                    <strong>⚠️ workshopId Rules:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        <li>Only lowercase letters (a-z)</li>
+                        <li>Numbers (0-9) and hyphens (-)</li>
+                        <li>NO spaces, uppercase, or special characters</li>
+                        <li>Example: <code>redis-streams-2025</code> ✅</li>
+                        <li>Invalid: <code>My Workshop</code> ❌ <code>redis_2025</code> ❌</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="guide-step">
@@ -329,7 +339,7 @@ git push -u origin workshop/my-workshop</code>
             <!-- Configuration -->
             <div class="guide-step">
                 <h3>Editing README.md Frontmatter</h3>
-                <p>✨ <strong>No JSON editing needed!</strong> Just edit YAML frontmatter at the top of README.md:</p>
+                <p>✨ <strong>No JSON editing needed!</strong> Just edit simple YAML frontmatter at the top of README.md:</p>
                 
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'config-example')">Copy</button>
@@ -339,11 +349,7 @@ title: Redis Advanced Patterns
 description: Master advanced Redis patterns for production
 duration: 6 hours
 difficulty: advanced
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
-  - chapter: workshops/redis-advanced-patterns/chapters/caching-strategies
-    required: true
+chapters: shared/chapters/chapter-01-getting-started, workshops/redis-advanced-patterns/chapters/caching-strategies
 ---
 
 # Redis Advanced Patterns
@@ -352,7 +358,17 @@ Your workshop content starts here...</code>
                 </div>
 
                 <div class="success-box">
-                    <strong>✓ Only 5 required fields!</strong> Tags, repository URL, and version are auto-generated.
+                    <strong>✓ Only 5 required fields!</strong> Tags, repository URL, version, and chapter metadata are auto-generated.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ workshopId Rules:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        <li>Only lowercase letters (a-z), numbers (0-9), hyphens (-)</li>
+                        <li>NO spaces, uppercase, or special characters</li>
+                        <li>Valid: <code>redis-streams-2025</code> ✅</li>
+                        <li>Invalid: <code>My Workshop</code> ❌ <code>redis_2025</code> ❌</li>
+                    </ul>
                 </div>
 
                 <p>After editing, sync the config:</p>
@@ -368,6 +384,7 @@ Your workshop content starts here...</code>
                         <li>Repository URL from workshopId</li>
                         <li>Version (defaults to 1.0.0)</li>
                         <li>Last updated date</li>
+                        <li>Chapter order, type, and required flag</li>
                     </ul>
                 </div>
             </div>
@@ -378,7 +395,7 @@ Your workshop content starts here...</code>
                 <p>The README has two parts:</p>
                 
                 <h4>1. Frontmatter (Top of file)</h4>
-                <p>YAML metadata between <code>---</code> markers:</p>
+                <p>Simple YAML metadata between <code>---</code> markers:</p>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'readme-front')">Copy</button>
                     <code id="readme-front">---
@@ -387,9 +404,7 @@ title: My Workshop Title
 description: Brief description
 duration: 4 hours
 difficulty: intermediate
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+chapters: shared/chapters/chapter-01-getting-started, workshops/my-workshop/chapters/custom-chapter
 ---</code>
                 </div>
 
@@ -427,10 +442,8 @@ chapters:
                     <code id="shared-chapter"># 1. List available shared chapters
 ./shared/tools/list-chapters.sh
 
-# 2. Add to your README.md frontmatter
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+# 2. Add to your README.md frontmatter (comma-separated)
+chapters: shared/chapters/chapter-01-getting-started, shared/chapters/chapter-02-data-structures
 
 # 3. Sync the config
 ./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
@@ -452,20 +465,16 @@ chapters:
                     <code id="chapter-commands"># 1. Create the chapter
 ./shared/tools/create-chapter.sh "Building the Chat Backend" --workshop="my-workshop"
 
-# 2. Add it to your README.md frontmatter
-# Edit workshops/my-workshop/README.md and add:
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
-  - chapter: workshops/my-workshop/chapters/building-the-chat-backend
-    required: true
+# 2. Add it to your README.md frontmatter (comma-separated)
+# Edit workshops/my-workshop/README.md:
+chapters: shared/chapters/chapter-01-getting-started, workshops/my-workshop/chapters/building-the-chat-backend
 
 # 3. Sync the config
 ./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
                 </div>
 
                 <div class="warning-box">
-                    <strong>⚠️ Important:</strong> After creating a workshop-specific chapter, you must add it to the frontmatter and re-sync!
+                    <strong>⚠️ Important:</strong> After creating a workshop-specific chapter, you MUST add it to the <code>chapters:</code> line in frontmatter and sync!
                 </div>
             </div>
 
@@ -514,31 +523,49 @@ chapters:
             <div class="guide-step">
                 <h3>Publishing Your Workshop</h3>
                 
-                <h4>1. Commit to Git</h4>
+                <h4>1. Final Validation & Sync</h4>
                 <div class="code-block">
-                    <button class="copy-button" onclick="copyCode(this, 'git-commit')">Copy</button>
-                    <code id="git-commit">git add workshops/my-workshop
-git commit -m "Add new workshop: My Amazing Redis Workshop"
-git push</code>
+                    <button class="copy-button" onclick="copyCode(this, 'final-sync')">Copy</button>
+                    <code id="final-sync"># Sync frontmatter to config
+./shared/tools/sync-workshop-config.sh workshops/my-workshop
+
+# Validate everything
+./shared/tools/validate-workshop.sh workshops/my-workshop</code>
                 </div>
 
-                <h4>2. Automatic Website Update</h4>
+                <h4>2. Commit to Your Branch</h4>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'git-commit')">Copy</button>
+                    <code id="git-commit"># On your workshop branch (created automatically)
+git add workshops/my-workshop
+git commit -m "Add My Workshop"
+git push -u origin workshop/my-workshop</code>
+                </div>
+
+                <h4>3. Create Pull Request</h4>
                 <div class="success-box">
-                    <strong>✨ Magic happens:</strong> GitHub Actions automatically:
+                    <strong>🎉 Go to GitHub and create a PR:</strong>
                     <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
-                        <li>Detects your new workshop</li>
-                        <li>Generates website data</li>
-                        <li>Deploys to GitHub Pages</li>
-                        <li>Your workshop appears on the catalog!</li>
+                        <li>Title: <code>Add workshop: My Workshop Name</code></li>
+                        <li>Complete the PR checklist</li>
+                        <li>Wait for review and approval</li>
+                        <li>Once merged, automatically deploys to GitHub Pages!</li>
                     </ul>
                 </div>
 
-                <h4>3. Share Your Workshop</h4>
-                <ul class="checklist">
-                    <li>Share the workshop URL from GitHub Pages</li>
-                    <li>Announce in Redis community</li>
-                    <li>Gather feedback and iterate</li>
-                </ul>
+                <h4>4. After Merge</h4>
+                <div class="info-box">
+                    <strong>✨ Automatic deployment:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li>Workshop appears on this website within minutes</li>
+                        <li>Available in searchable catalog</li>
+                        <li>Ready for users worldwide!</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Remember:</strong> All workshops go through Pull Request review before merging to main. This ensures quality and catches issues early!
+                </div>
             </div>
         </section>
 
@@ -576,9 +603,13 @@ git push</code>
                     <li>Test with latest Redis version</li>
                     <li>Update when Redis features change</li>
                     <li>Respond to learner feedback</li>
-                    <li>Keep metadata (version, changelog) current</li>
+                    <li>Keep frontmatter current (edit README.md, then sync)</li>
+                    <li>Update version number in frontmatter when making changes</li>
                     <li>Fix broken links or outdated references</li>
                 </ul>
+                <div class="info-box">
+                    <strong>💡 Tip:</strong> Always edit README.md frontmatter first, then run sync script. Never manually edit workshop.config.json!
+                </div>
             </div>
         </section>
 

@@ -57,21 +57,33 @@ Before starting this workshop, you should:
 
 Complete these chapters in order:
 
-### Chapter 1: Getting Started with Redis
-**Time:** 45 minutes | **Type:** Shared
+---
+
+### 📘 Chapter 1: Getting Started with Redis
+
+⏱️ **Time:** 45 minutes | 🏷️ **Type:** Shared | 📊 **Difficulty:** Beginner
 
 Learn what Redis is, how to install it, and perform your first operations.
 
-**[📖 Start Chapter 1](../../shared/chapters/chapter-01-getting-started/README.md)**
+<div align="center">
+
+### **[▶️ START CHAPTER 1](../../shared/chapters/chapter-01-getting-started/README.md)**
+
+</div>
 
 ---
 
-### Chapter 2: Building the Chat Interface
-**Time:** 1 hour | **Type:** Workshop-Specific
+### 📘 Chapter 2: Building the Chat Interface
+
+⏱️ **Time:** 1 hour | 🏷️ **Type:** Workshop-Specific | 📊 **Difficulty:** Intermediate
 
 Build a real-time chat application using Redis data structures.
 
-**[📖 Start Chapter 2](chapters/building-the-chat-interface/README.md)**
+<div align="center">
+
+### **[▶️ START CHAPTER 2](chapters/building-the-chat-interface/README.md)**
+
+</div>
 
 ---
 

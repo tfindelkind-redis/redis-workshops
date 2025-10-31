@@ -53,30 +53,49 @@ Before starting this workshop, you should:
 
 Complete these chapters in order:
 
-### Chapter 1: [Chapter Title]
-**Time:** XX minutes | **Type:** Shared
+---
+
+### 📘 Chapter 1: [Chapter Title]
+
+⏱️ **Time:** XX minutes | 🏷️ **Type:** Shared | 📊 **Difficulty:** Beginner
 
 Brief description of what this chapter covers.
 
-**[📖 Start Chapter 1](../../shared/chapters/chapter-XX-name/README.md)**
+<div align="center">
+
+### **[▶️ START CHAPTER 1](../../shared/chapters/chapter-XX-name/README.md)**
+
+</div>
 
 ---
 
-### Chapter 2: [Chapter Title]
-**Time:** XX minutes | **Type:** Workshop-Specific
+### 📘 Chapter 2: [Chapter Title]
+
+⏱️ **Time:** XX minutes | 🏷️ **Type:** Workshop-Specific | 📊 **Difficulty:** Intermediate
 
 Brief description of what this chapter covers.
 
-**[📖 Start Chapter 2](chapters/chapter-name/README.md)**
+<div align="center">
+
+### **[▶️ START CHAPTER 2](chapters/chapter-name/README.md)**
+
+</div>
 
 ---
 
-### Chapter 3: [Chapter Title]
-**Time:** XX minutes | **Type:** Shared
+### 📘 Chapter 3: [Chapter Title]
+
+⏱️ **Time:** XX minutes | 🏷️ **Type:** Shared | 📊 **Difficulty:** Advanced
 
 Brief description of what this chapter covers.
 
-**[📖 Start Chapter 3](../../shared/chapters/chapter-XX-name/README.md)**
+<div align="center">
+
+### **[▶️ START CHAPTER 3](../../shared/chapters/chapter-XX-name/README.md)**
+
+</div>
+
+---
 
 ## 🏗️ Workshop Project
 

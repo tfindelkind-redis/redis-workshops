@@ -6,11 +6,11 @@ const workshopsData = [
     {
         id: "redis-fundamentals",
         title: "Redis Fundamentals Workshop",
-        description: "Learn Redis basics through hands-on exercises covering installation, basic operations, and common use cases",
+        description: "Introduction to Redis through hands-on exercises covering architecture, operations, and common use cases",
         difficulty: "beginner",
         duration: "3 hours",
         chaptersCount: 2,
-        tags: ["redis","fundamentals","beginner","hands-on"],
+        tags: ["redis","workshop","beginner","fundamentals"],
         path: "workshops/redis-fundamentals",
         lastUpdated: "2025-10-31"
     }

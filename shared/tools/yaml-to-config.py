@@ -23,6 +23,28 @@ def main():
             print(f"Error: Missing required field: {field}", file=sys.stderr)
             sys.exit(1)
     
+    # Validate workshopId format (no spaces, lowercase, hyphens only)
+    workshop_id = data['workshopId']
+    if ' ' in workshop_id:
+        print(f"Error: workshopId cannot contain spaces. Use hyphens instead: '{workshop_id}' → '{workshop_id.replace(' ', '-')}'", file=sys.stderr)
+        sys.exit(1)
+    
+    if workshop_id != workshop_id.lower():
+        print(f"Error: workshopId must be lowercase: '{workshop_id}' → '{workshop_id.lower()}'", file=sys.stderr)
+        sys.exit(1)
+    
+    # Check for invalid characters (only lowercase letters, numbers, hyphens)
+    import re
+    if not re.match(r'^[a-z0-9-]+$', workshop_id):
+        print(f"Error: workshopId can only contain lowercase letters, numbers, and hyphens: '{workshop_id}'", file=sys.stderr)
+        sys.exit(1)
+    
+    # Check for valid difficulty
+    valid_difficulties = ['beginner', 'intermediate', 'advanced']
+    if data['difficulty'].lower() not in valid_difficulties:
+        print(f"Error: difficulty must be one of: {', '.join(valid_difficulties)}", file=sys.stderr)
+        sys.exit(1)
+    
     # Process chapters from simple comma-separated list
     # Format: "chapter1, chapter2, chapter3" or "chapter1"
     chapters = []
