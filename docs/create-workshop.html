@@ -213,7 +213,7 @@
                 </div>
                 <p>✨ <strong>New!</strong> Edit only the <code>README.md</code> frontmatter - the config file is auto-generated!</p>
                 <div class="success-box">
-                    <strong>💡 Super Simple:</strong> Only 5 required fields! Tags, repository URL, and other metadata are auto-generated.
+                    <strong>💡 Super Simple:</strong> Only 5 required fields! No nested YAML or indentation - just simple key-value pairs.
                 </div>
                 <p>Edit this at the top of your README.md:</p>
                 <div class="code-block">
@@ -224,10 +224,13 @@ title: My Workshop Title
 description: Brief description
 duration: 4 hours
 difficulty: intermediate
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+chapters: shared/chapters/chapter-01-getting-started
 ---</code>
+                </div>
+                <p>For multiple chapters, just separate with commas:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'multiple-chapters')">Copy</button>
+                    <code id="multiple-chapters">chapters: shared/chapters/chapter-01, workshops/my-workshop/chapters/custom</code>
                 </div>
                 <p>Then sync the config:</p>
                 <div class="code-block">
@@ -235,7 +238,7 @@ chapters:
                     <code id="sync-cmd">./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
                 </div>
                 <div class="info-box">
-                    <strong>Auto-generated for you:</strong> tags, repository URL, version number, last updated date
+                    <strong>Auto-generated for you:</strong> tags, repository URL, version number, last updated date, chapter ordering
                 </div>
             </div>
 
@@ -303,55 +306,72 @@ chapters:
 
             <!-- Configuration -->
             <div class="guide-step">
-                <h3>Configuring workshop.config.json</h3>
-                <p>This file defines your workshop's metadata and structure:</p>
+                <h3>Editing README.md Frontmatter</h3>
+                <p>✨ <strong>No JSON editing needed!</strong> Just edit YAML frontmatter at the top of README.md:</p>
                 
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'config-example')">Copy</button>
-                    <code id="config-example">{
-  "workshopId": "redis-advanced-patterns",
-  "version": "1.0.0",
-  "title": "Redis Advanced Patterns",
-  "description": "Master advanced Redis patterns for production",
-  "duration": "6 hours",
-  "difficulty": "advanced",
-  "tags": ["redis", "advanced", "patterns", "production"],
-  "chapters": [
-    {
-      "order": 1,
-      "chapterRef": "shared/chapters/chapter-01-getting-started",
-      "required": true,
-      "type": "shared"
-    },
-    {
-      "order": 2,
-      "chapterRef": "workshops/redis-advanced-patterns/chapters/caching-strategies",
-      "required": true,
-      "type": "workshop-specific"
-    }
-  ],
-  "prerequisites": [
-    "Basic Redis knowledge",
-    "Command line proficiency"
-  ],
-  "learningObjectives": [
-    "Implement advanced caching patterns",
-    "Design scalable Redis architectures",
-    "Optimize Redis for production"
-  ]
-}</code>
+                    <code id="config-example">---
+workshopId: redis-advanced-patterns
+title: Redis Advanced Patterns
+description: Master advanced Redis patterns for production
+duration: 6 hours
+difficulty: advanced
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+  - chapter: workshops/redis-advanced-patterns/chapters/caching-strategies
+    required: true
+---
+
+# Redis Advanced Patterns
+
+Your workshop content starts here...</code>
                 </div>
 
-                <div class="warning-box">
-                    <strong>⚠️ Important:</strong> Ensure valid JSON! Use a validator or <code>jq</code> to check.
+                <div class="success-box">
+                    <strong>✓ Only 5 required fields!</strong> Tags, repository URL, and version are auto-generated.
+                </div>
+
+                <p>After editing, sync the config:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'sync-config')">Copy</button>
+                    <code id="sync-config">./shared/tools/sync-workshop-config.sh workshops/redis-advanced-patterns</code>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 What gets auto-generated:</strong>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Tags from your title and difficulty</li>
+                        <li>Repository URL from workshopId</li>
+                        <li>Version (defaults to 1.0.0)</li>
+                        <li>Last updated date</li>
+                    </ul>
                 </div>
             </div>
 
             <!-- README Template -->
             <div class="guide-step">
                 <h3>Writing Your Workshop README</h3>
-                <p>The README is the main guide participants will follow. Include:</p>
+                <p>The README has two parts:</p>
                 
+                <h4>1. Frontmatter (Top of file)</h4>
+                <p>YAML metadata between <code>---</code> markers:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'readme-front')">Copy</button>
+                    <code id="readme-front">---
+workshopId: my-workshop
+title: My Workshop Title
+description: Brief description
+duration: 4 hours
+difficulty: intermediate
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+---</code>
+                </div>
+
+                <h4>2. Content (Below frontmatter)</h4>
                 <ul class="checklist">
                     <li><strong>Overview</strong> - What the workshop covers</li>
                     <li><strong>Learning Objectives</strong> - What participants will learn</li>
@@ -379,6 +399,21 @@ chapters:
                     <li>Automatically numbered (chapter-01, 02, etc.)</li>
                 </ul>
 
+                <p><strong>To use a shared chapter:</strong></p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'shared-chapter')">Copy</button>
+                    <code id="shared-chapter"># 1. List available shared chapters
+./shared/tools/list-chapters.sh
+
+# 2. Add to your README.md frontmatter
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+
+# 3. Sync the config
+./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
+                </div>
+
                 <h4>Workshop-Specific Chapters</h4>
                 <div class="info-box">
                     <strong>ℹ️ Best for:</strong> Unique content specific to your workshop's narrative
@@ -389,13 +424,26 @@ chapters:
                     <li>Can be promoted to shared later</li>
                 </ul>
 
+                <p><strong>To create a workshop-specific chapter:</strong></p>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'chapter-commands')">Copy</button>
-                    <code id="chapter-commands"># Create shared chapter (available to all workshops)
-./shared/tools/create-chapter.sh "Redis Persistence Patterns"
+                    <code id="chapter-commands"># 1. Create the chapter
+./shared/tools/create-chapter.sh "Building the Chat Backend" --workshop="my-workshop"
 
-# Create workshop-specific chapter
-./shared/tools/create-chapter.sh "Building the Chat Backend" --workshop="my-workshop"</code>
+# 2. Add it to your README.md frontmatter
+# Edit workshops/my-workshop/README.md and add:
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+  - chapter: workshops/my-workshop/chapters/building-the-chat-backend
+    required: true
+
+# 3. Sync the config
+./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> After creating a workshop-specific chapter, you must add it to the frontmatter and re-sync!
                 </div>
             </div>
 
@@ -404,20 +452,27 @@ chapters:
                 <h3>Testing Your Workshop</h3>
                 <p>Before publishing, ensure everything works:</p>
 
-                <h4>1. Validate Structure</h4>
+                <h4>1. Sync Your Config</h4>
+                <p>Make sure your workshop.config.json is up to date with your README frontmatter:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'sync-before-validate')">Copy</button>
+                    <code id="sync-before-validate">./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
+                </div>
+
+                <h4>2. Validate Structure</h4>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'validate')">Copy</button>
                     <code id="validate">./shared/tools/validate-workshop.sh workshops/my-workshop</code>
                 </div>
 
-                <h4>2. Test Setup Script</h4>
+                <h4>3. Test Setup Script</h4>
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'test-setup')">Copy</button>
                     <code id="test-setup">cd workshops/my-workshop
 ./setup.sh</code>
                 </div>
 
-                <h4>3. Walk Through Chapters</h4>
+                <h4>4. Walk Through Chapters</h4>
                 <ul class="checklist">
                     <li>Complete each chapter in order</li>
                     <li>Verify all code examples work</li>
@@ -425,7 +480,7 @@ chapters:
                     <li>Check estimated times are realistic</li>
                 </ul>
 
-                <h4>4. Get Feedback</h4>
+                <h4>5. Get Feedback</h4>
                 <ul class="checklist">
                     <li>Have someone else try the workshop</li>
                     <li>Note where they get stuck</li>

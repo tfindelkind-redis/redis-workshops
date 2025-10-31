@@ -4,9 +4,7 @@ title: WORKSHOP_NAME_PLACEHOLDER
 description: Brief description of the workshop
 duration: 4 hours
 difficulty: intermediate
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+chapters: shared/chapters/chapter-01-getting-started
 ---
 
 # WORKSHOP_NAME_PLACEHOLDER

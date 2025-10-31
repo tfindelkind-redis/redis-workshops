@@ -21,7 +21,7 @@
     {
       "order": 2,
       "chapterRef": "workshops/redis-fundamentals/chapters/building-the-chat-interface",
-      "required": false,
+      "required": true,
       "type": "workshop-specific"
     }
   ],

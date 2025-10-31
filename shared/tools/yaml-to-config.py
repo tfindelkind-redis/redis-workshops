@@ -23,19 +23,25 @@ def main():
             print(f"Error: Missing required field: {field}", file=sys.stderr)
             sys.exit(1)
     
-    # Process chapters
+    # Process chapters from simple comma-separated list
+    # Format: "chapter1, chapter2, chapter3" or "chapter1"
     chapters = []
-    for idx, chapter in enumerate(data.get('chapters', [])):
-        chapter_ref = chapter.get('chapter', '')
-        required = chapter.get('required', True)
-        chapter_type = 'shared' if chapter_ref.startswith('shared/') else 'workshop-specific'
+    chapters_str = data.get('chapters', '')
+    
+    if chapters_str:
+        # Split by comma and clean up
+        chapter_refs = [ref.strip() for ref in chapters_str.split(',') if ref.strip()]
         
-        chapters.append({
-            'order': idx + 1,
-            'chapterRef': chapter_ref,
-            'required': required,
-            'type': chapter_type
-        })
+        for idx, chapter_ref in enumerate(chapter_refs):
+            # All chapters are required by default in simple format
+            chapter_type = 'shared' if chapter_ref.startswith('shared/') else 'workshop-specific'
+            
+            chapters.append({
+                'order': idx + 1,
+                'chapterRef': chapter_ref,
+                'required': True,  # All chapters required in simple format
+                'type': chapter_type
+            })
     
     # Auto-generate repository URL from workshopId
     workshop_id = data['workshopId']

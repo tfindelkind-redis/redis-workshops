@@ -4,11 +4,7 @@ title: Redis Fundamentals Workshop
 description: Introduction to Redis through hands-on exercises covering architecture, operations, and common use cases
 duration: 3 hours
 difficulty: beginner
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
-  - chapter: workshops/redis-fundamentals/chapters/building-the-chat-interface
-    required: false
+chapters: shared/chapters/chapter-01-getting-started, workshops/redis-fundamentals/chapters/building-the-chat-interface
 ---
 
 # Redis Fundamentals Workshop

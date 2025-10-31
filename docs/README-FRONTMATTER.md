@@ -30,21 +30,20 @@ title: My Workshop
 description: Learn amazing things
 duration: 4 hours
 difficulty: intermediate
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+chapters: shared/chapters/chapter-01-getting-started
 ---
 
 # My Workshop
 
 Content starts here...
 ```
-✅ Write in user-friendly YAML  
+✅ Simple key-value pairs (no indentation needed!)  
 ✅ Auto-validates and converts to JSON  
 ✅ Single source of truth (README.md)  
 ✅ Auto-syncs when you run the script  
 ✅ **Only 5 required fields!**  
 ✅ Tags, repository URL auto-generated  
+✅ **Chapters as comma-separated list**
 
 ```
 ✅ Write in user-friendly YAML  
@@ -65,11 +64,7 @@ title: Redis Advanced Patterns
 description: Master advanced Redis patterns for production
 duration: 6 hours
 difficulty: advanced
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
-  - chapter: workshops/redis-advanced-patterns/chapters/caching-strategies
-    required: false
+chapters: shared/chapters/chapter-01-getting-started, workshops/redis-advanced-patterns/chapters/caching-strategies
 ---
 
 # Redis Advanced Patterns
@@ -99,8 +94,18 @@ That's it! The script will:
 - `duration` - Estimated time (e.g., "4 hours")
 - `difficulty` - One of: beginner, intermediate, advanced
 
-### 📋 Chapters (Recommended)
-- `chapters` - List of chapters (ref and required status)
+### 📋 Chapters (Simple!)
+- `chapters` - Comma-separated list of chapter paths
+
+**Format:** Just list them separated by commas!
+```yaml
+chapters: shared/chapters/chapter-01, workshops/my-workshop/chapters/custom-chapter
+```
+
+Or for a single chapter:
+```yaml
+chapters: shared/chapters/chapter-01-getting-started
+```
 
 ### 🔧 Optional Fields
 - `version` - Semantic version (defaults to "1.0.0" if not specified)
@@ -113,19 +118,9 @@ These are automatically created - don't add them to your frontmatter:
 - `lastUpdated` - Auto-set to current date
 - `prerequisites` - Can be written in README content instead
 - `learningObjectives` - Can be written in README content instead
-
-### Chapter Format
-```yaml
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
-  - chapter: workshops/my-workshop/chapters/custom-chapter
-    required: false
-```
-
-The script automatically detects:
-- **Shared chapters** - start with `shared/`
-- **Workshop-specific chapters** - start with `workshops/`
+- `required` flag for chapters - All chapters are marked as required automatically
+- `order` - Automatically numbered based on list order
+- `type` - Auto-detected (shared vs workshop-specific)
 
 ## 🔄 Workflow
 
@@ -154,7 +149,7 @@ The script automatically detects:
 ## 💡 Tips
 
 ### Minimal Frontmatter
-Keep it simple! Only 5 fields are required:
+Keep it simple! Only 6 lines needed:
 ```yaml
 ---
 workshopId: my-workshop
@@ -162,20 +157,29 @@ title: My Workshop Title
 description: What this workshop teaches
 duration: 4 hours
 difficulty: beginner
-chapters:
-  - chapter: shared/chapters/chapter-01-getting-started
-    required: true
+chapters: shared/chapters/chapter-01-getting-started
 ---
 ```
+
+### Multiple Chapters
+Just separate with commas:
+```yaml
+chapters: shared/chapters/chapter-01, shared/chapters/chapter-02, workshops/my-workshop/chapters/custom
+```
+
+**No spaces in indentation to worry about!** ✨
 
 ### Everything Else is Auto-Generated
 - **Tags**: Extracted from your title and difficulty
 - **Repository URL**: Built from your workshopId
 - **Version**: Defaults to 1.0.0 (can override if needed)
 - **Last Updated**: Always set to today's date
+- **Chapter order**: Numbered in the order you list them
+- **Chapter type**: Auto-detected from path
+- **Required flag**: All chapters marked as required
 
 ### Prerequisites & Learning Objectives
-Instead of YAML lists, just write them in your README content:
+Instead of frontmatter, just write them in your README content:
 ```markdown
 ## 📚 Prerequisites
 - Basic command line knowledge
