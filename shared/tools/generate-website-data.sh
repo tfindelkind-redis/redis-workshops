@@ -31,11 +31,6 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
         CONFIG_FILE="$WORKSHOP_DIR/workshop.config.json"
         
         if [ -f "$CONFIG_FILE" ] && command -v jq &> /dev/null; then
-            if [ "$FIRST_WORKSHOP" = false ]; then
-                echo "," >> "$OUTPUT_FILE"
-            fi
-            FIRST_WORKSHOP=false
-            
             # Extract data from config
             TITLE=$(jq -r '.title // "Untitled Workshop"' "$CONFIG_FILE")
             DESCRIPTION=$(jq -r '.description // "No description"' "$CONFIG_FILE")
@@ -48,6 +43,12 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
             # Escape quotes in strings for JSON
             TITLE_ESC=$(echo "$TITLE" | sed 's/"/\\"/g')
             DESCRIPTION_ESC=$(echo "$DESCRIPTION" | sed 's/"/\\"/g')
+            
+            # Add comma before this entry if not the first
+            if [ "$FIRST_WORKSHOP" = false ]; then
+                printf ",\n" >> "$OUTPUT_FILE"
+            fi
+            FIRST_WORKSHOP=false
             
             cat >> "$OUTPUT_FILE" << EOF
     {
@@ -85,11 +86,6 @@ for CHAPTER_DIR in "$REPO_ROOT/shared/chapters"/*; do
         METADATA_FILE="$CHAPTER_DIR/.chapter-metadata.json"
         
         if [ -f "$METADATA_FILE" ] && command -v jq &> /dev/null; then
-            if [ "$FIRST_CHAPTER" = false ]; then
-                echo "," >> "$OUTPUT_FILE"
-            fi
-            FIRST_CHAPTER=false
-            
             TITLE=$(jq -r '.title // "Untitled Chapter"' "$METADATA_FILE")
             DESCRIPTION=$(jq -r '.description // "No description"' "$METADATA_FILE")
             DIFFICULTY=$(jq -r '.difficulty // "beginner"' "$METADATA_FILE")
@@ -99,6 +95,12 @@ for CHAPTER_DIR in "$REPO_ROOT/shared/chapters"/*; do
             
             TITLE_ESC=$(echo "$TITLE" | sed 's/"/\\"/g')
             DESCRIPTION_ESC=$(echo "$DESCRIPTION" | sed 's/"/\\"/g')
+            
+            # Add comma before this entry if not the first
+            if [ "$FIRST_CHAPTER" = false ]; then
+                printf ",\n" >> "$OUTPUT_FILE"
+            fi
+            FIRST_CHAPTER=false
             
             cat >> "$OUTPUT_FILE" << EOF
     {
@@ -131,11 +133,6 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
                     METADATA_FILE="$CHAPTER_DIR/.chapter-metadata.json"
                     
                     if [ -f "$METADATA_FILE" ] && command -v jq &> /dev/null; then
-                        if [ "$FIRST_CHAPTER" = false ]; then
-                            echo "," >> "$OUTPUT_FILE"
-                        fi
-                        FIRST_CHAPTER=false
-                        
                         TITLE=$(jq -r '.title // "Untitled Chapter"' "$METADATA_FILE")
                         DESCRIPTION=$(jq -r '.description // "No description"' "$METADATA_FILE")
                         DIFFICULTY=$(jq -r '.difficulty // "beginner"' "$METADATA_FILE")
@@ -145,6 +142,12 @@ for WORKSHOP_DIR in "$REPO_ROOT/workshops"/*; do
                         
                         TITLE_ESC=$(echo "$TITLE" | sed 's/"/\\"/g')
                         DESCRIPTION_ESC=$(echo "$DESCRIPTION" | sed 's/"/\\"/g')
+                        
+                        # Add comma before this entry if not the first
+                        if [ "$FIRST_CHAPTER" = false ]; then
+                            printf ",\n" >> "$OUTPUT_FILE"
+                        fi
+                        FIRST_CHAPTER=false
                         
                         cat >> "$OUTPUT_FILE" << EOF
     {
