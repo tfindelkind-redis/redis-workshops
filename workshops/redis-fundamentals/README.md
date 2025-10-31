@@ -1,3 +1,34 @@
+---
+workshopId: redis-fundamentals
+version: 1.0.0
+title: Redis Fundamentals Workshop
+description: "Introduction to Redis through hands-on exercises covering architecture, operations, and common use cases"
+duration: 3 hours
+difficulty: beginner
+tags:
+  - redis
+  - fundamentals
+  - beginner
+  - caching
+prerequisites:
+  - Basic command-line knowledge
+  - Understanding of basic programming concepts
+  - Computer with macOS, Linux, or Windows WSL
+learningObjectives:
+  - Install and configure Redis
+  - Perform basic CRUD operations
+  - Understand Redis data types
+  - Implement caching strategies
+  - Work with data expiration and persistence
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+  - chapter: workshops/redis-fundamentals/chapters/building-the-chat-interface
+    required: false
+author: Redis Team
+repository: https://github.com/tfindelkind-redis/redis-workshops
+---
+
 # Redis Fundamentals Workshop
 
 **Duration:** 3 hours  

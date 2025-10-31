@@ -209,12 +209,33 @@
                     <div class="step-badge">2</div>
                     <h3 class="step-title">Customize Your Workshop</h3>
                 </div>
-                <p>Edit the generated files to add your content:</p>
-                <ul class="checklist">
-                    <li><code>README.md</code> - Workshop description and instructions</li>
-                    <li><code>workshop.config.json</code> - Workshop metadata and chapter references</li>
-                    <li><code>setup.sh</code> - Environment setup script</li>
-                </ul>
+                <p>✨ <strong>New!</strong> Edit only the <code>README.md</code> frontmatter - the config file is auto-generated!</p>
+                <div class="success-box">
+                    <strong>💡 Pro Tip:</strong> You only need to edit the YAML frontmatter at the top of README.md. The workshop.config.json is automatically generated from it!
+                </div>
+                <p>Edit this at the top of your README.md:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'frontmatter')">Copy</button>
+                    <code id="frontmatter">---
+workshopId: my-workshop
+version: 1.0.0
+title: "My Workshop Title"
+description: "Brief description"
+duration: 4 hours
+difficulty: intermediate
+tags:
+  - redis
+  - workshop
+chapters:
+  - chapter: shared/chapters/chapter-01-getting-started
+    required: true
+---</code>
+                </div>
+                <p>Then sync the config:</p>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'sync-cmd')">Copy</button>
+                    <code id="sync-cmd">./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
+                </div>
             </div>
 
             <div class="guide-step">
@@ -226,7 +247,7 @@
                 <div class="code-block">
                     <button class="copy-button" onclick="copyCode(this, 'create-chapter')">Copy</button>
                     <code id="create-chapter"># Use shared chapter (recommended)
-# Just reference it in workshop.config.json
+# Just add it to the frontmatter in README.md
 
 # Or create workshop-specific chapter
 ./shared/tools/create-chapter.sh "My Custom Chapter" --workshop="my-workshop"</code>
