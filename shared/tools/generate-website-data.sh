@@ -3,7 +3,7 @@
 # Generate GitHub Pages Data
 # This script scans workshops and chapters and generates data.js for the website
 
-set -euo pipefail
+set -eo pipefail
 
 # Determine repository root
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
@@ -12,7 +12,14 @@ OUTPUT_FILE="$REPO_ROOT/docs/data.js"
 
 echo "🔍 Scanning repository for workshops and chapters..."
 
+# Ensure docs directory exists
+mkdir -p "$REPO_ROOT/docs"
+
+echo "DEBUG: REPO_ROOT=$REPO_ROOT"
+echo "DEBUG: OUTPUT_FILE=$OUTPUT_FILE"
+
 # Start generating the data.js file
+echo "DEBUG: Creating data.js file..."
 cat > "$OUTPUT_FILE" << 'EOF'
 // Workshop and Chapter Data
 // This file is auto-generated. Do not edit manually.
@@ -20,6 +27,8 @@ cat > "$OUTPUT_FILE" << 'EOF'
 
 const workshopsData = [
 EOF
+
+echo "DEBUG: Starting workshop scan..."
 
 # Process workshops
 WORKSHOP_COUNT=0
