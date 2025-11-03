@@ -1,6 +1,6 @@
 // Workshop and Chapter Data
 // This file is auto-generated. Do not edit manually.
-// Generated on: 2025-10-31
+// Generated on: 2025-11-03
 const workshopsData = [
     {
         id: "redis-fundamentals",
