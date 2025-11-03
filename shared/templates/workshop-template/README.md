@@ -26,27 +26,47 @@ By the end of this workshop, you will be able to:
 ## 📚 Prerequisites
 
 Before starting this workshop, you should:
+- Have a GitHub account
 - Have basic knowledge of X
-- Have Y installed
-- Understand Z concepts
+- Understand Y concepts
 
 ## 🛠️ Setup
 
 ### Required Tools
+- GitHub account (for forking)
 - Tool 1
 - Tool 2
-- Tool 3
 
-### Environment Setup
+### Getting Started
 
-1. Clone this repository
-2. Navigate to this workshop directory:
+**⚠️ Important:** This workshop requires forking the repository to manage secrets and save your progress.
+
+1. **Fork the repository**
+   - Visit [redis-workshops on GitHub](https://github.com/tfindelkind-redis/redis-workshops)
+   - Click the "Fork" button to create your copy
+
+2. **Open your environment** (choose one):
+   
+   **Option A - GitHub Codespaces (Recommended):**
+   - Open your fork on GitHub
+   - Click "Code" → "Codespaces" → "Create codespace on main"
+   - Everything is pre-installed and ready to go!
+   
+   **Option B - Local Development:**
    ```bash
-   cd workshops/[workshop-name]
+   git clone https://github.com/YOUR-USERNAME/redis-workshops.git
+   cd redis-workshops/workshops/WORKSHOP_ID_PLACEHOLDER
    ```
-3. Run the setup script:
+
+3. **Configure secrets** (if needed):
+   - Add API keys or credentials as environment variables
+   - In Codespaces: Use the Secrets panel
+   - Locally: Create a `.env` file (never commit this!)
+
+4. **Verify setup:**
    ```bash
-   ./setup.sh
+   # Test Redis connection
+   redis-cli ping
    ```
 
 ## 📖 Workshop Chapters

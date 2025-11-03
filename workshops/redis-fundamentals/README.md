@@ -29,29 +29,45 @@ By the end of this workshop, you will be able to:
 ## 📚 Prerequisites
 
 Before starting this workshop, you should:
+- Have a GitHub account (required for forking)
 - Have basic command-line knowledge
 - Understand basic programming concepts
-- Have a computer with macOS, Linux, or Windows WSL
 
 ## 🛠️ Setup
 
-### Required Tools
-- Terminal/Command prompt
-- Text editor or IDE
-- Redis (we'll install this in Chapter 1)
+### Getting Started
 
-### Environment Setup
+**⚠️ Important:** Fork this repository first to have your own workspace!
 
-1. Clone this repository
-2. Navigate to this workshop directory:
+1. **Fork the repository**
+   - Visit [redis-workshops on GitHub](https://github.com/tfindelkind-redis/redis-workshops)
+   - Click the "Fork" button to create your personal copy
+
+2. **Open your environment** (choose one):
+   
+   **Option A - GitHub Codespaces (Recommended):**
+   - Open your fork on GitHub
+   - Click "Code" → "Codespaces" → "Create codespace on main"
+   - Redis is pre-installed and running!
+   
+   **Option B - Local Development:**
    ```bash
-   cd workshops/redis-fundamentals
+   git clone https://github.com/YOUR-USERNAME/redis-workshops.git
+   cd redis-workshops/workshops/redis-fundamentals
    ```
-3. Run the setup script:
+   - You'll install Redis in Chapter 1
+
+3. **Verify setup:**
    ```bash
-   chmod +x setup.sh
-   ./setup.sh
+   # Test Redis connection (Codespaces only, or after Chapter 1 locally)
+   redis-cli ping
+   # Should return: PONG
    ```
+
+### What You'll Need
+- GitHub account
+- Web browser (for Codespaces) OR terminal/IDE (for local)
+- No prior Redis installation needed!
 
 ## 📖 Workshop Chapters
 

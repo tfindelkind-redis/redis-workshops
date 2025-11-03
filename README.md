@@ -34,10 +34,42 @@ Chapters are modular, reusable learning units that can be included in multiple w
 
 ### For Workshop Participants
 
-1. Choose a workshop from the `workshops/` directory
-2. Follow the workshop's README.md for prerequisites and setup
-3. Complete the chapters in order
-4. Each chapter includes documentation, scripts, and hands-on exercises
+**Prerequisites:**
+- A GitHub account (required for forking and secrets management)
+- Basic familiarity with Git (helpful but not required)
+
+**Quick Start:**
+
+1. **Fork this repository**
+   - Click the "Fork" button at the top right of this page
+   - This creates your own copy where you can work through exercises and store secrets
+
+2. **Open your fork** (choose one):
+   - **Option A (Recommended):** Open in GitHub Codespaces
+     - Click the green "Code" button → "Codespaces" → "Create codespace on main"
+     - Everything is pre-configured! Redis, Python, and all tools are ready
+   
+   - **Option B:** Clone locally
+     ```bash
+     git clone https://github.com/YOUR-USERNAME/redis-workshops.git
+     cd redis-workshops
+     ```
+
+3. **Navigate to a workshop**
+   ```bash
+   cd workshops/redis-fundamentals  # or any other workshop
+   ```
+
+4. **Follow the workshop README**
+   - Each workshop has its own README with specific instructions
+   - Set up secrets/environment variables in your fork
+   - Complete chapters in order
+
+**Why Fork?**
+- 🔐 **Secrets Management:** Store API keys, Redis credentials safely in your fork
+- 💾 **Save Progress:** Commit your exercise solutions to your repository
+- 🔄 **Stay Updated:** Pull updates from the original repository when needed
+- 🎯 **Personalize:** Customize workshops for your learning style
 
 ### For Workshop Authors
 
