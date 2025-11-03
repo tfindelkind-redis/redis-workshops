@@ -39,35 +39,42 @@ Before starting this workshop, you should:
 
 ### Getting Started
 
-**⚠️ Important:** This workshop requires forking the repository to manage secrets and save your progress.
+**⚠️ Important:** This workshop uses GitHub Codespaces - no local installation needed!
 
 1. **Fork the repository**
    - Visit [redis-workshops on GitHub](https://github.com/tfindelkind-redis/redis-workshops)
-   - Click the "Fork" button to create your copy
+   - Click the "Fork" button to create your personal copy
 
-2. **Open your environment** (choose one):
-   
-   **Option A - GitHub Codespaces (Recommended):**
-   - Open your fork on GitHub
+2. **Open in GitHub Codespaces**
+   - Go to your forked repository
    - Click "Code" → "Codespaces" → "Create codespace on main"
-   - Everything is pre-installed and ready to go!
-   
-   **Option B - Local Development:**
+   - Wait ~1 minute while the environment sets up
+   - Everything is pre-installed: Redis, Python, Node.js, and all dependencies!
+
+3. **Navigate to this workshop**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/redis-workshops.git
-   cd redis-workshops/workshops/WORKSHOP_ID_PLACEHOLDER
+   cd workshops/WORKSHOP_ID_PLACEHOLDER
    ```
 
-3. **Configure secrets** (if needed):
-   - Add API keys or credentials as environment variables
-   - In Codespaces: Use the Secrets panel
-   - Locally: Create a `.env` file (never commit this!)
+4. **Configure secrets** (if needed):
+   - Click the gear icon in Codespaces
+   - Go to "Codespaces" → "Secrets"
+   - Add any required API keys or credentials
+   - They'll be available as environment variables
 
-4. **Verify setup:**
+5. **Verify setup:**
    ```bash
    # Test Redis connection
    redis-cli ping
+   # Should return: PONG
    ```
+
+**✨ What's Included:**
+- ✅ Redis Server (running on localhost:6379)
+- ✅ Python 3.11
+- ✅ Node.js 20
+- ✅ All workshop dependencies
+- ✅ VS Code in your browser
 
 ## 📖 Workshop Chapters
 

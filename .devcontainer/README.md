@@ -1,10 +1,10 @@
 # Devcontainer Configuration
 
-This directory contains the configuration for GitHub Codespaces and VS Code devcontainers.
+This directory contains the configuration for GitHub Codespaces.
 
 ## What's Included
 
-When you open this repository in Codespaces or a devcontainer, you automatically get:
+When you open this repository in Codespaces, you automatically get:
 
 ### 🛠️ Pre-installed Tools
 - **Redis Server** - Running on localhost:6379
@@ -32,16 +32,8 @@ The `setup.sh` script runs automatically when the container is created:
 1. Fork this repository to your GitHub account
 2. Go to your fork on GitHub
 3. Click "Code" → "Codespaces" → "Create codespace on main"
-4. Wait for the container to build (first time only)
+4. Wait for the container to build (~1 minute first time)
 5. You're ready to go!
-
-## Using VS Code Devcontainers Locally
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-2. Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
-3. Clone your fork locally
-4. Open in VS Code
-5. Click "Reopen in Container" when prompted
 
 ## Port Forwarding
 
@@ -63,15 +55,12 @@ You can customize the devcontainer by editing `devcontainer.json`:
 
 For workshops requiring API keys or credentials:
 
-**In Codespaces:**
-1. Go to your Codespace settings
-2. Add secrets via the UI
-3. They're automatically available as environment variables
+1. Click the gear icon in Codespaces
+2. Go to "Codespaces" → "Secrets"
+3. Add your secrets
+4. They're automatically available as environment variables in your workspace
 
-**In Local Devcontainers:**
-1. Create a `.env` file in the workshop directory
-2. Add your secrets (this file is gitignored)
-3. Load them in your code
+**Never commit secrets to your repository!**
 
 ## Troubleshooting
 
@@ -87,4 +76,4 @@ redis-cli ping
 ```
 
 **Rebuild container:**
-- Command Palette → "Remote-Containers: Rebuild Container"
+- Command Palette (F1) → "Codespaces: Rebuild Container"

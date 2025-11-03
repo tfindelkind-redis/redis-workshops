@@ -44,30 +44,30 @@ Chapters are modular, reusable learning units that can be included in multiple w
    - Click the "Fork" button at the top right of this page
    - This creates your own copy where you can work through exercises and store secrets
 
-2. **Open your fork** (choose one):
-   - **Option A (Recommended):** Open in GitHub Codespaces
-     - Click the green "Code" button → "Codespaces" → "Create codespace on main"
-     - Everything is pre-configured! Redis, Python, and all tools are ready
-   
-   - **Option B:** Clone locally
-     ```bash
-     git clone https://github.com/YOUR-USERNAME/redis-workshops.git
-     cd redis-workshops
-     ```
+2. **Open in GitHub Codespaces**
+   - Go to your forked repository on GitHub
+   - Click the green "Code" button → "Codespaces" → "Create codespace on main"
+   - Everything is pre-configured! Redis, Python, Node.js, and all tools are ready in ~1 minute
+   - No installation required - works entirely in your browser
 
 3. **Navigate to a workshop**
+   - Codespaces opens with VS Code in your browser
+   - Open the terminal and navigate:
    ```bash
    cd workshops/redis-fundamentals  # or any other workshop
    ```
 
 4. **Follow the workshop README**
    - Each workshop has its own README with specific instructions
-   - Set up secrets/environment variables in your fork
+   - Set up secrets using Codespaces Secrets (for API keys, credentials)
    - Complete chapters in order
+   - Redis is already running on localhost:6379!
 
-**Why Fork?**
-- 🔐 **Secrets Management:** Store API keys, Redis credentials safely in your fork
+**Why Fork + Codespaces?**
+- 🔐 **Secrets Management:** Store API keys, Redis credentials safely in Codespaces Secrets
 - 💾 **Save Progress:** Commit your exercise solutions to your repository
+- ☁️ **Zero Setup:** No installation needed - everything works in your browser
+- 🚀 **Instant Start:** From fork to coding in under 2 minutes
 - 🔄 **Stay Updated:** Pull updates from the original repository when needed
 - 🎯 **Personalize:** Customize workshops for your learning style
 
