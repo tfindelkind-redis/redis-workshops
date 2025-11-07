@@ -44,8 +44,8 @@ cp -r "$TEMPLATE_DIR" "$REPO_ROOT/$WORKSHOP_DIR"
 
 # Update placeholders in README.md
 echo "✏️  Updating workshop README..."
-sed -i.bak "s/Workshop Name/$WORKSHOP_NAME/g" "$REPO_ROOT/$WORKSHOP_DIR/README.md"
-sed -i.bak "s/\[workshop-name\]/$WORKSHOP_ID/g" "$REPO_ROOT/$WORKSHOP_DIR/README.md"
+sed -i.bak "s/WORKSHOP_ID_PLACEHOLDER/$WORKSHOP_ID/g" "$REPO_ROOT/$WORKSHOP_DIR/README.md"
+sed -i.bak "s/WORKSHOP_NAME_PLACEHOLDER/$WORKSHOP_NAME/g" "$REPO_ROOT/$WORKSHOP_DIR/README.md"
 rm "$REPO_ROOT/$WORKSHOP_DIR/README.md.bak"
 
 # Update workshop.config.json
