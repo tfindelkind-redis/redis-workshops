@@ -1,13 +1,17 @@
 // Main application logic
 let filteredWorkshops = [...workshopsData];
 let filteredChapters = [...chaptersData];
+let filteredLearningUnits = [...learningUnitsData];
+let currentModuleFilter = 'all';
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     renderWorkshops();
     renderChapters();
+    renderLearningUnits();
     updateStats();
     initializeEventListeners();
+    initializeModuleListeners();
 });
 
 // Render workshops
@@ -71,7 +75,9 @@ function renderChapters() {
 // Update statistics
 function updateStats() {
     document.getElementById('workshop-count').textContent = workshopsData.length;
-    document.getElementById('chapter-count').textContent = chaptersData.length;
+    document.getElementById('learning-unit-count').textContent = learningUnitsData.length;
+    const moduleCount = learningUnitsData.filter(u => u.type === 'module').length;
+    document.getElementById('module-count').textContent = moduleCount;
 }
 
 // Initialize event listeners
@@ -166,3 +172,183 @@ function applyDifficultyFilter(difficulty) {
 function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// ===== LEARNING UNITS (MODULES + CHAPTERS) =====
+
+function renderLearningUnits() {
+    const container = document.getElementById('module-content');
+    const noResults = document.getElementById('no-module-results');
+    
+    if (currentModuleFilter === 'trees') {
+        renderVersionTrees(container);
+        noResults.style.display = 'none';
+        return;
+    }
+    
+    if (filteredLearningUnits.length === 0) {
+        container.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    noResults.style.display = 'none';
+    
+    container.innerHTML = filteredLearningUnits.map(unit => {
+        const isModule = unit.type === 'module';
+        const isLegacy = unit.legacy === true;
+        const isCanonical = unit.style === 'canonical';
+        const isCustomized = unit.style === 'customized';
+        
+        let badgeClass = isCanonical ? 'canonical' : isCustomized ? 'customized' : isLegacy ? 'legacy' : 'shared';
+        let badgeText = isCanonical ? 'CANONICAL' : isCustomized ? 'CUSTOMIZED' : isLegacy ? 'LEGACY' : 'SHARED';
+        
+        return `
+            <div class="module-card ${isLegacy ? 'legacy' : ''}">
+                <div class="module-header">
+                    <h3>${isModule ? '🧩' : '📄'} ${unit.name}</h3>
+                    <div class="module-badges">
+                        <span class="module-type-badge ${badgeClass}">${badgeText}</span>
+                        <span class="badge difficulty ${unit.difficulty}">${capitalizeFirst(unit.difficulty.split('|')[0].trim())}</span>
+                    </div>
+                </div>
+                
+                <p class="module-description">${unit.description.substring(0, 150)}${unit.description.length > 150 ? '...' : ''}</p>
+                
+                <div class="module-meta">
+                    ${isModule ? `<span>📝 ID: ${unit.id}</span>` : ''}
+                    <span>⏱️ ${unit.duration} min</span>
+                    ${unit.parent ? `<span>🔗 Parent: ${unit.parent}</span>` : ''}
+                    ${unit.workshop ? `<span>🎓 Workshop: ${unit.workshop}</span>` : ''}
+                    ${unit.hasVersioning ? '<span>✅ Versioned</span>' : ''}
+                </div>
+                
+                ${unit.customizations ? `
+                    <div class="customization-stats">
+                        <div class="stat-item customized">
+                            ✏️ Customized: ${unit.customizations.files_customized}
+                        </div>
+                        <div class="stat-item inherited">
+                            📋 Inherited: ${unit.customizations.files_inherited}
+                        </div>
+                        <div class="stat-item new">
+                            ➕ New: ${unit.customizations.files_new}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${isLegacy && unit.canMigrate ? `
+                    <div class="migration-suggestion">
+                        <span>💡 This chapter can be upgraded to a module for version tracking</span>
+                        <button class="btn btn-small" onclick="alert('Migration wizard coming soon!')">Migrate to Module</button>
+                    </div>
+                ` : ''}
+                
+                <div class="workshop-footer">
+                    <span class="workshop-tags">${(unit.tags || []).map(tag => `#${tag}`).slice(0, 4).join(' ')}</span>
+                    <a href="https://github.com/tfindelkind-redis/redis-workshops/tree/main/${unit.path}" 
+                       class="workshop-link" 
+                       target="_blank">
+                        ${isModule ? 'View Module' : 'View Chapter'} →
+                    </a>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderVersionTrees(container) {
+    container.style.display = 'grid';
+    
+    if (!moduleVersionTrees || moduleVersionTrees.length === 0) {
+        container.innerHTML = `
+            <div class="module-card">
+                <p>No version trees available yet. Create customized modules to see version trees!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = moduleVersionTrees.map(tree => `
+        <div class="module-card">
+            <div class="module-header">
+                <h3>🌳 ${tree.name}</h3>
+                <span class="module-type-badge canonical">CANONICAL</span>
+            </div>
+            
+            <p class="module-description">${tree.description.substring(0, 150)}...</p>
+            
+            <div class="module-meta">
+                <span>📝 ID: ${tree.id}</span>
+                <span>📁 ${tree.path}</span>
+                <span>⏱️ ${tree.duration} min</span>
+            </div>
+            
+            ${tree.versions && tree.versions.length > 0 ? `
+                <div class="version-tree">
+                    <h4>📦 Customized Versions (${tree.versions.length}):</h4>
+                    ${renderVersionTreeNodes(tree.versions)}
+                </div>
+            ` : '<p style="margin-top: 1rem; color: var(--text-light);">💡 No customized versions yet. Fork this module to create a customized version!</p>'}
+        </div>
+    `).join('');
+}
+
+function renderVersionTreeNodes(nodes, depth = 0) {
+    return nodes.map(node => `
+        <div class="version-node" style="margin-left: ${depth * 1.5}rem">
+            <strong>${node.id}</strong>
+            <div class="module-meta" style="font-size: 0.85rem; margin-top: 0.25rem;">
+                <span>🎓 ${node.workshop}</span>
+                <span>⏱️ ${node.duration} min</span>
+            </div>
+            ${node.customizations ? `
+                <div class="customization-stats">
+                    <div class="stat-item customized">✏️ ${node.customizations.files_customized}</div>
+                    <div class="stat-item inherited">📋 ${node.customizations.files_inherited}</div>
+                    <div class="stat-item new">➕ ${node.customizations.files_new}</div>
+                </div>
+            ` : ''}
+            ${node.children && node.children.length > 0 ? renderVersionTreeNodes(node.children, depth + 1) : ''}
+        </div>
+    `).join('');
+}
+
+function initializeModuleListeners() {
+    // Module type filter buttons
+    const moduleTypeFilters = document.querySelectorAll('.module-type-filters .filter-btn');
+    moduleTypeFilters.forEach(btn => {
+        btn.addEventListener('click', () => {
+            moduleTypeFilters.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentModuleFilter = btn.dataset.filter;
+            filterLearningUnits();
+        });
+    });
+    
+    // Module search
+    const moduleSearch = document.getElementById('module-search');
+    if (moduleSearch) {
+        moduleSearch.addEventListener('input', (e) => {
+            filterLearningUnits(e.target.value.toLowerCase());
+        });
+    }
+}
+
+function filterLearningUnits(searchQuery = '') {
+    if (currentModuleFilter === 'trees') {
+        renderLearningUnits();
+        return;
+    }
+    
+    filteredLearningUnits = filterByType(currentModuleFilter).filter(unit => {
+        if (searchQuery === '') return true;
+        
+        return unit.name.toLowerCase().includes(searchQuery) ||
+               unit.description.toLowerCase().includes(searchQuery) ||
+               (unit.tags && unit.tags.some(tag => tag.toLowerCase().includes(searchQuery)));
+    });
+    
+    renderLearningUnits();
+}
+

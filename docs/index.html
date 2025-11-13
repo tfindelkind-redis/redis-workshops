@@ -16,7 +16,7 @@
             </div>
             <nav>
                 <a href="#workshops">Workshops</a>
-                <a href="#chapters">Chapters</a>
+                <a href="#modules">Learning Modules</a>
                 <a href="create-workshop.html">Create Workshop</a>
                 <a href="https://github.com/tfindelkind-redis/redis-workshops" target="_blank">GitHub</a>
             </nav>
@@ -58,16 +58,32 @@
             </div>
         </section>
 
-        <!-- Chapters Section -->
-        <section id="chapters" class="chapters-section">
+        <!-- Learning Modules Section (Unified Chapters + Modules) -->
+        <section id="modules" class="modules-section">
             <div class="section-header">
-                <h2>🧩 Available Chapters</h2>
-                <p>Reusable learning modules that can be combined in multiple workshops</p>
-                <input type="text" id="chapter-search" placeholder="Search chapters..." aria-label="Search chapters">
+                <h2>🧩 Learning Modules</h2>
+                <p>Reusable learning units combining new modules (with versioning) and legacy chapters</p>
+                
+                <div class="module-filters">
+                    <div class="filter-buttons module-type-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="modules">Modules</button>
+                        <button class="filter-btn" data-filter="canonical">Canonical</button>
+                        <button class="filter-btn" data-filter="customized">Customized</button>
+                        <button class="filter-btn" data-filter="chapters">Legacy Chapters</button>
+                        <button class="filter-btn" data-filter="trees">🌳 Version Trees</button>
+                    </div>
+                </div>
+                
+                <input type="text" id="module-search" placeholder="Search all learning units..." aria-label="Search modules">
             </div>
 
-            <div id="chapters-list" class="chapters-list">
-                <!-- Chapters will be loaded here dynamically -->
+            <div id="module-content" class="module-grid">
+                <!-- Learning units will be loaded here dynamically -->
+            </div>
+
+            <div id="no-module-results" class="no-results" style="display: none;">
+                <p>No learning units found matching your criteria.</p>
             </div>
         </section>
 
@@ -108,16 +124,16 @@
                 <div class="stat-label">Workshops</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="chapter-count">0</div>
-                <div class="stat-label">Chapters</div>
+                <div class="stat-number" id="learning-unit-count">0</div>
+                <div class="stat-label">Learning Units</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="module-count">0</div>
+                <div class="stat-label">Modules</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">100%</div>
                 <div class="stat-label">Hands-On</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">Free</div>
-                <div class="stat-label">& Open Source</div>
             </div>
         </section>
 
@@ -144,6 +160,7 @@
     </footer>
 
     <script src="data.js"></script>
+    <script src="module-data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
