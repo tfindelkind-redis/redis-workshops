@@ -9,6 +9,7 @@ import sys
 import json
 import yaml
 import re
+import shutil
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
@@ -563,6 +564,389 @@ class WorkshopBuilder:
 <!-- NAV:END -->"""
         
         return navigation_html
+    
+    def build(self, workshop: str, output_dir: Optional[str] = None):
+        """
+        Build workshop by flattening modules into a single directory structure.
+        
+        This command:
+        1. Validates workshop configuration
+        2. Resolves all module paths (canonical vs customized)
+        3. Copies content files to output directory
+        4. Injects navigation into content files
+        5. Generates workshop home page
+        
+        Args:
+            workshop: Workshop name (directory name in workshops/)
+            output_dir: Optional output directory (default: workshops/{workshop}/build/)
+        """
+        print(f"🔨 Building workshop: {workshop}")
+        print()
+        
+        # Load configuration
+        config = self.load_workshop_config(workshop)
+        workshop_path = self.workshops_dir / workshop
+        
+        # Determine output directory
+        if output_dir:
+            build_dir = Path(output_dir)
+        else:
+            build_dir = workshop_path / 'build'
+        
+        # Create clean build directory
+        if build_dir.exists():
+            print(f"🗑️  Cleaning existing build directory: {build_dir}")
+            shutil.rmtree(build_dir)
+        build_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Validate and resolve modules
+        print("📦 Resolving modules...")
+        modules = self._resolve_modules(workshop, config)
+        
+        if not modules:
+            raise Exception("No modules found in workshop configuration")
+        
+        print(f"   Found {len(modules)} module(s)")
+        print()
+        
+        # Copy module content
+        print("📋 Copying module content...")
+        module_dirs = self._copy_module_content(workshop, modules, build_dir)
+        print()
+        
+        # Inject navigation
+        print("🧭 Injecting navigation...")
+        self._inject_navigation(workshop, module_dirs, build_dir)
+        print()
+        
+        # Generate home page
+        print("📄 Generating workshop home page...")
+        self._generate_home_page(workshop, config, modules, build_dir)
+        print()
+        
+        print(f"✅ Build complete!")
+        print(f"📁 Output: {build_dir}")
+        print()
+        print("🎯 Next steps:")
+        print("   1. Review the generated files")
+        print("   2. Test the workshop flow")
+        print("   3. Deploy to GitHub Pages or your platform")
+    
+    def _resolve_modules(self, workshop: str, config: Dict) -> List[Dict]:
+        """
+        Resolve module paths from configuration.
+        Returns list of module info dicts with resolved paths.
+        """
+        modules = []
+        workshop_path = self.workshops_dir / workshop
+        
+        # Check for new 'modules' array first, fall back to 'chapters' for backward compatibility
+        module_refs = config.get('modules', [])
+        if not module_refs:
+            module_refs = config.get('chapters', [])
+            ref_key = 'chapterRef'
+        else:
+            ref_key = 'moduleRef'
+        
+        for module_entry in module_refs:
+            module_ref = module_entry.get(ref_key, '')
+            
+            # Handle module ID format (e.g., core.redis-fundamentals.v1)
+            if '.' in module_ref and not module_ref.startswith('shared/') and not module_ref.startswith('modules/'):
+                # This is a module ID, need to resolve to path
+                module_name = module_ref.split('.')[1]  # Extract module-name from scope.module-name.version
+                
+                # Check customized first
+                custom_path = workshop_path / 'modules' / module_name
+                shared_path = self.shared_modules / module_name
+                
+                if custom_path.exists():
+                    module_path = custom_path
+                    module_type = 'customized'
+                elif shared_path.exists():
+                    module_path = shared_path
+                    module_type = 'canonical'
+                else:
+                    raise Exception(f"Module not found: {module_ref} (searched: {custom_path}, {shared_path})")
+            
+            # Resolve module path from chapterRef-style paths
+            elif module_ref.startswith('shared/'):
+                # Canonical module or legacy chapter
+                module_path = self.repo_root / module_ref
+                module_type = 'canonical'
+            elif module_ref.startswith('modules/'):
+                # Customized module (relative to workshop)
+                module_path = workshop_path / module_ref
+                module_type = 'customized'
+            else:
+                # Try both locations
+                shared_path = self.repo_root / 'shared' / 'modules' / module_ref
+                custom_path = workshop_path / 'modules' / module_ref
+                
+                if custom_path.exists():
+                    module_path = custom_path
+                    module_type = 'customized'
+                elif shared_path.exists():
+                    module_path = shared_path
+                    module_type = 'canonical'
+                else:
+                    raise Exception(f"Module not found: {module_ref}")
+            
+            # Validate module exists
+            if not module_path.exists():
+                raise Exception(f"Module path does not exist: {module_path}")
+            
+            # Load module metadata
+            module_yaml = module_path / 'module.yaml'
+            if not module_yaml.exists():
+                print(f"⚠️  Warning: No module.yaml found in {module_path}")
+                module_metadata = {'name': module_path.name}
+            else:
+                with open(module_yaml) as f:
+                    module_metadata = yaml.safe_load(f)
+            
+            modules.append({
+                'order': module_entry.get('order', 0),
+                'path': module_path,
+                'type': module_type,
+                'metadata': module_metadata,
+                'customizations': module_entry.get('customizations', {})
+            })
+        
+        # Sort by order
+        modules.sort(key=lambda m: m['order'])
+        
+        return modules
+    
+    def _copy_module_content(self, workshop: str, modules: List[Dict], build_dir: Path) -> List[Path]:
+        """
+        Copy module content files to build directory.
+        Returns list of module directories in build.
+        """
+        module_dirs = []
+        
+        for idx, module in enumerate(modules, 1):
+            module_path = module['path']
+            module_name = module_path.name
+            
+            # Create module directory in build
+            # Use format: 01-module-name, 02-module-name, etc.
+            padded_num = str(idx).zfill(2)
+            module_build_dir = build_dir / f"{padded_num}-{module_name}"
+            module_build_dir.mkdir(parents=True, exist_ok=True)
+            
+            print(f"   [{idx}] {module_name} → {module_build_dir.name}/")
+            
+            # Copy all content files (skip module.yaml and .lineage)
+            files_copied = 0
+            for item in module_path.iterdir():
+                if item.name in ['module.yaml', '.lineage', '.DS_Store']:
+                    continue
+                
+                if item.is_file():
+                    shutil.copy2(item, module_build_dir / item.name)
+                    files_copied += 1
+                elif item.is_dir():
+                    shutil.copytree(item, module_build_dir / item.name, dirs_exist_ok=True)
+                    # Count files in subdirectory
+                    files_copied += sum(1 for _ in (module_build_dir / item.name).rglob('*') if _.is_file())
+            
+            print(f"       Copied {files_copied} file(s)")
+            
+            module_dirs.append(module_build_dir)
+        
+        return module_dirs
+    
+    def _inject_navigation(self, workshop: str, module_dirs: List[Path], build_dir: Path):
+        """
+        Inject navigation HTML into content files.
+        """
+        workshop_path = self.workshops_dir / workshop
+        nav_dir = workshop_path / '.nav'
+        
+        if not nav_dir.exists():
+            print("   ⚠️  No navigation files found (.nav/ directory missing)")
+            print("   💡 Run: workshop-builder.py update-navigation --workshop " + workshop)
+            return
+        
+        # Find all navigation files
+        nav_files = list(nav_dir.glob('*.nav.md'))
+        
+        if not nav_files:
+            print("   ⚠️  No navigation files found in .nav/ directory")
+            return
+        
+        files_updated = 0
+        
+        # Inject navigation into each module's README
+        for module_dir in module_dirs:
+            module_name = module_dir.name.split('-', 1)[1]  # Remove "01-" prefix
+            nav_file = nav_dir / f"{module_name}.nav.md"
+            readme_file = module_dir / 'README.md'
+            
+            if not nav_file.exists():
+                print(f"   ⚠️  No navigation file for module: {module_name}")
+                continue
+            
+            if not readme_file.exists():
+                print(f"   ⚠️  No README.md in module: {module_name}")
+                continue
+            
+            # Read navigation content
+            with open(nav_file) as f:
+                nav_content = f.read()
+            
+            # Read README content
+            with open(readme_file) as f:
+                readme_content = f.read()
+            
+            # Check if navigation markers exist
+            if '<!-- NAV:START -->' in readme_content and '<!-- NAV:END -->' in readme_content:
+                # Replace existing navigation
+                pattern = r'<!-- NAV:START -->.*?<!-- NAV:END -->'
+                updated_content = re.sub(
+                    pattern,
+                    nav_content,
+                    readme_content,
+                    flags=re.DOTALL
+                )
+            else:
+                # Add navigation at the top (after title if present)
+                lines = readme_content.split('\n')
+                insert_pos = 0
+                
+                # Skip title lines (# Title)
+                for i, line in enumerate(lines):
+                    if line.strip() and not line.startswith('#'):
+                        insert_pos = i
+                        break
+                    elif i > 0 and lines[i-1].startswith('#') and not line.strip():
+                        insert_pos = i + 1
+                        break
+                
+                lines.insert(insert_pos, nav_content)
+                updated_content = '\n'.join(lines)
+            
+            # Write updated content
+            with open(readme_file, 'w') as f:
+                f.write(updated_content)
+            
+            files_updated += 1
+            print(f"   ✓ {module_dir.name}/README.md")
+        
+        print(f"   Updated {files_updated} file(s)")
+    
+    def _generate_home_page(self, workshop: str, config: Dict, modules: List[Dict], build_dir: Path):
+        """
+        Generate workshop home page (README.md in build directory).
+        """
+        home_page = build_dir / 'README.md'
+        
+        # Extract metadata
+        title = config.get('title', 'Workshop')
+        description = config.get('description', '')
+        duration = config.get('duration', 'N/A')
+        difficulty = config.get('difficulty', 'N/A')
+        prerequisites = config.get('prerequisites', [])
+        objectives = config.get('learningObjectives', [])
+        authors = config.get('authors', [])
+        
+        # Build content
+        content = f"""# {title}
+
+{description}
+
+## 📋 Workshop Details
+
+- **Duration**: {duration}
+- **Difficulty**: {difficulty.capitalize()}
+- **Last Updated**: {config.get('lastUpdated', 'N/A')}
+
+## 🎯 Learning Objectives
+
+"""
+        
+        for obj in objectives:
+            content += f"- {obj}\n"
+        
+        if prerequisites:
+            content += "\n## 📚 Prerequisites\n\n"
+            for prereq in prerequisites:
+                content += f"- {prereq}\n"
+        
+        content += "\n## 📖 Workshop Modules\n\n"
+        
+        # List modules with links
+        total_duration = 0
+        for idx, module in enumerate(modules, 1):
+            metadata = module['metadata']
+            module_name = metadata.get('name', 'Unknown Module')
+            module_duration = metadata.get('duration', 0)
+            module_difficulty = metadata.get('difficulty', 'N/A')
+            module_dir_name = f"{str(idx).zfill(2)}-{module['path'].name}"
+            
+            total_duration += module_duration
+            
+            content += f"### {idx}. [{module_name}]({module_dir_name}/README.md)\n\n"
+            content += f"- **Duration**: {module_duration} minutes\n"
+            content += f"- **Difficulty**: {module_difficulty.capitalize()}\n"
+            
+            if 'description' in metadata:
+                desc = metadata['description'].strip()
+                # Take first line/sentence
+                first_line = desc.split('\n')[0]
+                content += f"- **Description**: {first_line}\n"
+            
+            content += "\n"
+        
+        content += f"\n**Total Duration**: ~{total_duration} minutes ({total_duration / 60:.1f} hours)\n"
+        
+        if authors:
+            content += "\n## 👥 Authors\n\n"
+            for author in authors:
+                name = author.get('name', 'Unknown')
+                email = author.get('email', '')
+                if email:
+                    content += f"- {name} ({email})\n"
+                else:
+                    content += f"- {name}\n"
+        
+        content += f"""
+---
+
+## 🚀 Getting Started
+
+1. Review the prerequisites above
+2. Work through modules in order (recommended)
+3. Each module contains hands-on exercises
+4. Estimated completion: {duration}
+
+## 📝 Workshop Structure
+
+This workshop is built using a modular system. Each module is self-contained with:
+- Learning objectives
+- Conceptual explanations
+- Hands-on exercises
+- Additional resources
+
+## 🆘 Support
+
+If you encounter issues or have questions:
+1. Check the module's README for troubleshooting tips
+2. Review the prerequisites
+3. Contact the workshop authors
+
+---
+
+*This workshop was generated using the Redis Workshops modular system.*
+*Built on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+"""
+        
+        # Write home page
+        with open(home_page, 'w') as f:
+            f.write(content)
+        
+        print(f"   ✓ README.md (workshop home page)")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -590,6 +974,12 @@ Examples:
   
   # Preview workshop
   %(prog)s preview --workshop my-workshop
+  
+  # Build workshop (flatten modules)
+  %(prog)s build --workshop my-workshop
+  
+  # Build to custom directory
+  %(prog)s build --workshop my-workshop --output-dir /path/to/output
         """
     )
     
@@ -629,6 +1019,11 @@ Examples:
     nav_parser = subparsers.add_parser('update-navigation', help='Generate navigation for all modules')
     nav_parser.add_argument('--workshop', required=True, help='Workshop name')
     
+    # Build command
+    build_parser = subparsers.add_parser('build', help='Build workshop (flatten modules into deployable structure)')
+    build_parser.add_argument('--workshop', required=True, help='Workshop name')
+    build_parser.add_argument('--output-dir', help='Custom output directory (default: workshops/{workshop}/build/)')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -659,6 +1054,9 @@ Examples:
         
         elif args.command == 'update-navigation':
             builder.generate_navigation(args.workshop)
+        
+        elif args.command == 'build':
+            builder.build(args.workshop, args.output_dir)
         
         return 0
     

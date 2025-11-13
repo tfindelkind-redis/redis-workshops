@@ -1,0 +1,35 @@
+{
+  "workshopId": "test-workshop",
+  "version": "1.0.0",
+  "title": "test-workshop",
+  "description": "Brief description of the workshop",
+  "duration": "4 hours",
+  "difficulty": "intermediate",
+  "tags": [
+    "redis",
+    "workshop",
+    "intermediate",
+    "test-workshop"
+  ],
+  "chapters": [
+    {
+      "order": 1,
+      "chapterRef": "shared/chapters/chapter-01-getting-started",
+      "required": true,
+      "type": "shared"
+    }
+  ],
+  "prerequisites": [],
+  "learningObjectives": [],
+  "author": "",
+  "lastUpdated": "2025-11-13",
+  "repository": "https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/test-workshop",
+  "modules": [
+    {
+      "moduleRef": "core.redis-fundamentals.v1",
+      "type": "canonical",
+      "required": true,
+      "order": 1
+    }
+  ]
+}
