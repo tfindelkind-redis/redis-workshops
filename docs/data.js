@@ -2,6 +2,28 @@
 // This file is auto-generated. Do not edit manually.
 // Generated on: 2025-11-13
 const workshopsData = [
+    {
+        id: "redis-fundamentals",
+        title: "",
+        description: "",
+        difficulty: "",
+        duration: "",
+        chaptersCount: ,
+        tags: ,
+        path: "workshops/redis-fundamentals",
+        lastUpdated: ""
+    },
+    {
+        id: "test-workshop",
+        title: "test-workshop",
+        description: "Brief description of the workshop",
+        difficulty: "intermediate",
+        duration: "4 hours",
+        chaptersCount: 1,
+        tags: ["redis","workshop","intermediate","test-workshop"],
+        path: "workshops/test-workshop",
+        lastUpdated: "2025-11-13"
+    }
 ];
 const chaptersData = [
     {
