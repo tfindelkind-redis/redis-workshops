@@ -585,6 +585,87 @@ class WorkshopBuilder:
         
         return navigation_html
     
+    def _render_content_navigation_html(self, ctx: Dict) -> str:
+        """Render navigation HTML for individual content files within a module"""
+        
+        # Previous link (section or module home)
+        if ctx['previous']:
+            prev_html = f"""<td width="33%" align="left">
+
+### [◀️ Previous]({ctx['previous']['file']})
+**{ctx['previous']['title']}**
+
+</td>"""
+        else:
+            # First content file - link back to module home
+            prev_html = f"""<td width="33%" align="left">
+
+### [◀️ Module Home](../README.md)
+**{ctx['module_title']}**
+
+</td>"""
+        
+        # Center - section indicator and module home
+        center_html = f"""<td width="34%" align="center">
+
+### [📚 {ctx['module_title']}](../README.md)
+**Section {ctx['position']} of {ctx['total']}**
+
+</td>"""
+        
+        # Next link (section or module home)
+        if ctx['next']:
+            next_html = f"""<td width="33%" align="right">
+
+### [Next ▶️]({ctx['next']['file']})
+**{ctx['next']['title']}**
+
+</td>"""
+        else:
+            # Last content file - link back to module home
+            next_html = f"""<td width="33%" align="right">
+
+### [Module Home ▶️](../README.md)
+**{ctx['module_title']}**
+
+</td>"""
+        
+        # Build section list for mini-TOC
+        section_list = []
+        for i, section in enumerate(ctx['all_sections']):
+            if section['is_current']:
+                section_list.append(f"{i+1}. **{section['title']}** ← *You are here*")
+            else:
+                section_list.append(f"{i+1}. [{section['title']}]({section['file']})")
+        
+        section_list_html = '\n'.join(section_list)
+        
+        # Complete navigation HTML
+        navigation_html = f"""<!-- NAV:START -->
+<!-- This navigation is auto-generated. Do not edit manually. -->
+## 🧭 Navigation
+
+<table>
+<tr>
+{prev_html}
+{center_html}
+{next_html}
+</tr>
+</table>
+
+---
+
+### 📖 Sections in this Module
+
+{section_list_html}
+
+---
+<!-- NAV:END -->
+
+"""
+        
+        return navigation_html
+    
     def build(self, workshop: str, output_dir: Optional[str] = None):
         """
         Build workshop by flattening modules into a single directory structure.
@@ -919,8 +1000,126 @@ class WorkshopBuilder:
             
             files_updated += 1
             print(f"   ✓ {module_dir.name}/README.md")
+            
+            # Also inject navigation into individual content files
+            content_dir = module_dir / 'content'
+            if content_dir.exists():
+                files_updated += self._inject_content_navigation(module_dir, content_dir)
         
         print(f"   Updated {files_updated} file(s)")
+    
+    def _inject_content_navigation(self, module_dir: Path, content_dir: Path) -> int:
+        """
+        Inject navigation into individual content files within a module.
+        Returns the number of files updated.
+        """
+        # Get module metadata to build section list
+        module_yaml_path = module_dir.parent.parent / 'workshops' / module_dir.parent.name / 'modules' / module_dir.name.split('-', 1)[1] / 'module.yaml'
+        
+        # Try to find module.yaml in the source location
+        # This is complex because we're in the build directory
+        # Let's just read the README to extract the module title
+        readme_path = module_dir / 'README.md'
+        module_title = "This Module"
+        if readme_path.exists():
+            with open(readme_path) as f:
+                first_line = f.readline().strip()
+                if first_line.startswith('#'):
+                    module_title = first_line.lstrip('#').strip()
+        
+        # Get all markdown files in content directory
+        content_files = sorted([f for f in content_dir.iterdir() if f.suffix == '.md'])
+        
+        if not content_files:
+            return 0
+        
+        files_updated = 0
+        
+        # Build navigation context for each content file
+        for i, content_file in enumerate(content_files):
+            # Extract title from filename
+            file_name = content_file.stem
+            title = file_name.split('-', 1)[1].replace('-', ' ').title() if '-' in file_name else file_name
+            
+            # Build navigation context
+            ctx = {
+                'module_title': module_title,
+                'position': i + 1,
+                'total': len(content_files),
+                'previous': None,
+                'next': None,
+                'all_sections': []
+            }
+            
+            # Add previous section
+            if i > 0:
+                prev_file = content_files[i-1]
+                prev_title = prev_file.stem.split('-', 1)[1].replace('-', ' ').title() if '-' in prev_file.stem else prev_file.stem
+                ctx['previous'] = {
+                    'file': prev_file.name,
+                    'title': prev_title
+                }
+            
+            # Add next section
+            if i < len(content_files) - 1:
+                next_file = content_files[i+1]
+                next_title = next_file.stem.split('-', 1)[1].replace('-', ' ').title() if '-' in next_file.stem else next_file.stem
+                ctx['next'] = {
+                    'file': next_file.name,
+                    'title': next_title
+                }
+            
+            # Build section list for all content files
+            for j, section_file in enumerate(content_files):
+                section_title = section_file.stem.split('-', 1)[1].replace('-', ' ').title() if '-' in section_file.stem else section_file.stem
+                ctx['all_sections'].append({
+                    'file': section_file.name,
+                    'title': section_title,
+                    'is_current': (j == i)
+                })
+            
+            # Generate navigation HTML
+            nav_html = self._render_content_navigation_html(ctx)
+            
+            # Read content file
+            with open(content_file) as f:
+                content = f.read()
+            
+            # Inject or replace navigation
+            if '<!-- NAV:START -->' in content and '<!-- NAV:END -->' in content:
+                # Replace existing navigation
+                pattern = r'<!-- NAV:START -->.*?<!-- NAV:END -->\n*'
+                updated_content = re.sub(
+                    pattern,
+                    nav_html,
+                    content,
+                    flags=re.DOTALL
+                )
+            else:
+                # Add navigation at the top (after title if present)
+                lines = content.split('\n')
+                insert_pos = 0
+                
+                # Skip title lines (# Title)
+                for idx, line in enumerate(lines):
+                    if line.strip() and not line.startswith('#'):
+                        insert_pos = idx
+                        break
+                    elif idx > 0 and lines[idx-1].startswith('#') and not line.strip():
+                        insert_pos = idx + 1
+                        break
+                
+                lines.insert(insert_pos, nav_html)
+                updated_content = '\n'.join(lines)
+            
+            # Write updated content
+            with open(content_file, 'w') as f:
+                f.write(updated_content)
+            
+            files_updated += 1
+            print(f"   ✓ {module_dir.name}/content/{content_file.name}")
+        
+        return files_updated
     
     def _generate_home_page(self, workshop: str, config: Dict, modules: List[Dict], build_dir: Path):
         """
