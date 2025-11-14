@@ -1277,6 +1277,26 @@
                     showNotification('Loading workshop from filesystem...', 'info');
                     const workshopData = await loadWorkshopFromFilesystem(workshopId);
                     
+                    // Transform modules from string array to object array
+                    const transformedModules = (workshopData.modules || []).map((moduleRef, index) => {
+                        // If it's already an object, use it as-is
+                        if (typeof moduleRef === 'object') {
+                            return moduleRef;
+                        }
+                        
+                        // If it's a string, create a module object
+                        const moduleName = moduleRef.split('/').pop() || moduleRef;
+                        return {
+                            order: index + 1,
+                            name: moduleName.replace(/-/g, ' ').replace(/^\d+\s*/, '').trim(),
+                            moduleRef: moduleRef,
+                            type: 'canonical',
+                            difficulty: 'intermediate',
+                            duration: 30,
+                            description: `Module from ${moduleRef}`
+                        };
+                    });
+                    
                     // Update workshop object
                     workshop = {
                         workshopId: workshopData.workshopId,
@@ -1286,7 +1306,7 @@
                         duration: workshopData.duration,
                         difficulty: workshopData.difficulty,
                         author: workshopData.frontmatter?.author || '',
-                        modules: workshopData.modules || [],
+                        modules: transformedModules,
                         prerequisites: workshopData.frontmatter?.prerequisites || [],
                         learningObjectives: workshopData.frontmatter?.learningObjectives || [],
                         lastUpdated: new Date().toISOString().split('T')[0]
@@ -1417,25 +1437,51 @@
                         ${useFilesystem ? '<span style="color: var(--success-color)">💾 Filesystem</span>' : '<span>🌐 Browser</span>'}
                     </div>
                 `;
-                item.onclick = () => loadWorkshop(ws.workshopId);
+                item.onclick = () => {
+                    // Populate the Workshop ID field
+                    document.getElementById('workshop-id').value = ws.workshopId;
+                    // Load the workshop
+                    loadWorkshop(ws.workshopId);
+                    // Close the browser modal
+                    closeWorkshopBrowser();
+                };
                 container.appendChild(item);
             });
         }
 
-        function filterWorkshops() {
+        async function filterWorkshops() {
             const search = document.getElementById('workshop-search').value.toLowerCase();
             const container = document.getElementById('workshop-browser-list');
-            const savedWorkshops = [];
+            let savedWorkshops = [];
 
-            // Get all workshops from localStorage
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('workshop-')) {
-                    try {
-                        const data = JSON.parse(localStorage.getItem(key));
-                        savedWorkshops.push(data);
-                    } catch (e) {
-                        console.error('Error parsing workshop:', key, e);
+            // Get workshops based on mode
+            if (useFilesystem) {
+                // Load from filesystem
+                try {
+                    const workshops = await loadWorkshopsFromFilesystem();
+                    savedWorkshops = workshops.map(ws => ({
+                        workshopId: ws.workshopId,
+                        title: ws.title,
+                        description: ws.description,
+                        duration: ws.duration,
+                        difficulty: ws.difficulty,
+                        modules: ws.modules,
+                        lastUpdated: 'From filesystem'
+                    }));
+                } catch (error) {
+                    console.error('Failed to load workshops from filesystem:', error);
+                }
+            } else {
+                // Get all workshops from localStorage
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('workshop-')) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            savedWorkshops.push(data);
+                        } catch (e) {
+                            console.error('Error parsing workshop:', key, e);
+                        }
                     }
                 }
             }
@@ -1476,7 +1522,14 @@
                         <span>📅 ${ws.lastUpdated || 'Unknown date'}</span>
                     </div>
                 `;
-                item.onclick = () => loadWorkshop(ws.workshopId);
+                item.onclick = () => {
+                    // Populate the Workshop ID field
+                    document.getElementById('workshop-id').value = ws.workshopId;
+                    // Load the workshop
+                    loadWorkshop(ws.workshopId);
+                    // Close the browser modal
+                    closeWorkshopBrowser();
+                };
                 container.appendChild(item);
             });
         }
@@ -1620,27 +1673,38 @@
 
             container.innerHTML = '';
             workshop.modules.forEach((module, index) => {
+                // Handle both object and string formats
+                const moduleData = typeof module === 'object' ? module : {
+                    order: index + 1,
+                    name: module,
+                    moduleRef: module,
+                    type: 'canonical',
+                    difficulty: 'intermediate',
+                    duration: 30,
+                    description: module
+                };
+                
                 const card = document.createElement('div');
                 card.className = 'module-card';
                 card.innerHTML = `
                     <div class="module-card-header">
                         <div style="display: flex; align-items: center; flex: 1;">
-                            <div class="module-card-order">${module.order}</div>
+                            <div class="module-card-order">${moduleData.order || index + 1}</div>
                             <div>
-                                <div class="module-card-title">${module.name}</div>
+                                <div class="module-card-title">${moduleData.name || moduleData.moduleRef || 'Unnamed Module'}</div>
                                 <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">
-                                    ${module.moduleRef}
+                                    ${moduleData.moduleRef || ''}
                                 </div>
                             </div>
                         </div>
-                        <span class="badge ${module.type}">${module.type}</span>
+                        <span class="badge ${moduleData.type || 'canonical'}">${moduleData.type || 'canonical'}</span>
                     </div>
                     <div style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 0.75rem;">
-                        ${module.description}
+                        ${moduleData.description || 'No description'}
                     </div>
                     <div class="module-card-meta">
-                        <span>⏱️ ${module.duration} min</span>
-                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                        <span>⏱️ ${moduleData.duration || 30} min</span>
+                        <span class="badge ${moduleData.difficulty || 'intermediate'}">${moduleData.difficulty || 'intermediate'}</span>
                     </div>
                     <div class="module-card-actions">
                         <button class="btn btn-secondary btn-sm btn-icon" onclick="moveModuleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
@@ -1655,13 +1719,30 @@
         function updateSummary() {
             document.getElementById('modules-count').textContent = workshop.modules.length;
             
-            const totalDuration = workshop.modules.reduce((sum, m) => sum + m.duration, 0);
+            // Handle both object and string formats for duration
+            const totalDuration = workshop.modules.reduce((sum, m) => {
+                if (typeof m === 'object') {
+                    return sum + (m.duration || 0);
+                }
+                return sum;
+            }, 0);
             document.getElementById('total-duration').textContent = totalDuration;
             
-            const canonical = workshop.modules.filter(m => m.type === 'canonical').length;
+            // Handle both object and string formats for type
+            const canonical = workshop.modules.filter(m => {
+                if (typeof m === 'object') {
+                    return m.type === 'canonical';
+                }
+                return true; // String modules default to canonical
+            }).length;
             document.getElementById('canonical-count').textContent = canonical;
             
-            const customized = workshop.modules.filter(m => m.type === 'customized').length;
+            const customized = workshop.modules.filter(m => {
+                if (typeof m === 'object') {
+                    return m.type === 'customized';
+                }
+                return false;
+            }).length;
             document.getElementById('customized-count').textContent = customized;
         }
 
@@ -1682,18 +1763,26 @@
             let html = '<div style="max-width: 600px; margin: 0 auto;">';
             
             workshop.modules.forEach((module, index) => {
+                // Handle both object and string formats
+                const moduleData = typeof module === 'object' ? module : {
+                    order: index + 1,
+                    name: module,
+                    duration: 30,
+                    difficulty: 'intermediate'
+                };
+                
                 const isFirst = index === 0;
                 const isLast = index === workshop.modules.length - 1;
                 
                 html += `
                     <div style="background: var(--bg-light); border: 2px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;">
                         <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">
-                            Module ${module.order} of ${workshop.modules.length}
+                            Module ${moduleData.order || (index + 1)} of ${workshop.modules.length}
                         </div>
-                        <h3 style="margin-bottom: 0.5rem;">${module.name}</h3>
+                        <h3 style="margin-bottom: 0.5rem;">${moduleData.name || 'Unnamed Module'}</h3>
                         <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <span>⏱️ ${module.duration} min</span>
-                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                            <span>⏱️ ${moduleData.duration || 30} min</span>
+                            <span class="badge ${moduleData.difficulty || 'intermediate'}">${moduleData.difficulty || 'intermediate'}</span>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
                             ${!isFirst ? '<button class="btn btn-outline btn-sm">← Previous Module</button>' : ''}

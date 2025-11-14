@@ -8,11 +8,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm install --production
 
 # Copy application files
 COPY *.js ./
-COPY *.md ./
 
 # Expose port
 EXPOSE 3000

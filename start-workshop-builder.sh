@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 CONTAINER_NAME="workshop-builder-server"
 IMAGE_NAME="redis-workshops/workshop-builder"
 PORT="${PORT:-3000}"
-REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 echo "========================================================================"
 echo "🐳 Workshop Builder Server - Docker Launcher"
