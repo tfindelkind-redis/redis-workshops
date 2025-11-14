@@ -92,7 +92,7 @@ class WorkshopBuilder:
         with open(module_yaml) as f:
             return yaml.safe_load(f)
     
-    def add_module(self, workshop: str, module_id: str, position: Optional[int] = None):
+    def add_module(self, workshop: str, module_id: str, position: int = None, skip_nav: bool = False):
         """Add module to workshop"""
         # Validate module exists
         module_info = self.get_module_info(module_id)
@@ -142,9 +142,14 @@ class WorkshopBuilder:
         print(f"📝 Position: {position or len(config['modules'])}")
         print(f"⏱️  Duration: {module_info.get('duration', 'unknown')}")
         
+        # Auto-update navigation unless skipped
+        if not skip_nav:
+            print(f"🧭 Updating navigation...")
+            self.generate_navigation(workshop, auto_update=True)
+        
         return True
     
-    def remove_module(self, workshop: str, module_id: str):
+    def remove_module(self, workshop: str, module_id: str, skip_nav: bool = False):
         """Remove module from workshop"""
         config = self.load_workshop_config(workshop)
         
@@ -170,9 +175,14 @@ class WorkshopBuilder:
         print(f"✅ Removed module: {module_id}")
         print(f"📝 Remaining modules: {len(config['modules'])}")
         
+        # Auto-update navigation unless skipped
+        if not skip_nav:
+            print(f"🧭 Updating navigation...")
+            self.generate_navigation(workshop, auto_update=True)
+        
         return True
     
-    def move_module(self, workshop: str, module_id: str, to_position: int):
+    def move_module(self, workshop: str, module_id: str, to_position: int, skip_nav: bool = False):
         """Move module to new position"""
         config = self.load_workshop_config(workshop)
         
@@ -218,9 +228,14 @@ class WorkshopBuilder:
         print(f"✅ Moved module: {module_id}")
         print(f"📝 Position: {from_idx + 1} → {to_position}")
         
+        # Auto-update navigation unless skipped
+        if not skip_nav:
+            print(f"🧭 Updating navigation...")
+            self.generate_navigation(workshop, auto_update=True)
+        
         return True
     
-    def swap_modules(self, workshop: str, pos1: int, pos2: int):
+    def swap_modules(self, workshop: str, pos1: int, pos2: int, skip_nav: bool = False):
         """Swap two modules by position"""
         config = self.load_workshop_config(workshop)
         
@@ -246,6 +261,11 @@ class WorkshopBuilder:
         self.save_workshop_config(workshop, config)
         
         print(f"✅ Swapped modules at positions {pos1} ↔ {pos2}")
+        
+        # Auto-update navigation unless skipped
+        if not skip_nav:
+            print(f"🧭 Updating navigation...")
+            self.generate_navigation(workshop, auto_update=True)
         
         return True
     
@@ -1058,22 +1078,26 @@ Examples:
     add_parser.add_argument('--workshop', required=True, help='Workshop name')
     add_parser.add_argument('--module', required=True, help='Module ID')
     add_parser.add_argument('--position', type=int, help='Position to insert (1-indexed)')
+    add_parser.add_argument('--skip-nav', action='store_true', help='Skip automatic navigation generation')
     
     # Remove command
     remove_parser = subparsers.add_parser('remove', help='Remove module from workshop')
     remove_parser.add_argument('--workshop', required=True, help='Workshop name')
     remove_parser.add_argument('--module', required=True, help='Module ID')
+    remove_parser.add_argument('--skip-nav', action='store_true', help='Skip automatic navigation generation')
     
     # Move command
     move_parser = subparsers.add_parser('move', help='Move module to new position')
     move_parser.add_argument('--workshop', required=True, help='Workshop name')
     move_parser.add_argument('--module', required=True, help='Module ID')
     move_parser.add_argument('--to-position', type=int, required=True, help='New position (1-indexed)')
+    move_parser.add_argument('--skip-nav', action='store_true', help='Skip automatic navigation generation')
     
     # Swap command
     swap_parser = subparsers.add_parser('swap', help='Swap two modules')
     swap_parser.add_argument('--workshop', required=True, help='Workshop name')
     swap_parser.add_argument('--positions', required=True, help='Two positions to swap (e.g., "2,3")')
+    swap_parser.add_argument('--skip-nav', action='store_true', help='Skip automatic navigation generation')
     
     # Reorder command
     reorder_parser = subparsers.add_parser('reorder', help='Interactive reorder')
@@ -1102,17 +1126,17 @@ Examples:
         builder = WorkshopBuilder()
         
         if args.command == 'add':
-            builder.add_module(args.workshop, args.module, args.position)
+            builder.add_module(args.workshop, args.module, args.position, args.skip_nav)
         
         elif args.command == 'remove':
-            builder.remove_module(args.workshop, args.module)
+            builder.remove_module(args.workshop, args.module, args.skip_nav)
         
         elif args.command == 'move':
-            builder.move_module(args.workshop, args.module, args.to_position)
+            builder.move_module(args.workshop, args.module, args.to_position, args.skip_nav)
         
         elif args.command == 'swap':
             pos1, pos2 = map(int, args.positions.split(','))
-            builder.swap_modules(args.workshop, pos1, pos2)
+            builder.swap_modules(args.workshop, pos1, pos2, args.skip_nav)
         
         elif args.command == 'reorder':
             builder.reorder_interactive(args.workshop)
