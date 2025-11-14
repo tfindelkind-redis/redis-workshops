@@ -36,14 +36,44 @@ Chapters are modular, reusable learning units that can be included in multiple w
 
 **🎨 NEW! Visual Workshop Builder**
 
-Create workshops without command line tools:
-- Open `shared/tools/workshop-builder-gui.html` in your browser
-- Visual interface for workshop creation
-- Drag-and-drop module ordering
-- Real-time preview and navigation
-- Export to `workshop.config.json`
+Create workshops visually - no Node.js installation required!
 
-[📖 Read the GUI Documentation](docs/WORKSHOP_BUILDER_GUI.md)
+**Quick Start (Docker - Recommended):**
+```bash
+# 1. Start the server (requires Docker)
+./start-workshop-builder.sh
+
+# 2. Open the GUI in your browser
+open shared/tools/workshop-builder-gui.html
+
+# That's it! The GUI will automatically:
+# - Create a Git branch
+# - Load workshops from your repository
+# - Save changes to workshop files
+# - Commit changes with your custom messages
+```
+
+[📖 Docker Setup Guide](DOCKER_SETUP.md) | [📖 Quick Start Guide](WORKSHOP_BUILDER_QUICK_START.md)
+
+**Features:**
+- ✨ Visual interface for workshop creation
+- 📂 Load and edit existing workshops from your repo
+- 🌿 Automatic Git branch creation
+- 💾 Save directly to workshop files
+- 🎯 Drag-and-drop module ordering
+- 👁️ Real-time preview and navigation
+- 💬 Commit changes with custom messages
+
+**Alternative (Manual Setup):**
+```bash
+# If you prefer not to use Docker
+cd shared/tools/workshop-builder-server
+npm install
+npm start
+# Then open shared/tools/workshop-builder-gui.html
+```
+
+[📖 GUI Documentation](docs/WORKSHOP_BUILDER_GUI.md) | [📖 Filesystem Integration](FILESYSTEM_INTEGRATION_COMPLETE.md)
 
 **Command Line Tools**
 

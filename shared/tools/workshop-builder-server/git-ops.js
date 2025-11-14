@@ -6,9 +6,13 @@
 const simpleGit = require('simple-git');
 const path = require('path');
 
-// Initialize git with the repository root (3 levels up from this file)
-const repoRoot = path.resolve(__dirname, '../../..');
+// Initialize git with the repository root
+// In Docker: Use REPO_ROOT env var (mounted volume)
+// Outside Docker: Use relative path (3 levels up from this file)
+const repoRoot = process.env.REPO_ROOT || path.resolve(__dirname, '../../..');
 const git = simpleGit(repoRoot);
+
+console.log(`[git-ops] Repository root: ${repoRoot}`);
 
 /**
  * Get current Git branch

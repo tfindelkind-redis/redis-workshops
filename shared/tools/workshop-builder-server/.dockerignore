@@ -1,0 +1,16 @@
+# Workshop Builder Server - Docker Configuration
+
+# Docker ignore patterns
+node_modules
+npm-debug.log
+.env
+.DS_Store
+*.md
+setup.sh
+
+# Git files
+.git
+.gitignore
+
+# Documentation (already in Dockerfile if needed)
+README.md
