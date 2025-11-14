@@ -26,6 +26,25 @@ app.use((req, res, next) => {
 });
 
 // ============================================================================
+// Static Files & GUI
+// ============================================================================
+
+/**
+ * GET /
+ * Serve the Workshop Builder GUI
+ */
+app.get('/', (req, res) => {
+    // GUI is in the repo root under shared/tools/
+    const guiPath = path.join('/repo', 'shared', 'tools', 'workshop-builder-gui.html');
+    res.sendFile(guiPath);
+});
+
+/**
+ * Serve static assets if needed
+ */
+app.use('/static', express.static(path.join(__dirname, '../static')));
+
+// ============================================================================
 // Git Endpoints
 // ============================================================================
 

@@ -1277,8 +1277,11 @@
                     showNotification('Loading workshop from filesystem...', 'info');
                     const workshopData = await loadWorkshopFromFilesystem(workshopId);
                     
+                    // Get modules from frontmatter first, fallback to top-level modules
+                    const modulesList = workshopData.frontmatter?.modules || workshopData.modules || [];
+                    
                     // Transform modules from string array to object array
-                    const transformedModules = (workshopData.modules || []).map((moduleRef, index) => {
+                    const transformedModules = modulesList.map((moduleRef, index) => {
                         // If it's already an object, use it as-is
                         if (typeof moduleRef === 'object') {
                             return moduleRef;
