@@ -1,0 +1,41 @@
+id: "core.redis-performance.v1"
+name: "Redis Performance Optimization"
+version: "1.0.0"
+type: "core"
+
+metadata:
+  duration: 90  # minutes
+  difficulty: "intermediate"
+  prerequisites:
+    - "Basic Redis knowledge"
+  tags:
+    - performance
+    - optimization
+    - core
+
+description: |
+  Learn how to optimize Redis performance through configuration tuning,
+  data modeling, and proper usage patterns.
+
+created: "2025-11-14T08:00:00Z"
+last_updated: "2025-11-14T08:00:00Z"
+author: "Redis Workshop Team"
+
+learning_objectives:
+  - Understand Redis performance characteristics
+  - Learn memory optimization techniques
+  - Master connection pooling and pipelining
+  - Implement monitoring and alerting
+
+content:
+  - file: "content/01-performance-basics.md"
+    title: "Performance Basics"
+    duration: 30
+  
+  - file: "content/02-memory-optimization.md"
+    title: "Memory Optimization"
+    duration: 30
+  
+  - file: "content/03-monitoring.md"
+    title: "Monitoring and Alerting"
+    duration: 30
