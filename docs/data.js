@@ -12,28 +12,6 @@ const workshopsData = [
         tags: ,
         path: "workshops/redis-fundamentals",
         lastUpdated: ""
-    },
-    {
-        id: "redis-production-workshop",
-        title: "redis-production-workshop",
-        description: "Brief description of the workshop",
-        difficulty: "intermediate",
-        duration: "4 hours",
-        chaptersCount: 1,
-        tags: ["redis","workshop","intermediate","redis-production-workshop"],
-        path: "workshops/redis-production-workshop",
-        lastUpdated: "2025-11-14"
-    },
-    {
-        id: "test-workshop",
-        title: "test-workshop",
-        description: "Brief description of the workshop",
-        difficulty: "intermediate",
-        duration: "4 hours",
-        chaptersCount: 1,
-        tags: ["redis","workshop","intermediate","test-workshop"],
-        path: "workshops/test-workshop",
-        lastUpdated: "2025-11-14"
     }
 ];
 const chaptersData = [
