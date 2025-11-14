@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Builder GUI - Redis Workshops</title>
+    <style>
+        :root {
+            --primary-color: #DC382D;
+            --primary-dark: #B42D23;
+            --secondary-color: #2C3E50;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --border-color: #e5e7eb;
+            --bg-light: #f9fafb;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--text-color);
+            background: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 3px solid var(--primary-color);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-light);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 56, 45, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .module-card {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: move;
+            transition: all 0.3s;
+        }
+
+        .module-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .module-card.dragging {
+            opacity: 0.5;
+        }
+
+        .module-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-card-title {
+            font-weight: 600;
+            color: var(--text-color);
+            flex: 1;
+        }
+
+        .module-card-order {
+            background: var(--primary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 0.75rem;
+        }
+
+        .module-card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .module-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.canonical {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge.customized {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.beginner {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.intermediate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.advanced {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .workshop-summary {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .workshop-summary h3 {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--text-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-light);
+        }
+
+        .module-browser {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .module-browser-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .module-browser-item:hover {
+            background: var(--bg-light);
+        }
+
+        .module-browser-item:last-child {
+            border-bottom: none;
+        }
+
+        .module-browser-item h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .module-browser-item p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .code-preview {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Workshop Builder GUI</h1>
+        <p>Create and manage Redis workshops with visual tools - No command line required!</p>
+    </div>
+
+    <div class="container">
+        <div class="layout">
+            <!-- Sidebar: Workshop Details -->
+            <div class="sidebar">
+                <h2 style="margin-bottom: 1.5rem;">Workshop Details</h2>
+                
+                <div class="form-group">
+                    <label for="workshop-id">Workshop ID *</label>
+                    <input type="text" id="workshop-id" placeholder="my-workshop">
+                    <small>Lowercase letters, numbers, and hyphens only</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="workshop-title">Title *</label>
+                    <input type="text" id="workshop-title" placeholder="My Redis Workshop">
+                </div>
+
+                <div class="form-group">
+                    <label for="workshop-description">Description *</label>
+                    <textarea id="workshop-description" placeholder="Brief description of your workshop"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="workshop-duration">Duration *</label>
+                    <input type="text" id="workshop-duration" placeholder="4 hours">
+                </div>
+
+                <div class="form-group">
+                    <label for="workshop-difficulty">Difficulty *</label>
+                    <select id="workshop-difficulty">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate" selected>Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="workshop-author">Author</label>
+                    <input type="text" id="workshop-author" placeholder="Your Name">
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="saveWorkshop()">
+                    💾 Save Workshop
+                </button>
+
+                <button class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="loadWorkshop()">
+                    📂 Load Existing Workshop
+                </button>
+            </div>
+
+            <!-- Main Content: Tabs -->
+            <div class="main-content">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('modules')">📚 Modules</button>
+                    <button class="tab" onclick="switchTab('navigation')">🧭 Navigation</button>
+                    <button class="tab" onclick="switchTab('preview')">👁️ Preview</button>
+                    <button class="tab" onclick="switchTab('export')">📤 Export</button>
+                </div>
+
+                <!-- Modules Tab -->
+                <div id="modules-tab" class="tab-content active">
+                    <div class="workshop-summary">
+                        <h3>📊 Workshop Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-value" id="modules-count">0</div>
+                                <div class="summary-label">Modules</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value" id="total-duration">0</div>
+                                <div class="summary-label">Total Minutes</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value" id="canonical-count">0</div>
+                                <div class="summary-label">Canonical</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value" id="customized-count">0</div>
+                                <div class="summary-label">Customized</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn btn-primary" onclick="openModuleBrowser()">
+                            ➕ Add Module
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearAllModules()">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+
+                    <div id="modules-list" class="module-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📦</div>
+                            <h3>No Modules Yet</h3>
+                            <p>Click "Add Module" to start building your workshop</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tab -->
+                <div id="navigation-tab" class="tab-content">
+                    <div class="alert alert-info">
+                        <strong>ℹ️ Navigation Preview</strong><br>
+                        This shows how learners will navigate through your workshop modules.
+                    </div>
+                    <div id="navigation-preview">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🧭</div>
+                            <h3>No Navigation Yet</h3>
+                            <p>Add modules to see the navigation structure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Tab -->
+                <div id="preview-tab" class="tab-content">
+                    <div class="alert alert-info">
+                        <strong>👁️ Workshop Preview</strong><br>
+                        See how your workshop will look when built.
+                    </div>
+                    <div id="workshop-preview">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📄</div>
+                            <h3>Complete Workshop Details</h3>
+                            <p>Fill in the workshop details and add modules to see the preview</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Tab -->
+                <div id="export-tab" class="tab-content">
+                    <div class="alert alert-success">
+                        <strong>✅ Ready to Export</strong><br>
+                        Copy the configuration below and save it as <code>workshop.config.json</code>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn btn-primary" onclick="copyToClipboard()">
+                            📋 Copy to Clipboard
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadConfig()">
+                            💾 Download File
+                        </button>
+                    </div>
+
+                    <div id="config-output" class="code-preview">
+{
+  "workshopId": "",
+  "version": "1.0.0",
+  "title": "",
+  "description": "",
+  "modules": []
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Browser Modal -->
+    <div id="module-browser-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📚 Add Module</h2>
+                <button class="modal-close" onclick="closeModuleBrowser()">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label for="module-search">Search Modules</label>
+                <input type="text" id="module-search" placeholder="Search by name or tags..." oninput="filterModules()">
+            </div>
+
+            <div class="form-group">
+                <label>Filter by Type</label>
+                <select id="module-type-filter" onchange="filterModules()">
+                    <option value="all">All Modules</option>
+                    <option value="canonical">Canonical Only</option>
+                    <option value="customized">Customized Only</option>
+                </select>
+            </div>
+
+            <div class="module-browser" id="module-browser-list">
+                <!-- Modules will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Workshop state
+        let workshop = {
+            workshopId: '',
+            version: '1.0.0',
+            title: '',
+            description: '',
+            duration: '',
+            difficulty: 'intermediate',
+            author: '',
+            modules: [],
+            prerequisites: [],
+            learningObjectives: []
+        };
+
+        // Available modules (in a real app, this would be fetched from the server)
+        const availableModules = [
+            {
+                moduleRef: 'core.redis-fundamentals.v1',
+                name: 'Redis Fundamentals',
+                description: 'Introduction to Redis core concepts and data structures',
+                duration: 60,
+                difficulty: 'beginner',
+                type: 'canonical',
+                tags: ['fundamentals', 'basics', 'data-structures']
+            },
+            {
+                moduleRef: 'core.redis-security.v1',
+                name: 'Redis Security',
+                description: 'Securing Redis deployments with authentication and encryption',
+                duration: 45,
+                difficulty: 'intermediate',
+                type: 'canonical',
+                tags: ['security', 'authentication', 'encryption']
+            },
+            {
+                moduleRef: 'core.redis-performance.v1',
+                name: 'Redis Performance',
+                description: 'Optimizing Redis for high performance applications',
+                duration: 90,
+                difficulty: 'advanced',
+                type: 'canonical',
+                tags: ['performance', 'optimization', 'tuning']
+            },
+            {
+                moduleRef: 'core.redis-clustering.v1',
+                name: 'Redis Clustering',
+                description: 'Setting up and managing Redis clusters',
+                duration: 75,
+                difficulty: 'advanced',
+                type: 'canonical',
+                tags: ['clustering', 'scalability', 'high-availability']
+            },
+            {
+                moduleRef: 'core.redis-streams.v1',
+                name: 'Redis Streams',
+                description: 'Working with Redis Streams for event processing',
+                duration: 60,
+                difficulty: 'intermediate',
+                type: 'canonical',
+                tags: ['streams', 'messaging', 'events']
+            },
+            {
+                moduleRef: 'core.redis-json.v1',
+                name: 'RedisJSON',
+                description: 'Using Redis as a JSON document store',
+                duration: 45,
+                difficulty: 'beginner',
+                type: 'canonical',
+                tags: ['json', 'documents', 'data-structures']
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSummary();
+            renderModules();
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Update specific tab content
+            if (tabName === 'navigation') {
+                renderNavigation();
+            } else if (tabName === 'preview') {
+                renderPreview();
+            } else if (tabName === 'export') {
+                renderExport();
+            }
+        }
+
+        // Workshop management
+        function saveWorkshop() {
+            workshop.workshopId = document.getElementById('workshop-id').value;
+            workshop.title = document.getElementById('workshop-title').value;
+            workshop.description = document.getElementById('workshop-description').value;
+            workshop.duration = document.getElementById('workshop-duration').value;
+            workshop.difficulty = document.getElementById('workshop-difficulty').value;
+            workshop.author = document.getElementById('workshop-author').value;
+
+            if (!workshop.workshopId || !workshop.title || !workshop.description) {
+                alert('Please fill in all required fields (marked with *)');
+                return;
+            }
+
+            // Validate workshop ID format
+            const idRegex = /^[a-z0-9-]+$/;
+            if (!idRegex.test(workshop.workshopId)) {
+                alert('Workshop ID can only contain lowercase letters, numbers, and hyphens');
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem(`workshop-${workshop.workshopId}`, JSON.stringify(workshop));
+            
+            alert('✅ Workshop saved successfully!');
+        }
+
+        function loadWorkshop() {
+            const workshopId = prompt('Enter workshop ID to load:');
+            if (!workshopId) return;
+
+            const saved = localStorage.getItem(`workshop-${workshopId}`);
+            if (!saved) {
+                alert('Workshop not found');
+                return;
+            }
+
+            workshop = JSON.parse(saved);
+            
+            // Update form fields
+            document.getElementById('workshop-id').value = workshop.workshopId;
+            document.getElementById('workshop-title').value = workshop.title;
+            document.getElementById('workshop-description').value = workshop.description;
+            document.getElementById('workshop-duration').value = workshop.duration;
+            document.getElementById('workshop-difficulty').value = workshop.difficulty;
+            document.getElementById('workshop-author').value = workshop.author || '';
+
+            updateSummary();
+            renderModules();
+            alert('✅ Workshop loaded successfully!');
+        }
+
+        // Module management
+        function openModuleBrowser() {
+            document.getElementById('module-browser-modal').classList.add('active');
+            renderModuleBrowser();
+        }
+
+        function closeModuleBrowser() {
+            document.getElementById('module-browser-modal').classList.remove('active');
+        }
+
+        function renderModuleBrowser() {
+            const container = document.getElementById('module-browser-list');
+            container.innerHTML = '';
+
+            availableModules.forEach(module => {
+                const item = document.createElement('div');
+                item.className = 'module-browser-item';
+                item.innerHTML = `
+                    <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
+                    <p>${module.description}</p>
+                    <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light);">
+                        <span>⏱️ ${module.duration} min</span>
+                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                    </div>
+                `;
+                item.onclick = () => addModule(module);
+                container.appendChild(item);
+            });
+        }
+
+        function filterModules() {
+            const search = document.getElementById('module-search').value.toLowerCase();
+            const typeFilter = document.getElementById('module-type-filter').value;
+
+            const container = document.getElementById('module-browser-list');
+            container.innerHTML = '';
+
+            const filtered = availableModules.filter(module => {
+                const matchesSearch = module.name.toLowerCase().includes(search) || 
+                                     module.description.toLowerCase().includes(search) ||
+                                     module.tags.some(tag => tag.includes(search));
+                const matchesType = typeFilter === 'all' || module.type === typeFilter;
+                return matchesSearch && matchesType;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No modules found</div>';
+                return;
+            }
+
+            filtered.forEach(module => {
+                const item = document.createElement('div');
+                item.className = 'module-browser-item';
+                item.innerHTML = `
+                    <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
+                    <p>${module.description}</p>
+                    <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light);">
+                        <span>⏱️ ${module.duration} min</span>
+                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                    </div>
+                `;
+                item.onclick = () => addModule(module);
+                container.appendChild(item);
+            });
+        }
+
+        function addModule(module) {
+            // Check if module already exists
+            if (workshop.modules.some(m => m.moduleRef === module.moduleRef)) {
+                alert('This module is already in the workshop');
+                return;
+            }
+
+            workshop.modules.push({
+                moduleRef: module.moduleRef,
+                name: module.name,
+                description: module.description,
+                duration: module.duration,
+                difficulty: module.difficulty,
+                type: module.type,
+                required: true,
+                order: workshop.modules.length + 1
+            });
+
+            closeModuleBrowser();
+            updateSummary();
+            renderModules();
+        }
+
+        function removeModule(index) {
+            if (confirm('Remove this module from the workshop?')) {
+                workshop.modules.splice(index, 1);
+                // Renumber
+                workshop.modules.forEach((m, i) => m.order = i + 1);
+                updateSummary();
+                renderModules();
+            }
+        }
+
+        function moveModuleUp(index) {
+            if (index === 0) return;
+            [workshop.modules[index], workshop.modules[index - 1]] = 
+            [workshop.modules[index - 1], workshop.modules[index]];
+            workshop.modules.forEach((m, i) => m.order = i + 1);
+            renderModules();
+        }
+
+        function moveModuleDown(index) {
+            if (index === workshop.modules.length - 1) return;
+            [workshop.modules[index], workshop.modules[index + 1]] = 
+            [workshop.modules[index + 1], workshop.modules[index]];
+            workshop.modules.forEach((m, i) => m.order = i + 1);
+            renderModules();
+        }
+
+        function clearAllModules() {
+            if (confirm('Remove all modules from the workshop?')) {
+                workshop.modules = [];
+                updateSummary();
+                renderModules();
+            }
+        }
+
+        function renderModules() {
+            const container = document.getElementById('modules-list');
+            
+            if (workshop.modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No Modules Yet</h3>
+                        <p>Click "Add Module" to start building your workshop</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            workshop.modules.forEach((module, index) => {
+                const card = document.createElement('div');
+                card.className = 'module-card';
+                card.innerHTML = `
+                    <div class="module-card-header">
+                        <div style="display: flex; align-items: center; flex: 1;">
+                            <div class="module-card-order">${module.order}</div>
+                            <div>
+                                <div class="module-card-title">${module.name}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">
+                                    ${module.moduleRef}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge ${module.type}">${module.type}</span>
+                    </div>
+                    <div style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                        ${module.description}
+                    </div>
+                    <div class="module-card-meta">
+                        <span>⏱️ ${module.duration} min</span>
+                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                    </div>
+                    <div class="module-card-actions">
+                        <button class="btn btn-secondary btn-sm btn-icon" onclick="moveModuleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="btn btn-secondary btn-sm btn-icon" onclick="moveModuleDown(${index})" ${index === workshop.modules.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button class="btn btn-primary btn-sm" onclick="removeModule(${index})">🗑️ Remove</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateSummary() {
+            document.getElementById('modules-count').textContent = workshop.modules.length;
+            
+            const totalDuration = workshop.modules.reduce((sum, m) => sum + m.duration, 0);
+            document.getElementById('total-duration').textContent = totalDuration;
+            
+            const canonical = workshop.modules.filter(m => m.type === 'canonical').length;
+            document.getElementById('canonical-count').textContent = canonical;
+            
+            const customized = workshop.modules.filter(m => m.type === 'customized').length;
+            document.getElementById('customized-count').textContent = customized;
+        }
+
+        function renderNavigation() {
+            const container = document.getElementById('navigation-preview');
+            
+            if (workshop.modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🧭</div>
+                        <h3>No Navigation Yet</h3>
+                        <p>Add modules to see the navigation structure</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="max-width: 600px; margin: 0 auto;">';
+            
+            workshop.modules.forEach((module, index) => {
+                const isFirst = index === 0;
+                const isLast = index === workshop.modules.length - 1;
+                
+                html += `
+                    <div style="background: var(--bg-light); border: 2px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;">
+                        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">
+                            Module ${module.order} of ${workshop.modules.length}
+                        </div>
+                        <h3 style="margin-bottom: 0.5rem;">${module.name}</h3>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <span>⏱️ ${module.duration} min</span>
+                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            ${!isFirst ? '<button class="btn btn-outline btn-sm">← Previous Module</button>' : ''}
+                            <button class="btn btn-outline btn-sm">🏠 Workshop Home</button>
+                            ${!isLast ? '<button class="btn btn-primary btn-sm">Next Module →</button>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderPreview() {
+            const container = document.getElementById('workshop-preview');
+            
+            if (!workshop.title || workshop.modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>Complete Workshop Details</h3>
+                        <p>Fill in the workshop details and add modules to see the preview</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const totalDuration = workshop.modules.reduce((sum, m) => sum + m.duration, 0);
+            const hours = (totalDuration / 60).toFixed(1);
+
+            let html = `
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h1 style="color: var(--primary-color); margin-bottom: 1rem;">${workshop.title}</h1>
+                    <p style="font-size: 1.125rem; color: var(--text-light); margin-bottom: 2rem;">${workshop.description}</p>
+                    
+                    <div style="background: var(--bg-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">📋 Workshop Details</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div><strong>Duration:</strong> ${workshop.duration} (~${hours} hours)</div>
+                            <div><strong>Difficulty:</strong> <span class="badge ${workshop.difficulty}">${workshop.difficulty}</span></div>
+                            <div><strong>Modules:</strong> ${workshop.modules.length}</div>
+                            <div><strong>Total Time:</strong> ${totalDuration} minutes</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 1rem;">📖 Workshop Modules</h3>
+            `;
+
+            workshop.modules.forEach((module, index) => {
+                html += `
+                    <div style="border-left: 4px solid var(--primary-color); padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">${index + 1}. ${module.name}</h4>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                            <span>⏱️ ${module.duration} minutes</span>
+                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                            <span class="badge ${module.type}">${module.type}</span>
+                        </div>
+                        <p style="color: var(--text-light);">${module.description}</p>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderExport() {
+            const config = {
+                workshopId: workshop.workshopId || '',
+                version: workshop.version,
+                title: workshop.title || '',
+                description: workshop.description || '',
+                duration: workshop.duration || '',
+                difficulty: workshop.difficulty,
+                tags: [
+                    'redis',
+                    'workshop',
+                    workshop.difficulty,
+                    workshop.workshopId || ''
+                ].filter(Boolean),
+                modules: workshop.modules.map(m => ({
+                    moduleRef: m.moduleRef,
+                    type: m.type,
+                    required: m.required,
+                    order: m.order
+                })),
+                prerequisites: workshop.prerequisites,
+                learningObjectives: workshop.learningObjectives,
+                author: workshop.author || '',
+                lastUpdated: new Date().toISOString().split('T')[0],
+                repository: `https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/${workshop.workshopId || ''}`
+            };
+
+            document.getElementById('config-output').textContent = JSON.stringify(config, null, 2);
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('config-output').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        function downloadConfig() {
+            const text = document.getElementById('config-output').textContent;
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'workshop.config.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
