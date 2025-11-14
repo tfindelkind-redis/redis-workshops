@@ -29,21 +29,28 @@ function renderWorkshops() {
     noResults.style.display = 'none';
     
     grid.innerHTML = filteredWorkshops.map(workshop => `
-        <div class="workshop-card" onclick="window.open('https://github.com/tfindelkind-redis/redis-workshops/tree/main/${workshop.path}', '_blank')">
+        <div class="workshop-card">
             <h3>${workshop.title}</h3>
             <div class="workshop-meta">
                 <span class="badge difficulty ${workshop.difficulty}">${capitalizeFirst(workshop.difficulty)}</span>
                 <span class="badge duration">⏱️ ${workshop.duration}</span>
+                ${workshop.hasBuiltVersion ? '<span class="badge success">✨ Built Version Available</span>' : ''}
             </div>
             <p class="workshop-description">${workshop.description}</p>
-            <p class="workshop-chapters">📚 ${workshop.chaptersCount} chapter${workshop.chaptersCount !== 1 ? 's' : ''}</p>
+            <p class="workshop-chapters">📚 ${workshop.modulesCount} module${workshop.modulesCount !== 1 ? 's' : ''}</p>
             <div class="workshop-footer">
                 <span class="workshop-tags">${workshop.tags.map(tag => `#${tag}`).slice(0, 3).join(' ')}</span>
-                <a href="https://github.com/tfindelkind-redis/redis-workshops/tree/main/${workshop.path}" 
-                   class="workshop-link" 
-                   onclick="event.stopPropagation()">
-                    Start Workshop →
-                </a>
+                <div class="workshop-links">
+                    ${workshop.hasBuiltVersion ? 
+                        `<a href="${workshop.builtPath}/README.md" class="workshop-link primary">📖 View Workshop →</a>` : 
+                        ''
+                    }
+                    <a href="https://github.com/tfindelkind-redis/redis-workshops/tree/main/${workshop.path}" 
+                       class="workshop-link secondary" 
+                       target="_blank">
+                        GitHub Source →
+                    </a>
+                </div>
             </div>
         </div>
     `).join('');

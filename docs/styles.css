@@ -267,6 +267,11 @@ nav a:hover {
     color: white;
 }
 
+.badge.success {
+    background: #10b981;
+    color: white;
+}
+
 .workshop-description {
     color: var(--text-light);
     margin-bottom: 1rem;
@@ -286,6 +291,12 @@ nav a:hover {
     border-top: 1px solid var(--border-color);
 }
 
+.workshop-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 .workshop-link {
     color: var(--primary-color);
     text-decoration: none;
@@ -293,10 +304,31 @@ nav a:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 0.9rem;
 }
 
-.workshop-link:hover {
-    text-decoration: underline;
+.workshop-link.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.workshop-link.primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(220, 56, 45, 0.3);
+}
+
+.workshop-link.secondary {
+    border: 1.5px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.workshop-link.secondary:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 /* Chapters Section */
