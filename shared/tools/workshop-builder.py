@@ -727,16 +727,19 @@ class WorkshopBuilder:
         
         for idx, module in enumerate(modules, 1):
             module_path = module['path']
-            module_name = module_path.name
             metadata = module['metadata']
+            
+            # Get module name from metadata (for consistent naming with navigation)
+            module_display_name = metadata.get('name', module_path.name)
+            module_slug = self._slugify(module_display_name)
             
             # Create module directory in build
             # Use format: 01-module-name, 02-module-name, etc.
             padded_num = str(idx).zfill(2)
-            module_build_dir = build_dir / f"{padded_num}-{module_name}"
+            module_build_dir = build_dir / f"{padded_num}-{module_slug}"
             module_build_dir.mkdir(parents=True, exist_ok=True)
             
-            print(f"   [{idx}] {module_name} → {module_build_dir.name}/")
+            print(f"   [{idx}] {module_display_name} → {module_build_dir.name}/")
             
             # Copy all content files (skip module.yaml and .lineage)
             files_copied = 0
@@ -946,7 +949,9 @@ class WorkshopBuilder:
             module_name = metadata.get('name', 'Unknown Module')
             module_duration = metadata.get('duration', 0)
             module_difficulty = metadata.get('difficulty', 'N/A')
-            module_dir_name = f"{str(idx).zfill(2)}-{module['path'].name}"
+            # Use slugified name for consistency with navigation and build directory
+            module_slug = self._slugify(module_name)
+            module_dir_name = f"{str(idx).zfill(2)}-{module_slug}"
             
             total_duration += module_duration
             
