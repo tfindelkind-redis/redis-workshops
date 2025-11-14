@@ -32,6 +32,33 @@ Chapters are modular, reusable learning units that can be included in multiple w
 
 ## 🚀 Getting Started
 
+### For Workshop Creators
+
+**🎨 NEW! Visual Workshop Builder**
+
+Create workshops without command line tools:
+- Open `shared/tools/workshop-builder-gui.html` in your browser
+- Visual interface for workshop creation
+- Drag-and-drop module ordering
+- Real-time preview and navigation
+- Export to `workshop.config.json`
+
+[📖 Read the GUI Documentation](docs/WORKSHOP_BUILDER_GUI.md)
+
+**Command Line Tools**
+
+For advanced users and automation:
+```bash
+# Create new workshop
+./shared/tools/create-workshop.sh
+
+# Manage modules
+./shared/tools/module-manager.py list
+
+# Build workshop
+./shared/tools/workshop-builder.py build --workshop my-workshop
+```
+
 ### For Workshop Participants
 
 **Prerequisites:**
