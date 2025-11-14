@@ -1382,7 +1382,7 @@
                         description: ws.description,
                         duration: ws.duration,
                         difficulty: ws.difficulty,
-                        modules: ws.modules,
+                        modules: ws.frontmatter?.modules || ws.modules || [],
                         lastUpdated: 'From filesystem'
                     }));
                 } catch (error) {
@@ -1468,7 +1468,7 @@
                         description: ws.description,
                         duration: ws.duration,
                         difficulty: ws.difficulty,
-                        modules: ws.modules,
+                        modules: ws.frontmatter?.modules || ws.modules || [],
                         lastUpdated: 'From filesystem'
                     }));
                 } catch (error) {
