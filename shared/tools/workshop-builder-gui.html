@@ -1282,9 +1282,13 @@
                     
                     // Transform modules from string array to object array
                     const transformedModules = modulesList.map((moduleRef, index) => {
-                        // If it's already an object, use it as-is
+                        // If it's already an object, use it as-is but ensure it has order
                         if (typeof moduleRef === 'object') {
-                            return moduleRef;
+                            return {
+                                ...moduleRef,
+                                order: index + 1,
+                                moduleRef: moduleRef.name || `module-${index + 1}`
+                            };
                         }
                         
                         // If it's a string, create a module object
@@ -1299,6 +1303,8 @@
                             description: `Module from ${moduleRef}`
                         };
                     });
+                    
+                    console.log('Transformed modules:', transformedModules);
                     
                     // Update workshop object
                     workshop = {
@@ -1325,6 +1331,7 @@
 
                     updateSummary();
                     renderModules();
+                    renderNavigation();
                     closeWorkshopBrowser();
                     
                     showNotification('✅ Workshop loaded from filesystem!', 'success');
@@ -1352,6 +1359,7 @@
 
                 updateSummary();
                 renderModules();
+                renderNavigation();
                 closeWorkshopBrowser();
                 
                 showNotification('✅ Workshop loaded from browser storage!', 'success');
