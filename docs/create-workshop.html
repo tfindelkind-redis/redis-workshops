@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a Workshop - Redis Workshops</title>
-    <meta name="description" content="Step-by-step guide to creating your own Redis workshop">
+    <meta name="description" content="Create your own Redis workshop with our visual Workshop Builder">
     <link rel="stylesheet" href="styles.css">
     <style>
         .guide-container {
@@ -183,71 +183,252 @@
     <main class="guide-container">
         <!-- Hero -->
         <section class="hero">
-            <h2>Build Your Own Redis Workshop</h2>
-            <p>Follow these steps to create a professional, hands-on workshop that others can learn from.</p>
+            <h2>🎨 Workshop Builder GUI</h2>
+            <p>Create professional Redis workshops visually - no command line needed!</p>
+            <div class="cta-buttons" style="margin-top: 2rem;">
+                <a href="../shared/tools/workshop-builder-gui.html" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                    🚀 Open Workshop Builder
+                </a>
+                <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/WORKSHOP_BUILDER_GUI.md" class="btn btn-secondary" target="_blank">
+                    📖 Read Documentation
+                </a>
+            </div>
+        </section>
+
+        <!-- What is it -->
+        <section>
+            <div class="guide-step">
+                <h2>What is the Workshop Builder?</h2>
+                <p>A complete visual interface for creating and managing Redis workshops without touching the command line. Perfect for educators, content creators, and anyone who wants to build workshops quickly.</p>
+                
+                <div class="success-box">
+                    <strong>✨ Key Features:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        <li><strong>Visual Module Selection</strong> - Browse and add modules with one click</li>
+                        <li><strong>Drag & Drop Ordering</strong> - Rearrange modules easily</li>
+                        <li><strong>Real-time Preview</strong> - See your workshop structure instantly</li>
+                        <li><strong>Navigation Preview</strong> - Visualize how learners will navigate</li>
+                        <li><strong>Export to JSON</strong> - Generate workshop.config.json file</li>
+                        <li><strong>Browser Storage</strong> - Save and load workshops locally</li>
+                        <li><strong>Helpful Tooltips</strong> - Guidance on every field</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
         <!-- Quick Start -->
         <section id="quick-start">
-            <h2 style="margin-bottom: 1rem;">🚀 Quick Start (30 seconds)</h2>
+            <h2 style="margin-bottom: 1rem;">🚀 Quick Start (2 Minutes)</h2>
             
             <div class="guide-step">
                 <div class="step-header">
                     <div class="step-badge">1</div>
-                    <h3 class="step-title">Run the Creation Command</h3>
+                    <h3 class="step-title">Open the Workshop Builder</h3>
                 </div>
-                <p>Use our automated tool to create a workshop structure instantly:</p>
-                <div class="code-block">
-                    <button class="copy-button" onclick="copyCode(this, 'create-cmd')">Copy</button>
-                    <code id="create-cmd">./shared/tools/create-workshop.sh "My Amazing Redis Workshop"</code>
-                </div>
-                <div class="success-box">
-                    <strong>✓ This automatically:</strong>
-                    <ul style="margin: 8px 0 0 20px;">
-                        <li>Creates a new branch: <code>workshop/my-amazing-redis-workshop</code></li>
-                        <li>Generates complete folder structure and template files</li>
-                        <li>Sets up initial README.md with frontmatter</li>
-                    </ul>
-                </div>
+                <p>Click the button below to launch the visual builder in your browser:</p>
+                <a href="../shared/tools/workshop-builder-gui.html" class="btn btn-primary" style="display: inline-block; margin: 1rem 0;">
+                    🎨 Open Workshop Builder
+                </a>
                 <div class="info-box">
-                    <strong>🌿 Branch Workflow:</strong> You're now on a new branch! Develop your workshop here, then create a Pull Request to merge into main.
+                    <strong>💡 No Installation:</strong> The builder runs entirely in your browser - no server or installation needed!
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="step-header">
                     <div class="step-badge">2</div>
-                    <h3 class="step-title">Customize Your Workshop</h3>
+                    <h3 class="step-title">Fill in Workshop Details</h3>
                 </div>
-                <p>✨ <strong>New!</strong> Edit only the <code>README.md</code> frontmatter - the config file is auto-generated!</p>
-                <div class="success-box">
-                    <strong>💡 Super Simple:</strong> Only 5 required fields! No nested YAML or indentation - just simple key-value pairs.
-                </div>
-                <p>Edit this at the top of your README.md:</p>
-                <div class="code-block">
-                    <button class="copy-button" onclick="copyCode(this, 'frontmatter')">Copy</button>
-                    <code id="frontmatter">---
-workshopId: my-workshop
-title: My Workshop Title
-description: Brief description
-duration: 4 hours
-difficulty: intermediate
-chapters: shared/chapters/chapter-01-getting-started
----</code>
-                </div>
-                <p>For multiple chapters, just separate with commas:</p>
-                <div class="code-block">
-                    <button class="copy-button" onclick="copyCode(this, 'multiple-chapters')">Copy</button>
-                    <code id="multiple-chapters">chapters: shared/chapters/chapter-01, workshops/my-workshop/chapters/custom</code>
-                </div>
-                <p>Then sync the config:</p>
-                <div class="code-block">
-                    <button class="copy-button" onclick="copyCode(this, 'sync-cmd')">Copy</button>
-                    <code id="sync-cmd">./shared/tools/sync-workshop-config.sh workshops/my-workshop</code>
-                </div>
+                <p>In the left sidebar, enter your workshop information:</p>
+                <ul class="checklist">
+                    <li><strong>Workshop ID</strong> - Unique identifier (lowercase-with-hyphens)</li>
+                    <li><strong>Title</strong> - Display name of your workshop</li>
+                    <li><strong>Description</strong> - Brief overview (1-2 sentences)</li>
+                    <li><strong>Duration</strong> - Estimated time (e.g., "4 hours")</li>
+                    <li><strong>Difficulty</strong> - Beginner, Intermediate, or Advanced</li>
+                    <li><strong>Author</strong> - Your name (optional)</li>
+                </ul>
                 <div class="info-box">
-                    <strong>Auto-generated for you:</strong> tags, repository URL, version number, last updated date, chapter ordering
+                    <strong>ℹ️ Hover over the (?) icons</strong> for helpful explanations of each field!
                 </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">3</div>
+                    <h3 class="step-title">Add Modules to Your Workshop</h3>
+                </div>
+                <p>Click the <strong>"➕ Add Module"</strong> button to browse available modules:</p>
+                <ul class="checklist">
+                    <li>Search modules by name or tags</li>
+                    <li>Filter by type (canonical or customized)</li>
+                    <li>Click any module card to add it</li>
+                    <li>See duration and difficulty for each module</li>
+                </ul>
+                <div class="success-box">
+                    <strong>✨ Sample Modules Available:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        <li>Redis Fundamentals (60 min, Beginner)</li>
+                        <li>Redis Security (45 min, Intermediate)</li>
+                        <li>Redis Performance (90 min, Advanced)</li>
+                        <li>Redis Clustering (75 min, Advanced)</li>
+                        <li>Redis Streams (60 min, Intermediate)</li>
+                        <li>RedisJSON (45 min, Beginner)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">4</div>
+                    <h3 class="step-title">Arrange Module Order</h3>
+                </div>
+                <p>Organize your modules in the best learning sequence:</p>
+                <ul class="checklist">
+                    <li><strong>Drag & Drop</strong> - Click and drag module cards to reorder</li>
+                    <li><strong>Up/Down Buttons</strong> - Use ↑ ↓ buttons for precise positioning</li>
+                    <li><strong>Remove</strong> - Click "🗑️ Remove" to delete unwanted modules</li>
+                    <li><strong>Clear All</strong> - Start over with "Clear All" button</li>
+                </ul>
+                <div class="info-box">
+                    <strong>💡 Pro Tip:</strong> Start with fundamentals and gradually increase difficulty for the best learning experience.
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">5</div>
+                    <h3 class="step-title">Preview Your Workshop</h3>
+                </div>
+                <p>Use the tabs at the top to preview your workshop:</p>
+                <ul class="checklist">
+                    <li><strong>📚 Modules Tab</strong> - Manage and order your modules</li>
+                    <li><strong>🧭 Navigation Tab</strong> - See how learners will navigate</li>
+                    <li><strong>👁️ Preview Tab</strong> - View complete workshop structure</li>
+                    <li><strong>📤 Export Tab</strong> - Generate configuration file</li>
+                </ul>
+                <div class="success-box">
+                    The <strong>Workshop Summary</strong> shows real-time stats: module count, total duration, and module types.
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="step-header">
+                    <div class="step-badge">6</div>
+                    <h3 class="step-title">Save & Export</h3>
+                </div>
+                <p>When you're happy with your workshop:</p>
+                
+                <h4 style="margin-top: 1.5rem;">💾 Save to Browser</h4>
+                <p>Click <strong>"💾 Save Workshop"</strong> to store it in your browser. You can load it later to continue editing.</p>
+                
+                <h4 style="margin-top: 1.5rem;">📤 Export Configuration</h4>
+                <ol style="margin-left: 1.5rem;">
+                    <li>Switch to the <strong>"📤 Export"</strong> tab</li>
+                    <li>Click <strong>"📋 Copy to Clipboard"</strong> or <strong>"💾 Download File"</strong></li>
+                    <li>Save as <code>workshop.config.json</code> in your workshop directory</li>
+                </ol>
+                
+                <div class="info-box">
+                    <strong>📂 File Location:</strong>
+                    <br>Save to: <code>workshops/your-workshop-id/workshop.config.json</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section>
+            <div class="guide-step">
+                <h2>🎯 Next Steps: Building Your Workshop</h2>
+                <p>After exporting your configuration, use the CLI to build the final workshop:</p>
+                
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'build-cmd')">Copy</button>
+                    <code id="build-cmd"># Build your workshop
+./shared/tools/workshop-builder.py build \
+  --workshop your-workshop-id \
+  --output-dir docs/workshops/your-workshop-id</code>
+                </div>
+
+                <p style="margin-top: 1.5rem;">This generates the complete workshop with:</p>
+                <ul class="checklist">
+                    <li>Workshop homepage (README.md)</li>
+                    <li>All module content</li>
+                    <li>Full 3-level navigation (Workshop → Module → Content)</li>
+                    <li>Previous/Next links</li>
+                    <li>Mini table of contents</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Features Overview -->
+        <section>
+            <h2 style="margin-bottom: 1rem;">✨ Why Use the Workshop Builder?</h2>
+            
+            <div class="quick-links">
+                <div class="quick-link-card">
+                    <h3>🎨 Visual & Intuitive</h3>
+                    <p>No command line needed. Build workshops with drag-and-drop and visual feedback.</p>
+                </div>
+                
+                <div class="quick-link-card">
+                    <h3>💡 Helpful Guidance</h3>
+                    <p>Tooltips on every field explain what's needed. Perfect for first-time creators.</p>
+                </div>
+                
+                <div class="quick-link-card">
+                    <h3>⚡ Fast Prototyping</h3>
+                    <p>Experiment with different module combinations in seconds. See results immediately.</p>
+                </div>
+                
+                <div class="quick-link-card">
+                    <h3>🔍 Real-time Preview</h3>
+                    <p>See navigation flow and workshop structure before exporting.</p>
+                </div>
+                
+                <div class="quick-link-card">
+                    <h3>💾 Browser Storage</h3>
+                    <p>Save work-in-progress workshops. Load and continue editing anytime.</p>
+                </div>
+                
+                <div class="quick-link-card">
+                    <h3>📊 Live Statistics</h3>
+                    <p>Track module count, total duration, and module types as you build.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- For Developers -->
+        <section>
+            <div class="guide-step">
+                <h2>👨‍💻 For Developers: CLI Alternative</h2>
+                <p>Prefer the command line? We've got you covered:</p>
+                
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this, 'cli-create')">Copy</button>
+                    <code id="cli-create"># Create workshop structure
+./shared/tools/create-workshop.sh "My Workshop"
+
+# Add modules
+./shared/tools/workshop-builder.py add \
+  --workshop my-workshop \
+  --module core.redis-fundamentals.v1
+
+# Preview structure
+./shared/tools/workshop-builder.py preview \
+  --workshop my-workshop
+
+# Build workshop
+./shared/tools/workshop-builder.py build \
+  --workshop my-workshop</code>
+                </div>
+
+                <p style="margin-top: 1rem;">
+                    <a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/WORKSHOP_CREATOR_GUIDE.md" target="_blank" class="btn btn-secondary">
+                        📖 View CLI Documentation
+                    </a>
+                </p>
+            </div>
                 <div class="warning-box">
                     <strong>⚠️ workshopId Rules:</strong>
                     <ul style="margin: 8px 0 0 20px;">
@@ -306,8 +487,8 @@ git push -u origin workshop/my-workshop</code>
             </div>
         </section>
 
-        <!-- Detailed Guide -->
-        <section id="detailed-guide" style="margin-top: 4rem;">
+        <!-- Help & Resources -->
+        <section style="margin-top: 4rem;">
             <h2 style="margin-bottom: 2rem;">📖 Detailed Guide</h2>
 
             <!-- Planning -->
@@ -651,12 +832,28 @@ git push -u origin workshop/my-workshop</code>
         </section>
 
         <!-- Final CTA -->
+        <!-- Help & Resources -->
+        <section>
+            <div class="guide-step">
+                <h2>📚 Additional Resources</h2>
+                <ul class="checklist">
+                    <li><a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/WORKSHOP_BUILDER_GUI.md" target="_blank">Complete GUI Documentation</a></li>
+                    <li><a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/docs/GUI_ENHANCEMENTS.md" target="_blank">GUI Features & Enhancements</a></li>
+                    <li><a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/WORKSHOP_CREATOR_GUIDE.md" target="_blank">Workshop Creator Guide (CLI)</a></li>
+                    <li><a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/MODULE_INHERITANCE.md" target="_blank">Module System Documentation</a></li>
+                    <li><a href="https://github.com/tfindelkind-redis/redis-workshops/blob/main/NAVIGATION_DESIGN.md" target="_blank">Navigation System Design</a></li>
+                </ul>
+            </div>
+        </section>
+
         <section class="contributing" style="margin-top: 4rem;">
-            <h2>Ready to Create?</h2>
-            <p>Start building your workshop today and share your Redis knowledge with the world!</p>
+            <h2>🚀 Ready to Create Your Workshop?</h2>
+            <p>Start building with the visual Workshop Builder - no coding required!</p>
             <div class="cta-buttons">
-                <a href="https://github.com/tfindelkind-redis/redis-workshops" class="btn btn-primary" target="_blank">Clone Repository</a>
-                <a href="index.html" class="btn btn-secondary">Browse Workshops</a>
+                <a href="../shared/tools/workshop-builder-gui.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                    🎨 Launch Workshop Builder
+                </a>
+                <a href="index.html" class="btn btn-secondary">Browse Existing Workshops</a>
             </div>
         </section>
     </main>
