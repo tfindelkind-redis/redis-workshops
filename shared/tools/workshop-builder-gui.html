@@ -911,7 +911,169 @@
     </div>
 
     <script>
-        // Workshop state
+        // ========================================================================
+        // API Client Configuration
+        // ========================================================================
+        
+        const API_CONFIG = {
+            baseURL: 'http://localhost:3000/api',
+            timeout: 10000
+        };
+
+        // Current Git branch
+        let currentBranch = '';
+        let useFilesystem = false; // Flag to determine if using filesystem backend
+
+        // ========================================================================
+        // API Client Functions
+        // ========================================================================
+
+        /**
+         * Make API request
+         */
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const url = `${API_CONFIG.baseURL}${endpoint}`;
+                const config = {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                };
+
+                const response = await fetch(url, config);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `API request failed: ${response.status}`);
+                }
+
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Check if server is available
+         */
+        async function checkServerAvailability() {
+            try {
+                await apiRequest('/health');
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        /**
+         * Initialize Git (create branch if on main)
+         */
+        async function initGit() {
+            try {
+                const result = await apiRequest('/git/init');
+                currentBranch = result.branch;
+                updateBranchDisplay(result.branch, result.created);
+                return result;
+            } catch (error) {
+                console.error('Failed to initialize Git:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Load workshops from filesystem
+         */
+        async function loadWorkshopsFromFilesystem() {
+            try {
+                const result = await apiRequest('/workshops');
+                return result.workshops;
+            } catch (error) {
+                console.error('Failed to load workshops:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Load specific workshop from filesystem
+         */
+        async function loadWorkshopFromFilesystem(workshopId) {
+            try {
+                const result = await apiRequest(`/workshops/${workshopId}`);
+                return result.workshop;
+            } catch (error) {
+                console.error(`Failed to load workshop ${workshopId}:`, error);
+                throw error;
+            }
+        }
+
+        /**
+         * Save workshop to filesystem
+         */
+        async function saveWorkshopToFilesystem(workshopId, workshopData) {
+            try {
+                const endpoint = `/workshops/${workshopId}`;
+                const result = await apiRequest(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(workshopData)
+                });
+                return result.workshop;
+            } catch (error) {
+                console.error('Failed to save workshop:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Create new workshop in filesystem
+         */
+        async function createWorkshopInFilesystem(workshopData) {
+            try {
+                const result = await apiRequest('/workshops', {
+                    method: 'POST',
+                    body: JSON.stringify(workshopData)
+                });
+                return result.workshop;
+            } catch (error) {
+                console.error('Failed to create workshop:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Commit changes
+         */
+        async function commitChanges(files, message) {
+            try {
+                const result = await apiRequest('/git/commit', {
+                    method: 'POST',
+                    body: JSON.stringify({ files, message })
+                });
+                return result;
+            } catch (error) {
+                console.error('Failed to commit changes:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Update branch display in header
+         */
+        function updateBranchDisplay(branch, wasCreated = false) {
+            const header = document.querySelector('.header p');
+            if (wasCreated) {
+                header.innerHTML = `Visual workshop creation interface - <strong style="color: var(--success-color)">Branch: ${branch}</strong> (created)`;
+            } else {
+                header.innerHTML = `Visual workshop creation interface - <strong style="color: var(--info-color)">Branch: ${branch}</strong>`;
+            }
+        }
+
+        // ========================================================================
+        // Workshop State
+        // ========================================================================
+        
         let workshop = {
             workshopId: '',
             version: '1.0.0',
@@ -984,7 +1146,37 @@
         ];
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if server is available
+            const serverAvailable = await checkServerAvailability();
+            
+            if (serverAvailable) {
+                useFilesystem = true;
+                console.log('✅ Server available - using filesystem mode');
+                
+                try {
+                    // Initialize Git
+                    const gitResult = await initGit();
+                    console.log('Git initialized:', gitResult);
+                    
+                    // Show success notification
+                    showNotification(
+                        gitResult.created 
+                            ? `Created new branch: ${gitResult.branch}` 
+                            : `Working on branch: ${gitResult.branch}`,
+                        'success'
+                    );
+                } catch (error) {
+                    console.error('Git initialization failed:', error);
+                    showNotification('Warning: Git initialization failed. Changes won\'t be committed automatically.', 'warning');
+                    useFilesystem = false;
+                }
+            } else {
+                useFilesystem = false;
+                console.log('ℹ️ Server not available - using localStorage mode');
+                showNotification('Server not available. Working in browser-only mode. Start server for filesystem integration.', 'info');
+            }
+            
             updateSummary();
             renderModules();
         });
@@ -1010,7 +1202,7 @@
         }
 
         // Workshop management
-        function saveWorkshop() {
+        async function saveWorkshop() {
             workshop.workshopId = document.getElementById('workshop-id').value;
             workshop.title = document.getElementById('workshop-title').value;
             workshop.description = document.getElementById('workshop-description').value;
@@ -1033,52 +1225,114 @@
             // Update lastUpdated timestamp
             workshop.lastUpdated = new Date().toISOString().split('T')[0];
 
-            // Save to localStorage
-            localStorage.setItem(`workshop-${workshop.workshopId}`, JSON.stringify(workshop));
-            
-            // Show success message
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success';
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '2000';
-            alertDiv.innerHTML = '✅ Workshop saved successfully!';
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
+            if (useFilesystem) {
+                // Save to filesystem via API
+                try {
+                    showNotification('Saving workshop to filesystem...', 'info');
+                    
+                    const workshopData = {
+                        title: workshop.title,
+                        description: workshop.description,
+                        duration: workshop.duration,
+                        difficulty: workshop.difficulty,
+                        modules: workshop.modules
+                    };
+                    
+                    await saveWorkshopToFilesystem(workshop.workshopId, workshopData);
+                    
+                    // Ask if user wants to commit
+                    const shouldCommit = confirm('Workshop saved! Do you want to commit these changes to Git?');
+                    if (shouldCommit) {
+                        const commitMessage = prompt('Enter commit message:', `Update ${workshop.title}`);
+                        if (commitMessage) {
+                            await commitChanges(
+                                [`workshops/${workshop.workshopId}/README.md`],
+                                commitMessage
+                            );
+                            showNotification('✅ Workshop saved and committed!', 'success');
+                        } else {
+                            showNotification('✅ Workshop saved (not committed)', 'success');
+                        }
+                    } else {
+                        showNotification('✅ Workshop saved (not committed)', 'success');
+                    }
+                    
+                    // Also save to localStorage as backup
+                    localStorage.setItem(`workshop-${workshop.workshopId}`, JSON.stringify(workshop));
+                } catch (error) {
+                    showNotification(`❌ Failed to save: ${error.message}`, 'error');
+                    console.error('Save error:', error);
+                }
+            } else {
+                // Save to localStorage only
+                localStorage.setItem(`workshop-${workshop.workshopId}`, JSON.stringify(workshop));
+                showNotification('✅ Workshop saved to browser storage!', 'success');
+            }
         }
 
-        function loadWorkshop(workshopId) {
-            const saved = localStorage.getItem(`workshop-${workshopId}`);
-            if (!saved) {
-                alert('Workshop not found');
-                return;
+        async function loadWorkshop(workshopId) {
+            if (useFilesystem) {
+                // Load from filesystem via API
+                try {
+                    showNotification('Loading workshop from filesystem...', 'info');
+                    const workshopData = await loadWorkshopFromFilesystem(workshopId);
+                    
+                    // Update workshop object
+                    workshop = {
+                        workshopId: workshopData.workshopId,
+                        version: '1.0.0',
+                        title: workshopData.title,
+                        description: workshopData.description,
+                        duration: workshopData.duration,
+                        difficulty: workshopData.difficulty,
+                        author: workshopData.frontmatter?.author || '',
+                        modules: workshopData.modules || [],
+                        prerequisites: workshopData.frontmatter?.prerequisites || [],
+                        learningObjectives: workshopData.frontmatter?.learningObjectives || [],
+                        lastUpdated: new Date().toISOString().split('T')[0]
+                    };
+                    
+                    // Update form fields
+                    document.getElementById('workshop-id').value = workshop.workshopId;
+                    document.getElementById('workshop-title').value = workshop.title;
+                    document.getElementById('workshop-description').value = workshop.description;
+                    document.getElementById('workshop-duration').value = workshop.duration;
+                    document.getElementById('workshop-difficulty').value = workshop.difficulty;
+                    document.getElementById('workshop-author').value = workshop.author || '';
+
+                    updateSummary();
+                    renderModules();
+                    closeWorkshopBrowser();
+                    
+                    showNotification('✅ Workshop loaded from filesystem!', 'success');
+                } catch (error) {
+                    showNotification(`❌ Failed to load: ${error.message}`, 'error');
+                    console.error('Load error:', error);
+                }
+            } else {
+                // Load from localStorage
+                const saved = localStorage.getItem(`workshop-${workshopId}`);
+                if (!saved) {
+                    alert('Workshop not found in browser storage');
+                    return;
+                }
+
+                workshop = JSON.parse(saved);
+                
+                // Update form fields
+                document.getElementById('workshop-id').value = workshop.workshopId;
+                document.getElementById('workshop-title').value = workshop.title;
+                document.getElementById('workshop-description').value = workshop.description;
+                document.getElementById('workshop-duration').value = workshop.duration;
+                document.getElementById('workshop-difficulty').value = workshop.difficulty;
+                document.getElementById('workshop-author').value = workshop.author || '';
+
+                updateSummary();
+                renderModules();
+                closeWorkshopBrowser();
+                
+                showNotification('✅ Workshop loaded from browser storage!', 'success');
             }
-
-            workshop = JSON.parse(saved);
-            
-            // Update form fields
-            document.getElementById('workshop-id').value = workshop.workshopId;
-            document.getElementById('workshop-title').value = workshop.title;
-            document.getElementById('workshop-description').value = workshop.description;
-            document.getElementById('workshop-duration').value = workshop.duration;
-            document.getElementById('workshop-difficulty').value = workshop.difficulty;
-            document.getElementById('workshop-author').value = workshop.author || '';
-
-            updateSummary();
-            renderModules();
-            closeWorkshopBrowser();
-            
-            // Show success message
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success';
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '2000';
-            alertDiv.innerHTML = '✅ Workshop loaded successfully!';
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
         }
 
         // Workshop browser functions
@@ -1091,19 +1345,38 @@
             document.getElementById('workshop-browser-modal').classList.remove('active');
         }
 
-        function renderWorkshopBrowser() {
+        async function renderWorkshopBrowser() {
             const container = document.getElementById('workshop-browser-list');
-            const savedWorkshops = [];
+            let savedWorkshops = [];
 
-            // Get all workshops from localStorage
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('workshop-')) {
-                    try {
-                        const data = JSON.parse(localStorage.getItem(key));
-                        savedWorkshops.push(data);
-                    } catch (e) {
-                        console.error('Error parsing workshop:', key, e);
+            if (useFilesystem) {
+                // Load from filesystem
+                try {
+                    const workshops = await loadWorkshopsFromFilesystem();
+                    savedWorkshops = workshops.map(ws => ({
+                        workshopId: ws.workshopId,
+                        title: ws.title,
+                        description: ws.description,
+                        duration: ws.duration,
+                        difficulty: ws.difficulty,
+                        modules: ws.modules,
+                        lastUpdated: 'From filesystem'
+                    }));
+                } catch (error) {
+                    console.error('Failed to load workshops from filesystem:', error);
+                    showNotification('Failed to load workshops from filesystem', 'error');
+                }
+            } else {
+                // Get all workshops from localStorage
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('workshop-')) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            savedWorkshops.push(data);
+                        } catch (e) {
+                            console.error('Error parsing workshop:', key, e);
+                        }
                     }
                 }
             }
@@ -1113,7 +1386,7 @@
                     <div class="empty-browser">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
                         <h3>No Saved Workshops</h3>
-                        <p>Create and save a workshop to see it here.</p>
+                        <p>${useFilesystem ? 'No workshops found in filesystem.' : 'Create and save a workshop to see it here.'}</p>
                     </div>
                 `;
                 return;
@@ -1124,7 +1397,11 @@
                 const item = document.createElement('div');
                 item.className = 'workshop-browser-item';
                 const moduleCount = ws.modules ? ws.modules.length : 0;
-                const totalDuration = ws.modules ? ws.modules.reduce((sum, m) => sum + (m.duration || 0), 0) : 0;
+                const totalDuration = ws.modules ? ws.modules.reduce((sum, m) => {
+                    // Handle both array of strings and array of objects
+                    if (typeof m === 'string') return sum;
+                    return sum + (m.duration || 0);
+                }, 0) : 0;
                 
                 item.innerHTML = `
                     <h4>
@@ -1135,8 +1412,9 @@
                     <p>${ws.description || 'No description'}</p>
                     <div class="meta">
                         <span>📚 ${moduleCount} modules</span>
-                        <span>⏱️ ${totalDuration} min</span>
+                        ${totalDuration > 0 ? `<span>⏱️ ${totalDuration} min</span>` : ''}
                         <span>📅 ${ws.lastUpdated || 'Unknown date'}</span>
+                        ${useFilesystem ? '<span style="color: var(--success-color)">💾 Filesystem</span>' : '<span>🌐 Browser</span>'}
                     </div>
                 `;
                 item.onclick = () => loadWorkshop(ws.workshopId);
