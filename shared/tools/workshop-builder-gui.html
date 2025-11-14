@@ -514,6 +514,117 @@
             white-space: pre;
         }
 
+        /* Tooltip styles */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--info-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            z-index: 1001;
+            background: var(--secondary-color);
+            color: white;
+            text-align: left;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            width: 280px;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--secondary-color) transparent transparent transparent;
+        }
+
+        .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .workshop-browser {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .workshop-browser-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 4px;
+        }
+
+        .workshop-browser-item:hover {
+            background: var(--bg-light);
+            border-color: var(--primary-color);
+        }
+
+        .workshop-browser-item:last-child {
+            border-bottom: none;
+        }
+
+        .workshop-browser-item h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .workshop-browser-item p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .workshop-browser-item .meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .empty-browser {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
         @media (max-width: 1024px) {
             .layout {
                 grid-template-columns: 1fr;
@@ -521,6 +632,10 @@
 
             .sidebar {
                 position: static;
+            }
+
+            .tooltip-text {
+                width: 220px;
             }
         }
     </style>
@@ -538,28 +653,58 @@
                 <h2 style="margin-bottom: 1.5rem;">Workshop Details</h2>
                 
                 <div class="form-group">
-                    <label for="workshop-id">Workshop ID *</label>
+                    <label for="workshop-id">
+                        Workshop ID *
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">A unique identifier for your workshop. Use lowercase letters, numbers, and hyphens only. Example: redis-caching-101</span>
+                        </span>
+                    </label>
                     <input type="text" id="workshop-id" placeholder="my-workshop">
                     <small>Lowercase letters, numbers, and hyphens only</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="workshop-title">Title *</label>
+                    <label for="workshop-title">
+                        Title *
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">The display name of your workshop. This can include spaces, capitals, and special characters.</span>
+                        </span>
+                    </label>
                     <input type="text" id="workshop-title" placeholder="My Redis Workshop">
                 </div>
 
                 <div class="form-group">
-                    <label for="workshop-description">Description *</label>
+                    <label for="workshop-description">
+                        Description *
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">A brief overview of what participants will learn in this workshop. Keep it to 1-2 sentences.</span>
+                        </span>
+                    </label>
                     <textarea id="workshop-description" placeholder="Brief description of your workshop"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="workshop-duration">Duration *</label>
+                    <label for="workshop-duration">
+                        Duration *
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">Estimated time to complete the workshop. Examples: "2 hours", "4 hours", "Full day"</span>
+                        </span>
+                    </label>
                     <input type="text" id="workshop-duration" placeholder="4 hours">
                 </div>
 
                 <div class="form-group">
-                    <label for="workshop-difficulty">Difficulty *</label>
+                    <label for="workshop-difficulty">
+                        Difficulty *
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">Choose the appropriate skill level: Beginner (no prior experience), Intermediate (basic knowledge), or Advanced (expert level)</span>
+                        </span>
+                    </label>
                     <select id="workshop-difficulty">
                         <option value="beginner">Beginner</option>
                         <option value="intermediate" selected>Intermediate</option>
@@ -574,10 +719,18 @@
 
                 <button class="btn btn-primary" style="width: 100%;" onclick="saveWorkshop()">
                     💾 Save Workshop
+                    <span class="tooltip-wrapper">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Saves your workshop to browser storage. You can load it later from the same browser.</span>
+                    </span>
                 </button>
 
-                <button class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="loadWorkshop()">
+                <button class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="openWorkshopBrowser()">
                     📂 Load Existing Workshop
+                    <span class="tooltip-wrapper">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Load a previously saved workshop from browser storage to continue editing.</span>
+                    </span>
                 </button>
             </div>
 
@@ -665,16 +818,29 @@
                 <!-- Export Tab -->
                 <div id="export-tab" class="tab-content">
                     <div class="alert alert-success">
-                        <strong>✅ Ready to Export</strong><br>
+                        <strong>✅ Ready to Export</strong>
+                        <span class="tooltip-wrapper">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">Export generates a workshop.config.json file that you can use with the CLI tools to build your workshop. Save this file in your workshop directory: workshops/your-workshop-id/workshop.config.json</span>
+                        </span>
+                        <br>
                         Copy the configuration below and save it as <code>workshop.config.json</code>
                     </div>
 
                     <div class="action-bar">
                         <button class="btn btn-primary" onclick="copyToClipboard()">
                             📋 Copy to Clipboard
+                            <span class="tooltip-wrapper">
+                                <span class="tooltip-icon">?</span>
+                                <span class="tooltip-text">Copy the JSON configuration to your clipboard so you can paste it into a file editor.</span>
+                            </span>
                         </button>
                         <button class="btn btn-secondary" onclick="downloadConfig()">
                             💾 Download File
+                            <span class="tooltip-wrapper">
+                                <span class="tooltip-icon">?</span>
+                                <span class="tooltip-text">Download the configuration as a workshop.config.json file. Save it to workshops/your-workshop-id/ directory.</span>
+                            </span>
                         </button>
                     </div>
 
@@ -716,6 +882,30 @@
 
             <div class="module-browser" id="module-browser-list">
                 <!-- Modules will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Workshop Browser Modal -->
+    <div id="workshop-browser-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📂 Load Workshop</h2>
+                <button class="modal-close" onclick="closeWorkshopBrowser()">✕</button>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom: 1rem;">
+                <strong>ℹ️ Saved Workshops</strong><br>
+                Select a workshop from your browser storage to continue editing.
+            </div>
+
+            <div class="form-group">
+                <label for="workshop-search">Search Workshops</label>
+                <input type="text" id="workshop-search" placeholder="Search by ID or title..." oninput="filterWorkshops()">
+            </div>
+
+            <div class="workshop-browser" id="workshop-browser-list">
+                <!-- Workshops will be populated here -->
             </div>
         </div>
     </div>
@@ -840,16 +1030,25 @@
                 return;
             }
 
+            // Update lastUpdated timestamp
+            workshop.lastUpdated = new Date().toISOString().split('T')[0];
+
             // Save to localStorage
             localStorage.setItem(`workshop-${workshop.workshopId}`, JSON.stringify(workshop));
             
-            alert('✅ Workshop saved successfully!');
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success';
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '2000';
+            alertDiv.innerHTML = '✅ Workshop saved successfully!';
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
         }
 
-        function loadWorkshop() {
-            const workshopId = prompt('Enter workshop ID to load:');
-            if (!workshopId) return;
-
+        function loadWorkshop(workshopId) {
             const saved = localStorage.getItem(`workshop-${workshopId}`);
             if (!saved) {
                 alert('Workshop not found');
@@ -868,7 +1067,140 @@
 
             updateSummary();
             renderModules();
-            alert('✅ Workshop loaded successfully!');
+            closeWorkshopBrowser();
+            
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success';
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '2000';
+            alertDiv.innerHTML = '✅ Workshop loaded successfully!';
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        // Workshop browser functions
+        function openWorkshopBrowser() {
+            document.getElementById('workshop-browser-modal').classList.add('active');
+            renderWorkshopBrowser();
+        }
+
+        function closeWorkshopBrowser() {
+            document.getElementById('workshop-browser-modal').classList.remove('active');
+        }
+
+        function renderWorkshopBrowser() {
+            const container = document.getElementById('workshop-browser-list');
+            const savedWorkshops = [];
+
+            // Get all workshops from localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('workshop-')) {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        savedWorkshops.push(data);
+                    } catch (e) {
+                        console.error('Error parsing workshop:', key, e);
+                    }
+                }
+            }
+
+            if (savedWorkshops.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-browser">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                        <h3>No Saved Workshops</h3>
+                        <p>Create and save a workshop to see it here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            savedWorkshops.forEach(ws => {
+                const item = document.createElement('div');
+                item.className = 'workshop-browser-item';
+                const moduleCount = ws.modules ? ws.modules.length : 0;
+                const totalDuration = ws.modules ? ws.modules.reduce((sum, m) => sum + (m.duration || 0), 0) : 0;
+                
+                item.innerHTML = `
+                    <h4>
+                        ${ws.title || ws.workshopId}
+                        <span class="badge ${ws.difficulty}">${ws.difficulty}</span>
+                    </h4>
+                    <p><strong>ID:</strong> ${ws.workshopId}</p>
+                    <p>${ws.description || 'No description'}</p>
+                    <div class="meta">
+                        <span>📚 ${moduleCount} modules</span>
+                        <span>⏱️ ${totalDuration} min</span>
+                        <span>📅 ${ws.lastUpdated || 'Unknown date'}</span>
+                    </div>
+                `;
+                item.onclick = () => loadWorkshop(ws.workshopId);
+                container.appendChild(item);
+            });
+        }
+
+        function filterWorkshops() {
+            const search = document.getElementById('workshop-search').value.toLowerCase();
+            const container = document.getElementById('workshop-browser-list');
+            const savedWorkshops = [];
+
+            // Get all workshops from localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('workshop-')) {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        savedWorkshops.push(data);
+                    } catch (e) {
+                        console.error('Error parsing workshop:', key, e);
+                    }
+                }
+            }
+
+            // Filter workshops
+            const filtered = savedWorkshops.filter(ws => {
+                return ws.workshopId.toLowerCase().includes(search) ||
+                       (ws.title && ws.title.toLowerCase().includes(search)) ||
+                       (ws.description && ws.description.toLowerCase().includes(search));
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-browser">
+                        <p>No workshops found matching "${search}"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(ws => {
+                const item = document.createElement('div');
+                item.className = 'workshop-browser-item';
+                const moduleCount = ws.modules ? ws.modules.length : 0;
+                const totalDuration = ws.modules ? ws.modules.reduce((sum, m) => sum + (m.duration || 0), 0) : 0;
+                
+                item.innerHTML = `
+                    <h4>
+                        ${ws.title || ws.workshopId}
+                        <span class="badge ${ws.difficulty}">${ws.difficulty}</span>
+                    </h4>
+                    <p><strong>ID:</strong> ${ws.workshopId}</p>
+                    <p>${ws.description || 'No description'}</p>
+                    <div class="meta">
+                        <span>📚 ${moduleCount} modules</span>
+                        <span>⏱️ ${totalDuration} min</span>
+                        <span>📅 ${ws.lastUpdated || 'Unknown date'}</span>
+                    </div>
+                `;
+                item.onclick = () => loadWorkshop(ws.workshopId);
+                container.appendChild(item);
+            });
         }
 
         // Module management
