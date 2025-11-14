@@ -1,3 +1,5 @@
+# Redis Fundamentals
+
 <!-- NAV:START -->
 <!-- This navigation is auto-generated. Do not edit manually. -->
 ## 🧭 Navigation
@@ -36,3 +38,28 @@
 
 ---
 <!-- NAV:END -->
+**Module 1 of 2**
+
+Introduction to Redis core concepts, data structures, and common use cases.
+Cloud-agnostic content suitable for any Redis deployment.
+
+
+## 📋 Module Details
+
+- **Duration**: N/A minutes
+- **Difficulty**: N/a
+
+## 🎯 Learning Objectives
+
+- Understand what Redis is and when to use it
+- Master the five core data structures
+- Learn common Redis use cases and patterns
+- Compare Redis with alternative solutions
+
+## 📚 Content
+
+- [What Is Redis](content/01-what-is-redis.md)
+
+---
+
+*Navigate using the controls at the top of this page.*

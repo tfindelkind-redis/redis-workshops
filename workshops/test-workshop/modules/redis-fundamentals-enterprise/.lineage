@@ -1,0 +1,18 @@
+created: '2025-11-14T08:44:11.643287'
+created_by: thomas.findelkind
+description: Enterprise-focused version with company-specific examples
+files:
+  01-what-is-redis.md:
+    source: shared/modules/redis-fundamentals/content/01-what-is-redis.md
+    status: customized
+    customized_date: '2025-11-14T08:50:00Z'
+    customization_note: Added Acme Corp enterprise use cases and production examples
+  02-data-structures.md:
+    source: shared/modules/redis-fundamentals/content/02-data-structures.md
+    status: inherited
+  03-use-cases.md:
+    source: shared/modules/redis-fundamentals/content/03-use-cases.md
+    status: inherited
+module_id: test-workshop.redis-fundamentals-enterprise.v1
+parent_module: core.redis-fundamentals.v1
+parent_path: shared/modules/redis-fundamentals

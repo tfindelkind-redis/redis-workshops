@@ -1,0 +1,48 @@
+author: Redis Workshop Team
+content:
+  exercises:
+  - duration: 10
+    file: exercises/01-basic-commands.md
+    title: Basic Redis Commands
+  sections:
+  - duration: 15
+    file: 01-what-is-redis.md
+    title: What is Redis?
+  - duration: 25
+    file: 02-data-structures.md
+    title: Core Data Structures
+  - duration: 15
+    file: 03-use-cases.md
+    title: Common Use Cases
+  - duration: 5
+    file: 04-demo.md
+    title: Live Demo
+created: '2025-10-01T10:00:00Z'
+description: 'Introduction to Redis core concepts, data structures, and common use
+  cases.
+
+  Cloud-agnostic content suitable for any Redis deployment.
+
+  '
+id: test-workshop.redis-fundamentals-enterprise.v1
+last_updated: '2025-11-01T15:30:00Z'
+learning_objectives:
+- Understand what Redis is and when to use it
+- Master the five core data structures
+- Learn common Redis use cases and patterns
+- Compare Redis with alternative solutions
+lineage:
+  is_canonical: false
+  parent: core.redis-fundamentals.v1
+metadata:
+  difficulty: beginner
+  duration: 60
+  prerequisites: []
+  tags:
+  - fundamentals
+  - core
+  - generic
+  - data-structures
+name: Redis Fundamentals
+type: core
+version: 1.0.0
