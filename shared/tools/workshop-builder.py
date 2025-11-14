@@ -728,6 +728,7 @@ class WorkshopBuilder:
         for idx, module in enumerate(modules, 1):
             module_path = module['path']
             module_name = module_path.name
+            metadata = module['metadata']
             
             # Create module directory in build
             # Use format: 01-module-name, 02-module-name, etc.
@@ -739,6 +740,8 @@ class WorkshopBuilder:
             
             # Copy all content files (skip module.yaml and .lineage)
             files_copied = 0
+            has_readme = False
+            
             for item in module_path.iterdir():
                 if item.name in ['module.yaml', '.lineage', '.DS_Store']:
                     continue
@@ -746,16 +749,75 @@ class WorkshopBuilder:
                 if item.is_file():
                     shutil.copy2(item, module_build_dir / item.name)
                     files_copied += 1
+                    if item.name == 'README.md':
+                        has_readme = True
                 elif item.is_dir():
                     shutil.copytree(item, module_build_dir / item.name, dirs_exist_ok=True)
                     # Count files in subdirectory
                     files_copied += sum(1 for _ in (module_build_dir / item.name).rglob('*') if _.is_file())
+            
+            # If no README.md exists, create a module index
+            if not has_readme:
+                self._create_module_index(module_build_dir, metadata, idx, len(modules))
+                files_copied += 1
+                has_readme = True
             
             print(f"       Copied {files_copied} file(s)")
             
             module_dirs.append(module_build_dir)
         
         return module_dirs
+    
+    def _create_module_index(self, module_dir: Path, metadata: Dict, module_num: int, total_modules: int):
+        """
+        Create a README.md index for modules that don't have one.
+        """
+        module_name = metadata.get('name', module_dir.name)
+        description = metadata.get('description', 'No description available.')
+        duration = metadata.get('duration', 'N/A')
+        difficulty = metadata.get('difficulty', 'N/A')
+        objectives = metadata.get('learning_objectives', [])
+        
+        content = f"""# {module_name}
+
+**Module {module_num} of {total_modules}**
+
+{description}
+
+## 📋 Module Details
+
+- **Duration**: {duration} minutes
+- **Difficulty**: {difficulty.capitalize()}
+
+"""
+        
+        if objectives:
+            content += "## 🎯 Learning Objectives\n\n"
+            for obj in objectives:
+                content += f"- {obj}\n"
+            content += "\n"
+        
+        # List content files if they exist in a content/ subdirectory
+        content_dir = module_dir / 'content'
+        if content_dir.exists():
+            content_files = sorted([f for f in content_dir.iterdir() if f.suffix == '.md'])
+            if content_files:
+                content += "## 📚 Content\n\n"
+                for content_file in content_files:
+                    # Extract number and title from filename (e.g., "01-what-is-redis.md")
+                    file_name = content_file.stem
+                    title = file_name.split('-', 1)[1].replace('-', ' ').title() if '-' in file_name else file_name
+                    content += f"- [{title}](content/{content_file.name})\n"
+                content += "\n"
+        
+        content += """---
+
+*Navigate using the controls at the top of this page.*
+"""
+        
+        readme_file = module_dir / 'README.md'
+        with open(readme_file, 'w') as f:
+            f.write(content)
     
     def _inject_navigation(self, workshop: str, module_dirs: List[Path], build_dir: Path):
         """
@@ -769,8 +831,8 @@ class WorkshopBuilder:
             print("   💡 Run: workshop-builder.py update-navigation --workshop " + workshop)
             return
         
-        # Find all navigation files
-        nav_files = list(nav_dir.glob('*.nav.md'))
+        # Find all navigation files (saved as .html)
+        nav_files = list(nav_dir.glob('*.html'))
         
         if not nav_files:
             print("   ⚠️  No navigation files found in .nav/ directory")
@@ -780,16 +842,17 @@ class WorkshopBuilder:
         
         # Inject navigation into each module's README
         for module_dir in module_dirs:
-            module_name = module_dir.name.split('-', 1)[1]  # Remove "01-" prefix
-            nav_file = nav_dir / f"{module_name}.nav.md"
+            # The module_dir is like "01-redis-fundamentals"
+            # The nav file is named "01-redis-fundamentals.html"
+            nav_file = nav_dir / f"{module_dir.name}.html"
             readme_file = module_dir / 'README.md'
             
             if not nav_file.exists():
-                print(f"   ⚠️  No navigation file for module: {module_name}")
+                print(f"   ⚠️  No navigation file for module: {module_dir.name}")
                 continue
             
             if not readme_file.exists():
-                print(f"   ⚠️  No README.md in module: {module_name}")
+                print(f"   ⚠️  No README.md in module: {module_dir.name}")
                 continue
             
             # Read navigation content

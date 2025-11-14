@@ -1,6 +1,6 @@
-# Module Manager - Quick Reference Card
+# Quick Reference Card
 
-## 🚀 Quick Commands
+## 🚀 Module Manager Commands
 
 ```bash
 # Search for modules
@@ -17,6 +17,64 @@
 
 # Get module details
 ./shared/tools/module-manager.py info MODULE_ID
+```
+
+## 🔨 Workshop Builder Commands
+
+```bash
+# Add module to workshop
+./shared/tools/workshop-builder.py add \
+  --workshop WORKSHOP_NAME \
+  --module MODULE_ID
+
+# Remove module from workshop
+./shared/tools/workshop-builder.py remove \
+  --workshop WORKSHOP_NAME \
+  --module MODULE_ID
+
+# Reorder modules
+./shared/tools/workshop-builder.py reorder \
+  --workshop WORKSHOP_NAME
+
+# Preview workshop structure
+./shared/tools/workshop-builder.py preview \
+  --workshop WORKSHOP_NAME
+
+# Generate navigation
+./shared/tools/workshop-builder.py update-navigation \
+  --workshop WORKSHOP_NAME
+
+# Build workshop (flatten for deployment)
+./shared/tools/workshop-builder.py build \
+  --workshop WORKSHOP_NAME \
+  [--output-dir PATH]
+```
+
+## 🎯 Complete Workshop Workflow
+
+```bash
+# 1. Create workshop
+bash shared/tools/create-workshop.sh my-workshop "My Workshop" "4 hours"
+
+# 2. Add modules
+./shared/tools/workshop-builder.py add --workshop my-workshop --module core.redis-fundamentals.v1
+./shared/tools/workshop-builder.py add --workshop my-workshop --module core.azure-redis-options.v1
+
+# 3. (Optional) Customize modules
+./shared/tools/module-manager.py fork \
+  --from core.redis-fundamentals.v1 \
+  --to workshops/my-workshop/modules/redis-fundamentals
+# Edit: workshops/my-workshop/modules/redis-fundamentals/content/*.md
+
+# 4. Generate navigation
+./shared/tools/workshop-builder.py update-navigation --workshop my-workshop
+
+# 5. Build for deployment
+./shared/tools/workshop-builder.py build --workshop my-workshop
+
+# 6. Deploy
+cp -r workshops/my-workshop/build/* docs/workshops/my-workshop/
+git add . && git commit -m "Deploy workshop" && git push
 ```
 
 ## 📁 Module Structure
