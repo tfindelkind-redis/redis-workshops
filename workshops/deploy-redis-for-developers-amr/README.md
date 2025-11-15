@@ -22,26 +22,47 @@ learningObjectives:
   - Implement monitoring and security best practices
   - Scale Redis deployments on Azure
 modules:
-  - name: Introduction to Redis
-    description: Learn what Redis is, its key features, and when to use it
-    duration: 45
-    difficulty: beginner
-    type: lecture
-  - name: Redis Data Structures
+  - order: 1
+    name: Redis Data Structures
     description: Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
     duration: 75
     difficulty: beginner
     type: hands-on
-  - name: Redis Use Cases
-    description: Explore common patterns - caching, session management, pub/sub, and leaderboards
-    duration: 60
-    difficulty: intermediate
-    type: hands-on
-  - name: Azure Managed Redis Deployment
+    moduleRef: Redis Data Structures
+    required: true
+  - order: 2
+    name: Introduction to Redis
+    description: Learn what Redis is, its key features, and when to use it
+    duration: 45
+    difficulty: beginner
+    type: lecture
+    moduleRef: Introduction to Redis
+    required: true
+  - order: 3
+    name: Azure Managed Redis Deployment
     description: Deploy and configure Redis using Azure Managed Redis service
     duration: 60
     difficulty: intermediate
     type: hands-on
+    moduleRef: Azure Managed Redis Deployment
+    required: true
+  - order: 4
+    name: Redis Use Cases
+    description: Explore common patterns - caching, session management, pub/sub, and leaderboards
+    duration: 50
+    difficulty: intermediate
+    type: hands-on
+    moduleRef: Redis Use Cases
+    required: true
+  - order: 5
+    name: RedisJSON
+    description: Using Redis as a JSON document store
+    duration: 45
+    difficulty: beginner
+    type: canonical
+    moduleRef: core.redis-json.v1
+    required: true
+duration: 275
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
@@ -145,3 +166,71 @@ For issues or questions:
 - Azure Redis support documentation
 - Redis community forums
 - Azure support portal
+
+
+## 📚 Workshop Modules
+
+### [Module 1: Redis Data Structures](module-01-redis-data-structures/README.md)
+
+**Duration:** 75 minutes | **Difficulty:** beginner | **Type:** hands-on
+
+Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
+
+### [Module 2: Introduction to Redis](module-02-introduction-to-redis/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** lecture
+
+Learn what Redis is, its key features, and when to use it
+
+### [Module 3: Azure Managed Redis Deployment](module-03-azure-managed-redis-deployment/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Deploy and configure Redis using Azure Managed Redis service
+
+### [Module 4: Redis Use Cases](module-04-redis-use-cases/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Explore common patterns - caching, session management, pub/sub, and leaderboards
+
+### [Module 5: RedisJSON](module-05-redisjson/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** canonical
+
+Using Redis as a JSON document store
+
+
+
+## 📚 Workshop Modules
+
+### [Module 1: Redis Data Structures](module-01-redis-data-structures/README.md)
+
+**Duration:** 75 minutes | **Difficulty:** beginner | **Type:** hands-on
+
+Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
+
+### [Module 2: Introduction to Redis](module-02-introduction-to-redis/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** lecture
+
+Learn what Redis is, its key features, and when to use it
+
+### [Module 3: Azure Managed Redis Deployment](module-03-azure-managed-redis-deployment/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Deploy and configure Redis using Azure Managed Redis service
+
+### [Module 4: Redis Use Cases](module-04-redis-use-cases/README.md)
+
+**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Explore common patterns - caching, session management, pub/sub, and leaderboards
+
+### [Module 5: RedisJSON](module-05-redisjson/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** canonical
+
+Using Redis as a JSON document store
+
