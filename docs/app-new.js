@@ -44,28 +44,19 @@ async function loadWorkshops() {
 
 // Static workshop list (fallback when API is not available)
 function getStaticWorkshops() {
-    return [
-        {
-            workshopId: 'deploy-redis-for-developers-amr',
-            title: 'Deploy Redis for Developers',
-            description: 'Learn how to deploy and configure Redis for production use',
-            difficulty: 'intermediate',
-            duration: '4 hours',
-            modulesCount: 5,
-            tags: ['deployment', 'production', 'configuration'],
-            path: 'workshops/deploy-redis-for-developers-amr'
-        },
-        {
-            workshopId: 'redis-fundamentals',
-            title: 'Redis Fundamentals',
-            description: 'Master the core concepts and data structures of Redis',
-            difficulty: 'beginner',
-            duration: '6 hours',
-            modulesCount: 8,
-            tags: ['fundamentals', 'data-structures', 'basics'],
-            path: 'workshops/redis-fundamentals'
-        }
-    ];
+    // Return empty array - workshops will be added as they are created
+    // When you create production workshops, add them here in this format:
+    // {
+    //     workshopId: 'workshop-folder-name',
+    //     title: 'Workshop Title',
+    //     description: 'Workshop description',
+    //     difficulty: 'beginner|intermediate|advanced',
+    //     duration: '4 hours',
+    //     modulesCount: 5,
+    //     tags: ['tag1', 'tag2'],
+    //     path: 'workshops/workshop-folder-name'
+    // }
+    return [];
 }
 
 // Render workshops
