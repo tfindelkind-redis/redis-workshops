@@ -739,13 +739,23 @@ async function findSimilarModules() {
 }
 
 /**
- * Link a child module to a parent module
+ * Link a child module to a parent module (supports multi-level inheritance)
  * @param {string} childModulePath - Relative path to child module
  * @param {string} parentModulePath - Relative path to parent module
  * @returns {Promise<object>} Result object
  */
 async function linkModuleToParent(childModulePath, parentModulePath) {
     try {
+        // 1. Check for circular dependency FIRST
+        const circularCheck = await checkCircularDependency(childModulePath, parentModulePath);
+        if (circularCheck.isCircular) {
+            return {
+                success: false,
+                error: 'CIRCULAR_DEPENDENCY',
+                message: circularCheck.message
+            };
+        }
+        
         const childFullPath = path.join(repoRoot, childModulePath);
         const childYamlPath = path.join(childFullPath, 'module.yaml');
         
@@ -758,13 +768,18 @@ async function linkModuleToParent(childModulePath, parentModulePath) {
             // File doesn't exist, create new
         }
         
-        // Update inheritance
-        childYaml.inheritance = {
-            isRoot: false,
-            parentPath: parentModulePath,
-            inheritedAt: new Date().toISOString(),
-            customizations: childYaml.inheritance?.customizations || []
-        };
+        // Update inheritance (REMOVED isRoot flag - now dynamic)
+        childYaml.inheritance = childYaml.inheritance || {};
+        childYaml.inheritance.parentPath = parentModulePath;
+        childYaml.inheritance.inheritedAt = new Date().toISOString();
+        
+        // Preserve existing children if any
+        if (!childYaml.inheritance.children) {
+            childYaml.inheritance.children = childYaml.inheritance.children || [];
+        }
+        
+        // Preserve customizations if any
+        childYaml.inheritance.customizations = childYaml.inheritance.customizations || [];
         
         // Write child module.yaml
         const childYamlContent = yaml.dump(childYaml, {
@@ -785,31 +800,29 @@ async function linkModuleToParent(childModulePath, parentModulePath) {
             // File doesn't exist, create new
         }
         
-        // Ensure parent is marked as root
+        // Ensure parent has inheritance.children array (REMOVED isRoot flag)
         if (!parentYaml.inheritance) {
-            parentYaml.inheritance = {
-                isRoot: true,
-                usedBy: []
-            };
+            parentYaml.inheritance = {};
         }
         
-        if (!parentYaml.inheritance.usedBy) {
-            parentYaml.inheritance.usedBy = [];
+        if (!parentYaml.inheritance.children) {
+            parentYaml.inheritance.children = [];
         }
         
         // Extract workshop from child path
         const childWorkshopMatch = childModulePath.match(/workshops\/([^\/]+)\//);
         const childWorkshop = childWorkshopMatch ? childWorkshopMatch[1] : 'unknown';
         
-        // Add child to usedBy if not already present
-        const existingEntry = parentYaml.inheritance.usedBy.find(
-            entry => entry.workshop === childWorkshop && entry.modulePath === childModulePath
+        // Add child to children array if not already present
+        const existingEntry = parentYaml.inheritance.children.find(
+            entry => entry.modulePath === childModulePath
         );
         
         if (!existingEntry) {
-            parentYaml.inheritance.usedBy.push({
+            parentYaml.inheritance.children.push({
                 workshop: childWorkshop,
-                modulePath: childModulePath
+                modulePath: childModulePath,
+                linkedAt: new Date().toISOString()
             });
         }
         
@@ -903,6 +916,228 @@ async function promoteToRoot(modulePath) {
     }
 }
 
+/**
+ * Get all top-level modules (modules with no parent)
+ * These are the entry points in the hierarchy
+ * @returns {Promise<Array>} Array of top-level module objects
+ */
+async function getTopLevelModules() {
+    try {
+        const allModules = await findAllModules();
+        
+        // Top-level modules have no parentPath
+        const topLevel = allModules.filter(module => 
+            !module.inheritance || !module.inheritance.parentPath
+        );
+        
+        // Add child counts for each top-level module
+        for (const module of topLevel) {
+            const childInfo = await getDescendantInfo(module.path);
+            module.childCount = childInfo.total;
+            module.directChildCount = childInfo.direct;
+        }
+        
+        return topLevel;
+    } catch (error) {
+        throw new Error(`Failed to get top-level modules: ${error.message}`);
+    }
+}
+
+/**
+ * Get direct children of a module
+ * @param {string} modulePath - Relative path to parent module (e.g., "workshops/workshop-a/module-01-intro")
+ * @returns {Promise<Array>} Array of child module objects
+ */
+async function getChildrenOfModule(modulePath) {
+    try {
+        const allModules = await findAllModules();
+        
+        // Find modules that have this as their parent
+        const children = allModules.filter(module =>
+            module.inheritance && 
+            module.inheritance.parentPath === modulePath
+        );
+        
+        // Add metadata for each child
+        for (const child of children) {
+            const childInfo = await getDescendantInfo(child.path);
+            child.childCount = childInfo.total;
+            child.directChildCount = childInfo.direct;
+            child.level = await getModuleDepth(child.path);
+        }
+        
+        return children;
+    } catch (error) {
+        throw new Error(`Failed to get children of module: ${error.message}`);
+    }
+}
+
+/**
+ * Get descendant count info (direct and total)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Object>} Object with direct and total counts
+ */
+async function getDescendantInfo(modulePath) {
+    try {
+        const children = await getChildrenOfModule(modulePath);
+        
+        let totalCount = children.length; // Direct children
+        
+        // Recursively count all descendants
+        for (const child of children) {
+            const childInfo = await getDescendantInfo(child.path);
+            totalCount += childInfo.total;
+        }
+        
+        return {
+            direct: children.length,
+            total: totalCount
+        };
+    } catch (error) {
+        // If error (likely module not found), return zero counts
+        return { direct: 0, total: 0 };
+    }
+}
+
+/**
+ * Get all ancestors of a module (for circular dependency check and breadcrumb)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Array>} Array of ancestor paths from immediate parent to top-level
+ */
+async function getModuleAncestors(modulePath) {
+    try {
+        const ancestors = [];
+        let currentPath = modulePath;
+        const visited = new Set();
+        const maxDepth = 50; // Safety limit
+        
+        while (currentPath && ancestors.length < maxDepth) {
+            // Detect circular dependency
+            if (visited.has(currentPath)) {
+                throw new Error(`Circular dependency detected at ${currentPath}`);
+            }
+            visited.add(currentPath);
+            
+            // Read module.yaml
+            const moduleYamlPath = path.join(repoRoot, currentPath, 'module.yaml');
+            
+            let moduleYaml;
+            try {
+                const yamlContent = await fs.readFile(moduleYamlPath, 'utf-8');
+                moduleYaml = yaml.load(yamlContent);
+            } catch (err) {
+                // Module.yaml doesn't exist or can't be read
+                break;
+            }
+            
+            // Check if it has a parent
+            if (moduleYaml && moduleYaml.inheritance && moduleYaml.inheritance.parentPath) {
+                const parentPath = moduleYaml.inheritance.parentPath;
+                ancestors.push(parentPath);
+                currentPath = parentPath;
+            } else {
+                // Reached top-level module
+                break;
+            }
+        }
+        
+        if (ancestors.length >= maxDepth) {
+            throw new Error('Maximum depth exceeded - possible circular dependency');
+        }
+        
+        return ancestors;
+    } catch (error) {
+        throw new Error(`Failed to get module ancestors: ${error.message}`);
+    }
+}
+
+/**
+ * Get the depth level of a module in the hierarchy (0 = top-level)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<number>} Depth level
+ */
+async function getModuleDepth(modulePath) {
+    try {
+        const ancestors = await getModuleAncestors(modulePath);
+        return ancestors.length;
+    } catch (error) {
+        return 0; // Assume top-level if error
+    }
+}
+
+/**
+ * Check if linking child to parent would create a circular dependency
+ * @param {string} childModulePath - Relative path to child module
+ * @param {string} parentModulePath - Relative path to parent module
+ * @returns {Promise<Object>} Object with isCircular boolean and message
+ */
+async function checkCircularDependency(childModulePath, parentModulePath) {
+    try {
+        // Self-reference check
+        if (childModulePath === parentModulePath) {
+            return {
+                isCircular: true,
+                message: 'A module cannot be its own parent.'
+            };
+        }
+        
+        // Get all ancestors of the proposed parent
+        const parentAncestors = await getModuleAncestors(parentModulePath);
+        
+        // Check if child is in parent's ancestry
+        if (parentAncestors.includes(childModulePath)) {
+            return {
+                isCircular: true,
+                message: `Cannot link: ${childModulePath} is an ancestor of ${parentModulePath}. This would create a circular dependency.`
+            };
+        }
+        
+        // Get all descendants of the child
+        const childDescendants = await getAllDescendants(childModulePath);
+        
+        // Check if parent is in child's descendants
+        if (childDescendants.includes(parentModulePath)) {
+            return {
+                isCircular: true,
+                message: `Cannot link: ${parentModulePath} is a descendant of ${childModulePath}. This would create a circular dependency.`
+            };
+        }
+        
+        return {
+            isCircular: false,
+            message: 'No circular dependency detected.'
+        };
+    } catch (error) {
+        return {
+            isCircular: false,
+            message: 'Could not verify circular dependency, proceeding with caution.'
+        };
+    }
+}
+
+/**
+ * Get all descendants of a module recursively
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Array>} Array of all descendant paths
+ */
+async function getAllDescendants(modulePath) {
+    try {
+        const descendants = [];
+        const children = await getChildrenOfModule(modulePath);
+        
+        for (const child of children) {
+            descendants.push(child.path);
+            // Recursively get descendants of this child
+            const grandchildren = await getAllDescendants(child.path);
+            descendants.push(...grandchildren);
+        }
+        
+        return descendants;
+    } catch (error) {
+        return []; // Return empty array if error
+    }
+}
+
 module.exports = {
     listWorkshops,
     getWorkshop,
@@ -922,5 +1157,13 @@ module.exports = {
     findRootModules,
     findSimilarModules,
     linkModuleToParent,
-    promoteToRoot
+    promoteToRoot,
+    // Multi-level hierarchy support
+    getTopLevelModules,
+    getChildrenOfModule,
+    getDescendantInfo,
+    getModuleAncestors,
+    getModuleDepth,
+    checkCircularDependency,
+    getAllDescendants
 };

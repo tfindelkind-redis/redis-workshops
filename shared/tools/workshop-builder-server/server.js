@@ -584,6 +584,104 @@ app.post('/api/modules/promote', async (req, res) => {
     }
 });
 
+/**
+ * GET /api/modules/top-level
+ * Get all top-level modules (modules with no parent)
+ */
+app.get('/api/modules/top-level', async (req, res) => {
+    try {
+        const modules = await workshopOps.getTopLevelModules();
+        res.json({
+            success: true,
+            modules,
+            count: modules.length
+        });
+    } catch (error) {
+        console.error('Get top-level modules error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/modules/children/:workshopId/:moduleId
+ * Get direct children of a specific module
+ */
+app.get('/api/modules/children/:workshopId/:moduleId', async (req, res) => {
+    try {
+        const modulePath = `workshops/${req.params.workshopId}/${req.params.moduleId}`;
+        const children = await workshopOps.getChildrenOfModule(modulePath);
+        res.json({
+            success: true,
+            children,
+            count: children.length,
+            parentPath: modulePath
+        });
+    } catch (error) {
+        console.error('Get module children error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/modules/ancestors/:workshopId/:moduleId
+ * Get all ancestors of a module (for breadcrumb navigation)
+ */
+app.get('/api/modules/ancestors/:workshopId/:moduleId', async (req, res) => {
+    try {
+        const modulePath = `workshops/${req.params.workshopId}/${req.params.moduleId}`;
+        const ancestors = await workshopOps.getModuleAncestors(modulePath);
+        const depth = await workshopOps.getModuleDepth(modulePath);
+        res.json({
+            success: true,
+            ancestors,
+            depth,
+            modulePath
+        });
+    } catch (error) {
+        console.error('Get module ancestors error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/modules/check-circular
+ * Check if linking child to parent would create circular dependency
+ * Body: { childPath: string, parentPath: string }
+ */
+app.post('/api/modules/check-circular', async (req, res) => {
+    try {
+        const { childPath, parentPath } = req.body;
+        
+        if (!childPath || !parentPath) {
+            return res.status(400).json({
+                success: false,
+                error: 'Both childPath and parentPath are required'
+            });
+        }
+        
+        const result = await workshopOps.checkCircularDependency(childPath, parentPath);
+        res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        console.error('Check circular dependency error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
 // GitHub Endpoints
 // ============================================================================
@@ -722,7 +820,11 @@ app.listen(PORT, () => {
     console.log('  GET  /api/modules/similar - Find duplicate modules');
     console.log('  POST /api/modules/link    - Link child to parent');
     console.log('  POST /api/modules/promote - Promote module to root');
-    console.log('\n✨ Ready to build workshops!\n');
+    console.log('  GET  /api/modules/top-level - List top-level modules (no parent)');
+    console.log('  GET  /api/modules/children/:workshopId/:moduleId - Get module children');
+    console.log('  GET  /api/modules/ancestors/:workshopId/:moduleId - Get module ancestors');
+    console.log('  POST /api/modules/check-circular - Check for circular dependencies');
+    console.log('\n✨ Ready to build workshops with multi-level inheritance!\n');
 });
 
 module.exports = app;
