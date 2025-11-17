@@ -28,7 +28,7 @@
 
 **Duration:** 45 minutes  
 **Difficulty:** beginner  
-**Type:** canonical
+**Type:** lecture
 
 ## Overview
 
