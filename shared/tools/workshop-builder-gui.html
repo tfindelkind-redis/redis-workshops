@@ -920,69 +920,78 @@
                 <!-- Module Manager Tab -->
                 <div id="module-manager-tab" class="tab-content">
                     <div class="alert alert-info">
-                        <strong>🔗 Module Manager</strong><br>
-                        Discover, browse, and link modules across all workshops. Create parent-child relationships to enable module reusability.
+                        <strong>🔗 Module Manager - Hierarchical Browser</strong><br>
+                        Explore modules in a hierarchical structure. Click on any module to view its children, or navigate using breadcrumbs.
                     </div>
 
                     <div class="tabs" style="margin-top: 1rem; border-bottom: 2px solid var(--border-color);">
-                        <button class="tab active" onclick="switchModuleManagerTab('all')">📚 All Modules</button>
-                        <button class="tab" onclick="switchModuleManagerTab('roots')">🌳 Root Modules</button>
+                        <button class="tab active" onclick="switchModuleManagerTab('browse')">📚 Browse Modules</button>
                         <button class="tab" onclick="switchModuleManagerTab('duplicates')">🔍 Find Duplicates</button>
                         <button class="tab" onclick="switchModuleManagerTab('link')">🔗 Link Modules</button>
                     </div>
 
-                    <!-- All Modules Sub-Tab -->
-                    <div id="mm-all-tab" class="tab-content active" style="margin-top: 1rem;">
-                        <div class="action-bar" style="margin-bottom: 1rem;">
-                            <button class="btn btn-primary btn-sm" onclick="loadAllModules()">
-                                🔄 Refresh Modules
-                            </button>
-                            <div style="flex: 1;"></div>
-                            <input type="text" id="all-modules-search" placeholder="Search modules..." style="max-width: 300px;" oninput="filterAllModules()">
+                    <!-- Browse Modules Sub-Tab (Hierarchical View) -->
+                    <div id="mm-browse-tab" class="tab-content active" style="margin-top: 1rem;">
+                        <!-- Breadcrumb Navigation -->
+                        <div id="hierarchy-breadcrumb" style="display: none; margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-light); border-radius: 6px; border: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <span style="color: var(--text-light); font-size: 0.875rem;">📍 Navigation:</span>
+                                <div id="breadcrumb-items" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;"></div>
+                            </div>
                         </div>
 
-                        <div class="workshop-summary">
+                        <!-- Action Bar -->
+                        <div class="action-bar" style="margin-bottom: 1rem;">
+                            <button id="back-button" class="btn btn-outline btn-sm" onclick="goBackInHierarchy()" style="display: none;">
+                                ← Back
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="loadTopLevelModules()">
+                                🔄 Refresh
+                            </button>
+                            <div style="flex: 1;"></div>
+                            <input type="text" id="modules-search" placeholder="Search modules..." style="max-width: 300px;" oninput="filterModules()">
+                        </div>
+
+                        <!-- Current View Title -->
+                        <div id="view-title" style="margin-bottom: 1rem;">
+                            <h3 style="margin: 0; color: var(--text-color); display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="view-icon">📦</span>
+                                <span id="view-title-text">Top-Level Modules</span>
+                                <span id="view-count" class="badge" style="background: var(--info-color);">0</span>
+                            </h3>
+                            <p id="view-description" style="margin: 0.5rem 0 0 0; color: var(--text-light); font-size: 0.9rem;">
+                                These modules have no parent and can be used as starting points in the hierarchy.
+                            </p>
+                        </div>
+
+                        <!-- Statistics Summary -->
+                        <div class="workshop-summary" style="margin-bottom: 1.5rem;">
                             <div class="summary-grid">
                                 <div class="summary-item">
                                     <div class="summary-value" id="mm-total-count">-</div>
                                     <div class="summary-label">Total Modules</div>
                                 </div>
                                 <div class="summary-item">
-                                    <div class="summary-value" id="mm-root-count">-</div>
-                                    <div class="summary-label">Root Modules</div>
+                                    <div class="summary-value" id="mm-parent-count">-</div>
+                                    <div class="summary-label">Parent Modules</div>
                                 </div>
                                 <div class="summary-item">
                                     <div class="summary-value" id="mm-child-count">-</div>
                                     <div class="summary-label">Child Modules</div>
                                 </div>
                                 <div class="summary-item">
-                                    <div class="summary-value" id="mm-standalone-count">-</div>
-                                    <div class="summary-label">Standalone</div>
+                                    <div class="summary-value" id="mm-depth-count">-</div>
+                                    <div class="summary-label">Max Depth</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="all-modules-list" style="margin-top: 1rem;">
+                        <!-- Modules List -->
+                        <div id="modules-list" style="margin-top: 1rem;">
                             <div class="empty-state">
                                 <div class="empty-state-icon">📦</div>
                                 <h3>No Modules Loaded</h3>
-                                <p>Click "Refresh Modules" to discover modules across all workshops</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Root Modules Sub-Tab -->
-                    <div id="mm-roots-tab" class="tab-content" style="margin-top: 1rem;">
-                        <div class="alert alert-success">
-                            <strong>🌳 Root Modules</strong><br>
-                            These modules are parents that can be reused in other workshops. They track all child modules that link to them.
-                        </div>
-
-                        <div id="root-modules-list" style="margin-top: 1rem;">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">🌳</div>
-                                <h3>No Root Modules Yet</h3>
-                                <p>Root modules are created when you link modules together</p>
+                                <p>Click "Refresh" to discover modules across all workshops</p>
                             </div>
                         </div>
                     </div>
@@ -1745,14 +1754,25 @@
             } else if (tabName === 'preview') {
                 renderPreview();
             } else if (tabName === 'module-manager') {
-                // Load all modules when opening Module Manager tab
-                loadAllModules();
+                // Load top-level modules when opening Module Manager tab
+                loadTopLevelModules();
             }
         }
 
         // ========================================================================
-        // Module Manager Functions
+        // Module Manager Functions - Hierarchical Navigation
         // ========================================================================
+
+        // Hierarchical view state
+        let hierarchyView = {
+            type: 'top-level', // 'top-level' or 'children'
+            currentPath: null,
+            currentModule: null,
+            breadcrumb: [], // Array of {path, title, workshopId, moduleId}
+            history: [], // Navigation history
+            allModulesData: [],
+            currentModules: []
+        };
 
         let allModulesData = [];
         let rootModulesData = [];
@@ -1765,7 +1785,7 @@
             event.target.classList.add('active');
 
             // Update sub-tab content
-            const subTabs = ['mm-all-tab', 'mm-roots-tab', 'mm-duplicates-tab', 'mm-link-tab'];
+            const subTabs = ['mm-browse-tab', 'mm-duplicates-tab', 'mm-link-tab'];
             subTabs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.remove('active');
@@ -1773,45 +1793,155 @@
             document.getElementById(`mm-${tabName}-tab`).classList.add('active');
 
             // Load data for specific tabs
-            if (tabName === 'roots') {
-                loadRootModules();
+            if (tabName === 'browse') {
+                loadTopLevelModules();
             } else if (tabName === 'link') {
                 populateLinkSelects();
             }
         }
 
-        // Load all modules from API
-        async function loadAllModules() {
+        // Load top-level modules (entry points with no parent)
+        async function loadTopLevelModules() {
             try {
                 showNotification('Loading modules...', 'info');
                 
-                const response = await fetch('http://localhost:3000/api/modules/all');
+                const response = await fetch('http://localhost:3000/api/modules/top-level');
                 const data = await response.json();
                 
                 if (data.success) {
-                    allModulesData = data.modules;
-                    renderAllModules(allModulesData);
-                    updateModuleManagerStats(allModulesData);
-                    showNotification(`Loaded ${data.count} modules`, 'success');
+                    hierarchyView.type = 'top-level';
+                    hierarchyView.currentPath = null;
+                    hierarchyView.currentModule = null;
+                    hierarchyView.currentModules = data.modules;
+                    hierarchyView.breadcrumb = [];
+                    
+                    // Update view
+                    renderHierarchyView();
+                    updateBreadcrumb();
+                    await updateGlobalStats();
+                    
+                    showNotification(`Loaded ${data.count} top-level modules`, 'success');
                 } else {
                     throw new Error(data.error || 'Failed to load modules');
                 }
             } catch (error) {
-                console.error('Error loading modules:', error);
+                console.error('Error loading top-level modules:', error);
                 showNotification(`Error: ${error.message}`, 'error');
             }
         }
 
-        // Render all modules list
-        function renderAllModules(modules) {
-            const container = document.getElementById('all-modules-list');
+        // Load children of a specific module
+        async function loadModuleChildren(modulePath, moduleTitle, workshopId, moduleId) {
+            try {
+                showNotification('Loading children...', 'info');
+                
+                const response = await fetch(`http://localhost:3000/api/modules/children/${workshopId}/${moduleId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Save current state to history
+                    hierarchyView.history.push({
+                        type: hierarchyView.type,
+                        path: hierarchyView.currentPath,
+                        modules: hierarchyView.currentModules,
+                        breadcrumb: [...hierarchyView.breadcrumb]
+                    });
+                    
+                    // Update view state
+                    hierarchyView.type = 'children';
+                    hierarchyView.currentPath = modulePath;
+                    hierarchyView.currentModule = { path: modulePath, title: moduleTitle, workshopId, moduleId };
+                    hierarchyView.currentModules = data.children;
+                    
+                    // Add to breadcrumb
+                    hierarchyView.breadcrumb.push({ path: modulePath, title: moduleTitle, workshopId, moduleId });
+                    
+                    // Update view
+                    renderHierarchyView();
+                    updateBreadcrumb();
+                    
+                    showNotification(`Loaded ${data.count} children`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to load children');
+                }
+            } catch (error) {
+                console.error('Error loading children:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Navigate back in hierarchy
+        function goBackInHierarchy() {
+            if (hierarchyView.history.length === 0) {
+                loadTopLevelModules();
+                return;
+            }
+            
+            const previousState = hierarchyView.history.pop();
+            hierarchyView.type = previousState.type;
+            hierarchyView.currentPath = previousState.path;
+            hierarchyView.currentModules = previousState.modules;
+            hierarchyView.breadcrumb = previousState.breadcrumb;
+            
+            if (previousState.path) {
+                const parts = previousState.path.split('/');
+                hierarchyView.currentModule = {
+                    path: previousState.path,
+                    workshopId: parts[1],
+                    moduleId: parts[2]
+                };
+            } else {
+                hierarchyView.currentModule = null;
+            }
+            
+            renderHierarchyView();
+            updateBreadcrumb();
+        }
+
+        // Navigate to specific breadcrumb level
+        async function navigateToBreadcrumb(index) {
+            if (index < 0) {
+                // Navigate to top level
+                await loadTopLevelModules();
+                return;
+            }
+            
+            // Navigate back to specific ancestor
+            while (hierarchyView.breadcrumb.length > index + 1) {
+                goBackInHierarchy();
+            }
+        }
+
+        // Render hierarchical view (top-level or children)
+        function renderHierarchyView() {
+            const container = document.getElementById('modules-list');
+            const modules = hierarchyView.currentModules;
+            
+            // Update view title and description
+            if (hierarchyView.type === 'top-level') {
+                document.getElementById('view-icon').textContent = '📦';
+                document.getElementById('view-title-text').textContent = 'Top-Level Modules';
+                document.getElementById('view-description').textContent = 'These modules have no parent and can be used as starting points in the hierarchy.';
+                document.getElementById('back-button').style.display = 'none';
+            } else {
+                document.getElementById('view-icon').textContent = '👶';
+                document.getElementById('view-title-text').textContent = `Children of ${hierarchyView.currentModule?.title || 'Module'}`;
+                document.getElementById('view-description').textContent = `Modules that inherit from this parent. Click any module to drill deeper.`;
+                document.getElementById('back-button').style.display = 'inline-block';
+            }
+            
+            document.getElementById('view-count').textContent = modules.length;
             
             if (!modules || modules.length === 0) {
+                const emptyMessage = hierarchyView.type === 'top-level' ? 
+                    'No top-level modules found. All modules have parents.' : 
+                    'This module has no children yet.';
+                
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📦</div>
-                        <h3>No Modules Found</h3>
-                        <p>No modules discovered in any workshop</p>
+                        <div class="empty-state-icon">${hierarchyView.type === 'top-level' ? '📦' : '👶'}</div>
+                        <h3>No Modules Here</h3>
+                        <p>${emptyMessage}</p>
                     </div>
                 `;
                 return;
@@ -1820,49 +1950,53 @@
             let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
             
             modules.forEach(module => {
-                const inheritanceIcon = module.inheritance?.isRoot ? '🌳' : 
-                                       (module.inheritance?.parentPath ? '🔗' : '⭐');
-                const inheritanceLabel = module.inheritance?.isRoot ? 'Root' : 
-                                        (module.inheritance?.parentPath ? 'Child' : 'Standalone');
-                const inheritanceColor = module.inheritance?.isRoot ? 'var(--success-color)' : 
-                                        (module.inheritance?.parentPath ? 'var(--info-color)' : 'var(--text-light)');
+                const hasChildren = (module.childCount || 0) > 0;
+                const hasParent = module.inheritance?.parentPath;
+                const depth = module.level || hierarchyView.breadcrumb.length;
+                
+                // Determine color based on status
+                let borderColor = 'var(--border-color)';
+                if (hasChildren && hasParent) {
+                    borderColor = 'var(--warning-color)'; // Middle node - orange
+                } else if (hasChildren) {
+                    borderColor = 'var(--success-color)'; // Parent node - green
+                } else if (hasParent) {
+                    borderColor = 'var(--info-color)'; // Leaf node - blue
+                }
                 
                 html += `
-                    <div class="module-card" style="border-left: 4px solid ${inheritanceColor};">
+                    <div class="module-card" style="border-left: 4px solid ${borderColor};">
                         <div style="display: flex; align-items: start; gap: 1rem;">
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 1.5rem;">${inheritanceIcon}</span>
+                                    <span style="font-size: 1.5rem;">${hasChildren ? '📁' : '📄'}</span>
                                     <strong style="font-size: 1.1rem;">${module.title}</strong>
-                                    <span class="badge" style="background: ${inheritanceColor}; color: white;">
-                                        ${inheritanceLabel}
-                                    </span>
+                                    ${depth > 0 ? `<span class="badge" style="background: var(--text-light); color: white;">Level ${depth}</span>` : ''}
+                                    ${hasChildren && hasParent ? `<span class="badge" style="background: var(--warning-color); color: white;">Middle Node</span>` : ''}
+                                    ${hasChildren && !hasParent ? `<span class="badge" style="background: var(--success-color); color: white;">Parent</span>` : ''}
+                                    ${!hasChildren && hasParent ? `<span class="badge" style="background: var(--info-color); color: white;">Leaf</span>` : ''}
                                 </div>
                                 <div style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                     📁 ${module.workshopId} / ${module.moduleDir}
                                 </div>
                                 ${module.description ? `<p style="margin: 0.5rem 0; color: var(--text-color);">${module.description}</p>` : ''}
                                 ${module.duration ? `<p style="margin: 0; color: var(--text-light); font-size: 0.9rem;">⏱️ ${module.duration}</p>` : ''}
-                                ${module.inheritance?.parentPath ? `
+                                ${hasChildren ? `
                                     <div style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-light); border-radius: 4px; font-size: 0.875rem;">
-                                        🔗 Parent: <code>${module.inheritance.parentPath}</code>
+                                        � <strong>${module.directChildCount || 0}</strong> direct children, 
+                                        <strong>${module.childCount || 0}</strong> total descendants
                                     </div>
                                 ` : ''}
-                                ${module.inheritance?.usedBy?.length > 0 ? `
+                                ${module.inheritance?.parentPath ? `
                                     <div style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-light); border-radius: 4px; font-size: 0.875rem;">
-                                        👶 Used by ${module.inheritance.usedBy.length} module(s)
+                                        � Parent: <code style="font-size: 0.8rem;">${module.inheritance.parentPath}</code>
                                     </div>
                                 ` : ''}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                ${!module.inheritance?.isRoot && !module.inheritance?.parentPath ? `
-                                    <button class="btn btn-sm btn-primary" onclick="promoteModuleToRoot('${module.modulePath}')" title="Make this module a root/parent">
-                                        🌳 Make Root
-                                    </button>
-                                ` : ''}
-                                ${module.inheritance?.parentPath ? `
-                                    <button class="btn btn-sm btn-outline" onclick="promoteModuleToRoot('${module.modulePath}')" title="Make this module independent">
-                                        ⭐ Make Independent
+                                ${hasChildren ? `
+                                    <button class="btn btn-sm btn-primary" onclick="loadModuleChildren('${module.modulePath}', '${module.title}', '${module.workshopId}', '${module.moduleDir}')" title="View ${module.directChildCount} children">
+                                        👁️ View Children
                                     </button>
                                 ` : ''}
                             </div>
@@ -1875,29 +2009,103 @@
             container.innerHTML = html;
         }
 
-        // Update Module Manager statistics
-        function updateModuleManagerStats(modules) {
-            const total = modules.length;
-            const roots = modules.filter(m => m.inheritance?.isRoot).length;
-            const children = modules.filter(m => m.inheritance?.parentPath).length;
-            const standalone = total - roots - children;
+        // Update breadcrumb navigation
+        function updateBreadcrumb() {
+            const breadcrumbContainer = document.getElementById('hierarchy-breadcrumb');
+            const breadcrumbItems = document.getElementById('breadcrumb-items');
             
-            document.getElementById('mm-total-count').textContent = total;
-            document.getElementById('mm-root-count').textContent = roots;
-            document.getElementById('mm-child-count').textContent = children;
-            document.getElementById('mm-standalone-count').textContent = standalone;
+            if (hierarchyView.type === 'top-level' || hierarchyView.breadcrumb.length === 0) {
+                breadcrumbContainer.style.display = 'none';
+                return;
+            }
+            
+            breadcrumbContainer.style.display = 'block';
+            
+            let html = `
+                <button class="btn btn-sm btn-outline" onclick="navigateToBreadcrumb(-1)" style="padding: 0.25rem 0.75rem;">
+                    🏠 Top Level
+                </button>
+                <span style="color: var(--text-light);">›</span>
+            `;
+            
+            hierarchyView.breadcrumb.forEach((item, index) => {
+                const isLast = index === hierarchyView.breadcrumb.length - 1;
+                
+                if (isLast) {
+                    html += `<span style="font-weight: 600; color: var(--primary-color);">${item.title}</span>`;
+                } else {
+                    html += `
+                        <button class="btn btn-sm btn-outline" onclick="navigateToBreadcrumb(${index})" style="padding: 0.25rem 0.75rem;">
+                            ${item.title}
+                        </button>
+                        <span style="color: var(--text-light);">›</span>
+                    `;
+                }
+            });
+            
+            breadcrumbItems.innerHTML = html;
         }
 
-        // Filter all modules
-        function filterAllModules() {
-            const searchTerm = document.getElementById('all-modules-search').value.toLowerCase();
-            const filtered = allModulesData.filter(module => 
+        // Update global statistics (fetch from all modules)
+        async function updateGlobalStats() {
+            try {
+                const response = await fetch('http://localhost:3000/api/modules/all');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const modules = data.modules;
+                    const total = modules.length;
+                    const parents = modules.filter(m => m.inheritance?.children?.length > 0).length;
+                    const children = modules.filter(m => m.inheritance?.parentPath).length;
+                    
+                    // Calculate max depth
+                    let maxDepth = 0;
+                    for (const module of modules) {
+                        if (module.inheritance?.parentPath) {
+                            try {
+                                const depthResponse = await fetch(`http://localhost:3000/api/modules/ancestors/${module.workshopId}/${module.moduleDir}`);
+                                const depthData = await depthResponse.json();
+                                if (depthData.success && depthData.depth > maxDepth) {
+                                    maxDepth = depthData.depth;
+                                }
+                            } catch (err) {
+                                console.error('Error fetching depth:', err);
+                            }
+                        }
+                    }
+                    
+                    document.getElementById('mm-total-count').textContent = total;
+                    document.getElementById('mm-parent-count').textContent = parents;
+                    document.getElementById('mm-child-count').textContent = children;
+                    document.getElementById('mm-depth-count').textContent = maxDepth || '-';
+                }
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        // Filter modules in current view
+        function filterModules() {
+            const searchTerm = document.getElementById('modules-search').value.toLowerCase();
+            
+            if (!searchTerm) {
+                hierarchyView.currentModules = hierarchyView.allModulesData;
+                renderHierarchyView();
+                return;
+            }
+            
+            const filtered = hierarchyView.currentModules.filter(module => 
                 module.title.toLowerCase().includes(searchTerm) ||
                 module.moduleDir.toLowerCase().includes(searchTerm) ||
                 module.workshopId.toLowerCase().includes(searchTerm) ||
                 (module.description && module.description.toLowerCase().includes(searchTerm))
             );
-            renderAllModules(filtered);
+            
+            // Temporarily update view with filtered results
+            const originalModules = hierarchyView.currentModules;
+            hierarchyView.currentModules = filtered;
+            renderHierarchyView();
+            hierarchyView.currentModules = originalModules;
         }
 
         // Load root modules
@@ -2120,6 +2328,30 @@
             }
             
             try {
+                showNotification('Checking for circular dependencies...', 'info');
+                
+                // First check for circular dependencies
+                const checkResponse = await fetch('http://localhost:3000/api/modules/check-circular', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ childPath, parentPath })
+                });
+                
+                const checkData = await checkResponse.json();
+                
+                if (checkData.success && checkData.isCircular) {
+                    showNotification('❌ Circular dependency detected!', 'error');
+                    document.getElementById('link-result').innerHTML = `
+                        <div class="alert alert-error">
+                            <strong>❌ Circular Dependency Detected!</strong><br>
+                            ${checkData.message}<br><br>
+                            This link would create a circular reference in the hierarchy. 
+                            A module cannot be both an ancestor and descendant of another module.
+                        </div>
+                    `;
+                    return;
+                }
+                
                 showNotification('Linking modules...', 'info');
                 
                 const response = await fetch('http://localhost:3000/api/modules/link', {
@@ -2141,8 +2373,8 @@
                         </div>
                     `;
                     resetLinkForm();
-                    // Reload all modules to refresh the data
-                    loadAllModules();
+                    // Reload top-level modules to refresh the view
+                    loadTopLevelModules();
                 } else {
                     throw new Error(data.error || 'Failed to link modules');
                 }
@@ -2159,6 +2391,27 @@
 
         // Quick link from duplicate finder
         async function quickLinkToRoot(childPath, parentPath) {
+            // Check circular dependency first
+            try {
+                const checkResponse = await fetch('http://localhost:3000/api/modules/check-circular', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ childPath, parentPath })
+                });
+                
+                const checkData = await checkResponse.json();
+                
+                if (checkData.success && checkData.isCircular) {
+                    showNotification('❌ Cannot link: Circular dependency detected!', 'error');
+                    alert(`Cannot create this link:\n\n${checkData.message}\n\nThis would create a circular reference in the hierarchy.`);
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking circular dependency:', error);
+                showNotification('Error checking dependencies', 'error');
+                return;
+            }
+            
             if (confirm(`Link ${childPath} to ${parentPath}?`)) {
                 try {
                     showNotification('Linking modules...', 'info');
@@ -2175,8 +2428,8 @@
                         showNotification('✅ Modules linked successfully!', 'success');
                         // Refresh duplicates view
                         findDuplicateModules();
-                        // Reload all modules
-                        loadAllModules();
+                        // Reload top-level modules
+                        loadTopLevelModules();
                     } else {
                         throw new Error(data.error || 'Failed to link modules');
                     }
@@ -2203,8 +2456,8 @@
                     
                     if (data.success) {
                         showNotification('✅ Module promoted successfully!', 'success');
-                        // Reload modules
-                        loadAllModules();
+                        // Reload top-level modules
+                        loadTopLevelModules();
                     } else {
                         throw new Error(data.error || 'Failed to promote module');
                     }
