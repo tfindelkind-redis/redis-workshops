@@ -1,6 +1,6 @@
-// Workshop and Module Data
+// Workshop and Chapter Data
 // This file is auto-generated. Do not edit manually.
-// Generated on: 2025-11-15
+// Generated on: 2025-11-17
 const workshopsData = [
     {
         id: "redis-fundamentals",
@@ -8,22 +8,11 @@ const workshopsData = [
         description: "",
         difficulty: "",
         duration: "",
-        modulesCount: ,
+        chaptersCount: ,
         tags: ,
         path: "workshops/redis-fundamentals",
         lastUpdated: ""
     }
 ];
-const modulesData = [
-    {
-        id: "getting-started",
-        title: "Getting Started with Redis",
-        description: "Introduction to Redis, installation, and basic operations",
-        difficulty: "beginner",
-        estimatedMinutes: 45,
-        tags: ["redis","basics","getting-started","installation"],
-        path: "shared/modules/getting-started",
-        version: "1.0.0",
-        workshopSpecific: false
-    }
+const chaptersData = [
 ];
