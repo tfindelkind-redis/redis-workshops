@@ -16,8 +16,7 @@
             </div>
             <nav>
                 <a href="#workshops">Workshops</a>
-                <a href="#modules">Learning Modules</a>
-                <a href="create-workshop.html">Create Workshop</a>
+                <a href="#getting-started">Getting Started</a>
                 <a href="https://github.com/tfindelkind-redis/redis-workshops" target="_blank">GitHub</a>
             </nav>
         </div>
@@ -27,25 +26,23 @@
         <!-- Hero Section -->
         <section class="hero">
             <h2>Learn Redis Through Practice</h2>
-            <p>Choose from curated workshops designed to take you from beginner to expert through hands-on exercises and real-world projects.</p>
+            <p>Comprehensive, hands-on workshops designed to take you from beginner to expert through structured learning paths and real-world projects.</p>
             <div class="cta-buttons">
-                <a href="create-workshop.html" class="btn btn-primary">🎨 Create Your Own Workshop</a>
+                <a href="#workshops" class="btn btn-primary">📚 Browse Workshops</a>
                 <a href="https://github.com/tfindelkind-redis/redis-workshops" class="btn btn-secondary" target="_blank">View on GitHub</a>
             </div>
         </section>
 
-        <!-- Search & Filter Section -->
+        <!-- Workshops Section -->
         <section id="workshops" class="workshops-section">
             <div class="section-header">
-                <h2>📚 Browse Workshops</h2>
-                <div class="search-filter">
-                    <input type="text" id="search" placeholder="Search workshops..." aria-label="Search workshops">
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="beginner">Beginner</button>
-                        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
-                        <button class="filter-btn" data-filter="advanced">Advanced</button>
-                    </div>
+                <h2>📚 Available Workshops</h2>
+                <p class="section-description">Each workshop is a complete, self-contained learning path with multiple modules covering specific Redis topics and use cases.</p>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All Levels</button>
+                    <button class="filter-btn" data-filter="beginner">Beginner</button>
+                    <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                    <button class="filter-btn" data-filter="advanced">Advanced</button>
                 </div>
             </div>
 
@@ -55,35 +52,6 @@
 
             <div id="no-results" class="no-results" style="display: none;">
                 <p>No workshops found matching your criteria.</p>
-            </div>
-        </section>
-
-        <!-- Learning Modules Section (Unified Chapters + Modules) -->
-        <section id="modules" class="modules-section">
-            <div class="section-header">
-                <h2>🧩 Learning Modules</h2>
-                <p>Reusable learning units combining new modules (with versioning) and legacy chapters</p>
-                
-                <div class="module-filters">
-                    <div class="filter-buttons module-type-filters">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="modules">Modules</button>
-                        <button class="filter-btn" data-filter="canonical">Canonical</button>
-                        <button class="filter-btn" data-filter="customized">Customized</button>
-                        <button class="filter-btn" data-filter="chapters">Legacy Chapters</button>
-                        <button class="filter-btn" data-filter="trees">🌳 Version Trees</button>
-                    </div>
-                </div>
-                
-                <input type="text" id="module-search" placeholder="Search all learning units..." aria-label="Search modules">
-            </div>
-
-            <div id="module-content" class="module-grid">
-                <!-- Learning units will be loaded here dynamically -->
-            </div>
-
-            <div id="no-module-results" class="no-results" style="display: none;">
-                <p>No learning units found matching your criteria.</p>
             </div>
         </section>
 
@@ -124,12 +92,12 @@
                 <div class="stat-label">Workshops</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="learning-unit-count">0</div>
-                <div class="stat-label">Learning Units</div>
+                <div class="stat-number" id="total-modules">0</div>
+                <div class="stat-label">Total Modules</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="module-count">0</div>
-                <div class="stat-label">Modules</div>
+                <div class="stat-number" id="total-duration">0h</div>
+                <div class="stat-label">Learning Hours</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">100%</div>
@@ -159,8 +127,6 @@
         </div>
     </footer>
 
-    <script src="data.js"></script>
-    <script src="module-data.js"></script>
-    <script src="app.js"></script>
+    <script src="app-new.js"></script>
 </body>
 </html>

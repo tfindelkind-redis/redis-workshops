@@ -1189,6 +1189,119 @@ async function getAllDescendants(modulePath) {
     }
 }
 
+/**
+ * Copy an existing module with all its files to create a customized version
+ * @param {string} sourceModulePath - Relative path to source module (e.g., "workshops/workshop-id/module-01-name")
+ * @param {string} workshopId - Target workshop ID
+ * @param {string} newModuleName - New module directory name (e.g., "module-custom-redis-fundamentals")
+ * @param {object} newModuleMetadata - Metadata to update in the copied module { title, description, duration, difficulty, type }
+ * @returns {Promise<object>} { newModulePath, moduleDir, metadata }
+ */
+async function copyModule(sourceModulePath, workshopId, newModuleName, newModuleMetadata = {}) {
+    const fsSync = require('fs');
+    
+    try {
+        // Resolve full paths
+        const sourceFullPath = path.join(repoRoot, sourceModulePath);
+        const targetWorkshopPath = path.join(workshopsDir, workshopId);
+        const targetModulePath = path.join(targetWorkshopPath, newModuleName);
+        const targetModuleRelativePath = path.join('workshops', workshopId, newModuleName);
+        
+        // Validate source module exists
+        if (!fsSync.existsSync(sourceFullPath)) {
+            throw new Error(`Source module not found: ${sourceModulePath}`);
+        }
+        
+        // Validate target workshop exists
+        if (!fsSync.existsSync(targetWorkshopPath)) {
+            throw new Error(`Target workshop not found: ${workshopId}`);
+        }
+        
+        // Check if target module already exists
+        if (fsSync.existsSync(targetModulePath)) {
+            throw new Error(`Module already exists: ${newModuleName}`);
+        }
+        
+        // Recursively copy directory
+        await copyDirectory(sourceFullPath, targetModulePath);
+        
+        console.log(`✓ Copied module from ${sourceModulePath} to ${targetModuleRelativePath}`);
+        
+        // Update the module's README.md with new metadata
+        const readmePath = path.join(targetModulePath, 'README.md');
+        if (fsSync.existsSync(readmePath)) {
+            const content = await fs.readFile(readmePath, 'utf8');
+            const { frontmatter, content: markdownContent } = parseFrontmatter(content);
+            
+            if (frontmatter) {
+                // Update frontmatter with new metadata
+                const updatedFrontmatter = {
+                    ...frontmatter,
+                    ...(newModuleMetadata.title && { title: newModuleMetadata.title }),
+                    ...(newModuleMetadata.description && { description: newModuleMetadata.description }),
+                    ...(newModuleMetadata.duration && { duration: newModuleMetadata.duration }),
+                    ...(newModuleMetadata.difficulty && { difficulty: newModuleMetadata.difficulty }),
+                    ...(newModuleMetadata.type && { type: newModuleMetadata.type }),
+                    // Mark as customized
+                    customized: true,
+                    originalModule: sourceModulePath,
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Rebuild file with updated frontmatter
+                const newContent = buildFrontmatter(updatedFrontmatter) + markdownContent;
+                await fs.writeFile(readmePath, newContent, 'utf8');
+                
+                console.log(`✓ Updated module metadata in README.md`);
+                
+                return {
+                    newModulePath: targetModuleRelativePath,
+                    moduleDir: newModuleName,
+                    metadata: updatedFrontmatter
+                };
+            }
+        }
+        
+        // If no README.md or no frontmatter, just return basic info
+        return {
+            newModulePath: targetModuleRelativePath,
+            moduleDir: newModuleName,
+            metadata: newModuleMetadata
+        };
+        
+    } catch (error) {
+        throw new Error(`Failed to copy module: ${error.message}`);
+    }
+}
+
+/**
+ * Recursively copy a directory
+ * @param {string} src - Source directory path
+ * @param {string} dest - Destination directory path
+ */
+async function copyDirectory(src, dest) {
+    const fsSync = require('fs');
+    
+    // Create destination directory
+    await fs.mkdir(dest, { recursive: true });
+    
+    // Read source directory
+    const entries = await fs.readdir(src, { withFileTypes: true });
+    
+    for (const entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        
+        if (entry.isDirectory()) {
+            // Recursively copy subdirectory
+            await copyDirectory(srcPath, destPath);
+        } else {
+            // Copy file
+            await fs.copyFile(srcPath, destPath);
+        }
+    }
+}
+
 module.exports = {
     listWorkshops,
     getWorkshop,
@@ -1216,5 +1329,7 @@ module.exports = {
     getModuleAncestors,
     getModuleDepth,
     checkCircularDependency,
-    getAllDescendants
+    getAllDescendants,
+    // Module copying
+    copyModule
 };

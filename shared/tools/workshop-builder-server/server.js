@@ -682,6 +682,47 @@ app.post('/api/modules/check-circular', async (req, res) => {
     }
 });
 
+/**
+ * POST /api/modules/copy
+ * Copy an existing module with all its files to create a customized version
+ * Body: { 
+ *   sourceModulePath: string (e.g., "workshops/deploy-redis-for-developers-amr/module-01-redis-data-structures"),
+ *   workshopId: string,
+ *   newModuleName: string,
+ *   newModuleMetadata: { title, description, duration, difficulty, type }
+ * }
+ */
+app.post('/api/modules/copy', async (req, res) => {
+    try {
+        const { sourceModulePath, workshopId, newModuleName, newModuleMetadata } = req.body;
+        
+        if (!sourceModulePath || !workshopId || !newModuleName) {
+            return res.status(400).json({
+                success: false,
+                error: 'sourceModulePath, workshopId, and newModuleName are required'
+            });
+        }
+        
+        const result = await workshopOps.copyModule(
+            sourceModulePath,
+            workshopId,
+            newModuleName,
+            newModuleMetadata
+        );
+        
+        res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        console.error('Copy module error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
 // GitHub Endpoints
 // ============================================================================
