@@ -84,6 +84,7 @@ async function getWorkshop(workshopId) {
     try {
         const workshopPath = path.join(workshopsDir, workshopId);
         const readmePath = path.join(workshopPath, 'README.md');
+        const yamlPath = path.join(workshopPath, 'workshop.yaml');
         
         // Check if directory exists
         try {
@@ -92,16 +93,24 @@ async function getWorkshop(workshopId) {
             throw new Error(`Workshop directory not found: ${workshopId}`);
         }
         
-        // Read README.md
-        let content;
-        try {
-            content = await fs.readFile(readmePath, 'utf-8');
-        } catch {
-            throw new Error(`README.md not found in workshop: ${workshopId}`);
-        }
+        let frontmatter;
+        let markdownContent = '';
         
-        // Parse frontmatter
-        const { frontmatter, content: markdownContent } = parseFrontmatter(content);
+        // Try to read workshop.yaml first (for test workshops)
+        try {
+            const yamlContent = await fs.readFile(yamlPath, 'utf-8');
+            frontmatter = yaml.load(yamlContent);
+        } catch {
+            // workshop.yaml doesn't exist, try README.md
+            try {
+                const content = await fs.readFile(readmePath, 'utf-8');
+                const parsed = parseFrontmatter(content);
+                frontmatter = parsed.frontmatter;
+                markdownContent = parsed.content;
+            } catch {
+                throw new Error(`Neither workshop.yaml nor README.md found in workshop: ${workshopId}`);
+            }
+        }
         
         if (!frontmatter) {
             throw new Error(`No frontmatter found in workshop: ${workshopId}`);
@@ -617,8 +626,8 @@ async function findAllModules() {
                 const entries = await fs.readdir(workshopPath, { withFileTypes: true });
                 
                 for (const entry of entries) {
-                    // Match module directories: module-XX-name or module-XX
-                    if (entry.isDirectory() && entry.name.match(/^module-\d{2}/)) {
+                    // Match module directories: module-XX-name, module-XX, or test-*
+                    if (entry.isDirectory() && (entry.name.match(/^module-\d{2}/) || entry.name.match(/^test-/))) {
                         const modulePath = path.join(workshopPath, entry.name);
                         const moduleYamlPath = path.join(modulePath, 'module.yaml');
                         const moduleReadmePath = path.join(modulePath, 'README.md');
@@ -670,6 +679,24 @@ async function findAllModules() {
             }
         }
         
+        // Add children count and list to each module
+        for (const module of allModules) {
+            const modulePath = module.modulePath;
+            const children = allModules.filter(m => 
+                m.inheritance?.parentPath === modulePath
+            );
+            
+            module.childrenCount = children.length;
+            if (children.length > 0) {
+                module.children = children.map(c => ({
+                    workshopId: c.workshopId,
+                    moduleDir: c.moduleDir,
+                    title: c.title,
+                    modulePath: c.modulePath
+                }));
+            }
+        }
+        
         return allModules;
     } catch (error) {
         throw new Error(`Failed to find all modules: ${error.message}`);
@@ -677,15 +704,39 @@ async function findAllModules() {
 }
 
 /**
- * Find root (parent) modules
- * @returns {Promise<Array>} Array of root module objects
+ * Find root (parent) modules - modules that have children
+ * @returns {Promise<Array>} Array of root module objects with children
  */
 async function findRootModules() {
     try {
         const allModules = await findAllModules();
-        return allModules.filter(module => 
-            module.inheritance && module.inheritance.isRoot === true
-        );
+        
+        // Find modules that are parents (have children)
+        const parentModules = [];
+        
+        for (const module of allModules) {
+            const modulePath = module.modulePath;
+            
+            // Count children
+            const children = allModules.filter(m => 
+                m.inheritance?.parentPath === modulePath
+            );
+            
+            if (children.length > 0) {
+                parentModules.push({
+                    ...module,
+                    childrenCount: children.length,
+                    children: children.map(c => ({
+                        workshopId: c.workshopId,
+                        moduleDir: c.moduleDir,
+                        title: c.title,
+                        modulePath: c.modulePath
+                    }))
+                });
+            }
+        }
+        
+        return parentModules;
     } catch (error) {
         throw new Error(`Failed to find root modules: ${error.message}`);
     }
@@ -739,13 +790,23 @@ async function findSimilarModules() {
 }
 
 /**
- * Link a child module to a parent module
+ * Link a child module to a parent module (supports multi-level inheritance)
  * @param {string} childModulePath - Relative path to child module
  * @param {string} parentModulePath - Relative path to parent module
  * @returns {Promise<object>} Result object
  */
 async function linkModuleToParent(childModulePath, parentModulePath) {
     try {
+        // 1. Check for circular dependency FIRST
+        const circularCheck = await checkCircularDependency(childModulePath, parentModulePath);
+        if (circularCheck.isCircular) {
+            return {
+                success: false,
+                error: 'CIRCULAR_DEPENDENCY',
+                message: circularCheck.message
+            };
+        }
+        
         const childFullPath = path.join(repoRoot, childModulePath);
         const childYamlPath = path.join(childFullPath, 'module.yaml');
         
@@ -758,13 +819,18 @@ async function linkModuleToParent(childModulePath, parentModulePath) {
             // File doesn't exist, create new
         }
         
-        // Update inheritance
-        childYaml.inheritance = {
-            isRoot: false,
-            parentPath: parentModulePath,
-            inheritedAt: new Date().toISOString(),
-            customizations: childYaml.inheritance?.customizations || []
-        };
+        // Update inheritance (REMOVED isRoot flag - now dynamic)
+        childYaml.inheritance = childYaml.inheritance || {};
+        childYaml.inheritance.parentPath = parentModulePath;
+        childYaml.inheritance.inheritedAt = new Date().toISOString();
+        
+        // Preserve existing children if any
+        if (!childYaml.inheritance.children) {
+            childYaml.inheritance.children = childYaml.inheritance.children || [];
+        }
+        
+        // Preserve customizations if any
+        childYaml.inheritance.customizations = childYaml.inheritance.customizations || [];
         
         // Write child module.yaml
         const childYamlContent = yaml.dump(childYaml, {
@@ -785,31 +851,29 @@ async function linkModuleToParent(childModulePath, parentModulePath) {
             // File doesn't exist, create new
         }
         
-        // Ensure parent is marked as root
+        // Ensure parent has inheritance.children array (REMOVED isRoot flag)
         if (!parentYaml.inheritance) {
-            parentYaml.inheritance = {
-                isRoot: true,
-                usedBy: []
-            };
+            parentYaml.inheritance = {};
         }
         
-        if (!parentYaml.inheritance.usedBy) {
-            parentYaml.inheritance.usedBy = [];
+        if (!parentYaml.inheritance.children) {
+            parentYaml.inheritance.children = [];
         }
         
         // Extract workshop from child path
         const childWorkshopMatch = childModulePath.match(/workshops\/([^\/]+)\//);
         const childWorkshop = childWorkshopMatch ? childWorkshopMatch[1] : 'unknown';
         
-        // Add child to usedBy if not already present
-        const existingEntry = parentYaml.inheritance.usedBy.find(
-            entry => entry.workshop === childWorkshop && entry.modulePath === childModulePath
+        // Add child to children array if not already present
+        const existingEntry = parentYaml.inheritance.children.find(
+            entry => entry.modulePath === childModulePath
         );
         
         if (!existingEntry) {
-            parentYaml.inheritance.usedBy.push({
+            parentYaml.inheritance.children.push({
                 workshop: childWorkshop,
-                modulePath: childModulePath
+                modulePath: childModulePath,
+                linkedAt: new Date().toISOString()
             });
         }
         
@@ -903,6 +967,341 @@ async function promoteToRoot(modulePath) {
     }
 }
 
+/**
+ * Get all top-level modules (modules with no parent)
+ * These are the entry points in the hierarchy
+ * @returns {Promise<Array>} Array of top-level module objects
+ */
+async function getTopLevelModules() {
+    try {
+        const allModules = await findAllModules();
+        
+        // Top-level modules have no parentPath
+        const topLevel = allModules.filter(module => 
+            !module.inheritance || !module.inheritance.parentPath
+        );
+        
+        // Add child counts for each top-level module
+        for (const module of topLevel) {
+            const childInfo = await getDescendantInfo(module.path);
+            module.childCount = childInfo.total;
+            module.directChildCount = childInfo.direct;
+        }
+        
+        return topLevel;
+    } catch (error) {
+        throw new Error(`Failed to get top-level modules: ${error.message}`);
+    }
+}
+
+/**
+ * Get direct children of a module
+ * @param {string} modulePath - Relative path to parent module (e.g., "workshops/workshop-a/module-01-intro")
+ * @returns {Promise<Array>} Array of child module objects
+ */
+async function getChildrenOfModule(modulePath) {
+    try {
+        const allModules = await findAllModules();
+        
+        // Find modules that have this as their parent
+        const children = allModules.filter(module =>
+            module.inheritance && 
+            module.inheritance.parentPath === modulePath
+        );
+        
+        // Add metadata for each child
+        for (const child of children) {
+            const childInfo = await getDescendantInfo(child.path);
+            child.childCount = childInfo.total;
+            child.directChildCount = childInfo.direct;
+            child.level = await getModuleDepth(child.path);
+        }
+        
+        return children;
+    } catch (error) {
+        throw new Error(`Failed to get children of module: ${error.message}`);
+    }
+}
+
+/**
+ * Get descendant count info (direct and total)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Object>} Object with direct and total counts
+ */
+async function getDescendantInfo(modulePath) {
+    try {
+        const children = await getChildrenOfModule(modulePath);
+        
+        let totalCount = children.length; // Direct children
+        
+        // Recursively count all descendants
+        for (const child of children) {
+            const childInfo = await getDescendantInfo(child.path);
+            totalCount += childInfo.total;
+        }
+        
+        return {
+            direct: children.length,
+            total: totalCount
+        };
+    } catch (error) {
+        // If error (likely module not found), return zero counts
+        return { direct: 0, total: 0 };
+    }
+}
+
+/**
+ * Get all ancestors of a module (for circular dependency check and breadcrumb)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Array>} Array of ancestor paths from immediate parent to top-level
+ */
+async function getModuleAncestors(modulePath) {
+    try {
+        const ancestors = [];
+        let currentPath = modulePath;
+        const visited = new Set();
+        const maxDepth = 50; // Safety limit
+        
+        while (currentPath && ancestors.length < maxDepth) {
+            // Detect circular dependency
+            if (visited.has(currentPath)) {
+                throw new Error(`Circular dependency detected at ${currentPath}`);
+            }
+            visited.add(currentPath);
+            
+            // Read module.yaml
+            const moduleYamlPath = path.join(repoRoot, currentPath, 'module.yaml');
+            
+            let moduleYaml;
+            try {
+                const yamlContent = await fs.readFile(moduleYamlPath, 'utf-8');
+                moduleYaml = yaml.load(yamlContent);
+            } catch (err) {
+                // Module.yaml doesn't exist or can't be read
+                break;
+            }
+            
+            // Check if it has a parent
+            if (moduleYaml && moduleYaml.inheritance && moduleYaml.inheritance.parentPath) {
+                const parentPath = moduleYaml.inheritance.parentPath;
+                ancestors.push(parentPath);
+                currentPath = parentPath;
+            } else {
+                // Reached top-level module
+                break;
+            }
+        }
+        
+        if (ancestors.length >= maxDepth) {
+            throw new Error('Maximum depth exceeded - possible circular dependency');
+        }
+        
+        return ancestors;
+    } catch (error) {
+        throw new Error(`Failed to get module ancestors: ${error.message}`);
+    }
+}
+
+/**
+ * Get the depth level of a module in the hierarchy (0 = top-level)
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<number>} Depth level
+ */
+async function getModuleDepth(modulePath) {
+    try {
+        const ancestors = await getModuleAncestors(modulePath);
+        return ancestors.length;
+    } catch (error) {
+        return 0; // Assume top-level if error
+    }
+}
+
+/**
+ * Check if linking child to parent would create a circular dependency
+ * @param {string} childModulePath - Relative path to child module
+ * @param {string} parentModulePath - Relative path to parent module
+ * @returns {Promise<Object>} Object with isCircular boolean and message
+ */
+async function checkCircularDependency(childModulePath, parentModulePath) {
+    try {
+        // Self-reference check
+        if (childModulePath === parentModulePath) {
+            return {
+                isCircular: true,
+                message: 'A module cannot be its own parent.'
+            };
+        }
+        
+        // Get all ancestors of the proposed parent
+        const parentAncestors = await getModuleAncestors(parentModulePath);
+        
+        // Check if child is in parent's ancestry
+        if (parentAncestors.includes(childModulePath)) {
+            return {
+                isCircular: true,
+                message: `Cannot link: ${childModulePath} is an ancestor of ${parentModulePath}. This would create a circular dependency.`
+            };
+        }
+        
+        // Get all descendants of the child
+        const childDescendants = await getAllDescendants(childModulePath);
+        
+        // Check if parent is in child's descendants
+        if (childDescendants.includes(parentModulePath)) {
+            return {
+                isCircular: true,
+                message: `Cannot link: ${parentModulePath} is a descendant of ${childModulePath}. This would create a circular dependency.`
+            };
+        }
+        
+        return {
+            isCircular: false,
+            message: 'No circular dependency detected.'
+        };
+    } catch (error) {
+        return {
+            isCircular: false,
+            message: 'Could not verify circular dependency, proceeding with caution.'
+        };
+    }
+}
+
+/**
+ * Get all descendants of a module recursively
+ * @param {string} modulePath - Relative path to module
+ * @returns {Promise<Array>} Array of all descendant paths
+ */
+async function getAllDescendants(modulePath) {
+    try {
+        const descendants = [];
+        const children = await getChildrenOfModule(modulePath);
+        
+        for (const child of children) {
+            descendants.push(child.path);
+            // Recursively get descendants of this child
+            const grandchildren = await getAllDescendants(child.path);
+            descendants.push(...grandchildren);
+        }
+        
+        return descendants;
+    } catch (error) {
+        return []; // Return empty array if error
+    }
+}
+
+/**
+ * Copy an existing module with all its files to create a customized version
+ * @param {string} sourceModulePath - Relative path to source module (e.g., "workshops/workshop-id/module-01-name")
+ * @param {string} workshopId - Target workshop ID
+ * @param {string} newModuleName - New module directory name (e.g., "module-custom-redis-fundamentals")
+ * @param {object} newModuleMetadata - Metadata to update in the copied module { title, description, duration, difficulty, type }
+ * @returns {Promise<object>} { newModulePath, moduleDir, metadata }
+ */
+async function copyModule(sourceModulePath, workshopId, newModuleName, newModuleMetadata = {}) {
+    const fsSync = require('fs');
+    
+    try {
+        // Resolve full paths
+        const sourceFullPath = path.join(repoRoot, sourceModulePath);
+        const targetWorkshopPath = path.join(workshopsDir, workshopId);
+        const targetModulePath = path.join(targetWorkshopPath, newModuleName);
+        const targetModuleRelativePath = path.join('workshops', workshopId, newModuleName);
+        
+        // Validate source module exists
+        if (!fsSync.existsSync(sourceFullPath)) {
+            throw new Error(`Source module not found: ${sourceModulePath}`);
+        }
+        
+        // Validate target workshop exists
+        if (!fsSync.existsSync(targetWorkshopPath)) {
+            throw new Error(`Target workshop not found: ${workshopId}`);
+        }
+        
+        // Check if target module already exists
+        if (fsSync.existsSync(targetModulePath)) {
+            throw new Error(`Module already exists: ${newModuleName}`);
+        }
+        
+        // Recursively copy directory
+        await copyDirectory(sourceFullPath, targetModulePath);
+        
+        console.log(`✓ Copied module from ${sourceModulePath} to ${targetModuleRelativePath}`);
+        
+        // Update the module's README.md with new metadata
+        const readmePath = path.join(targetModulePath, 'README.md');
+        if (fsSync.existsSync(readmePath)) {
+            const content = await fs.readFile(readmePath, 'utf8');
+            const { frontmatter, content: markdownContent } = parseFrontmatter(content);
+            
+            if (frontmatter) {
+                // Update frontmatter with new metadata
+                const updatedFrontmatter = {
+                    ...frontmatter,
+                    ...(newModuleMetadata.title && { title: newModuleMetadata.title }),
+                    ...(newModuleMetadata.description && { description: newModuleMetadata.description }),
+                    ...(newModuleMetadata.duration && { duration: newModuleMetadata.duration }),
+                    ...(newModuleMetadata.difficulty && { difficulty: newModuleMetadata.difficulty }),
+                    ...(newModuleMetadata.type && { type: newModuleMetadata.type }),
+                    // Mark as customized
+                    customized: true,
+                    originalModule: sourceModulePath,
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Rebuild file with updated frontmatter
+                const newContent = buildFrontmatter(updatedFrontmatter) + markdownContent;
+                await fs.writeFile(readmePath, newContent, 'utf8');
+                
+                console.log(`✓ Updated module metadata in README.md`);
+                
+                return {
+                    newModulePath: targetModuleRelativePath,
+                    moduleDir: newModuleName,
+                    metadata: updatedFrontmatter
+                };
+            }
+        }
+        
+        // If no README.md or no frontmatter, just return basic info
+        return {
+            newModulePath: targetModuleRelativePath,
+            moduleDir: newModuleName,
+            metadata: newModuleMetadata
+        };
+        
+    } catch (error) {
+        throw new Error(`Failed to copy module: ${error.message}`);
+    }
+}
+
+/**
+ * Recursively copy a directory
+ * @param {string} src - Source directory path
+ * @param {string} dest - Destination directory path
+ */
+async function copyDirectory(src, dest) {
+    const fsSync = require('fs');
+    
+    // Create destination directory
+    await fs.mkdir(dest, { recursive: true });
+    
+    // Read source directory
+    const entries = await fs.readdir(src, { withFileTypes: true });
+    
+    for (const entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        
+        if (entry.isDirectory()) {
+            // Recursively copy subdirectory
+            await copyDirectory(srcPath, destPath);
+        } else {
+            // Copy file
+            await fs.copyFile(srcPath, destPath);
+        }
+    }
+}
+
 module.exports = {
     listWorkshops,
     getWorkshop,
@@ -922,5 +1321,15 @@ module.exports = {
     findRootModules,
     findSimilarModules,
     linkModuleToParent,
-    promoteToRoot
+    promoteToRoot,
+    // Multi-level hierarchy support
+    getTopLevelModules,
+    getChildrenOfModule,
+    getDescendantInfo,
+    getModuleAncestors,
+    getModuleDepth,
+    checkCircularDependency,
+    getAllDescendants,
+    // Module copying
+    copyModule
 };
