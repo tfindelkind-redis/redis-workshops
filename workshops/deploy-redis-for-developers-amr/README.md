@@ -23,20 +23,20 @@ learningObjectives:
   - Scale Redis deployments on Azure
 modules:
   - order: 1
-    name: Redis Data Structures
-    description: Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
-    duration: 75
-    difficulty: beginner
-    type: hands-on
-    moduleRef: Redis Data Structures
-    required: true
-  - order: 2
     name: Introduction to Redis
     description: Learn what Redis is, its key features, and when to use it
     duration: 45
     difficulty: beginner
     type: lecture
     moduleRef: Introduction to Redis
+    required: true
+  - order: 2
+    name: Redis Data Structures
+    description: Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
+    duration: 75
+    difficulty: beginner
+    type: hands-on
+    moduleRef: Redis Data Structures
     required: true
   - order: 3
     name: Redis Use Cases
@@ -249,6 +249,40 @@ Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
 **Duration:** 45 minutes | **Difficulty:** beginner | **Type:** lecture
 
 Learn what Redis is, its key features, and when to use it
+
+### [Module 3: Redis Use Cases](module-03-redis-use-cases/README.md)
+
+**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Explore common patterns - caching, session management, pub/sub, and leaderboards
+
+### [Module 4: Azure Managed Redis Deployment](module-04-azure-managed-redis-deployment/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+Deploy and configure Redis using Azure Managed Redis service
+
+### [Module 5: RedisJSON](module-05-redisjson/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** canonical
+
+Using Redis as a JSON document store
+
+
+
+## 📚 Workshop Modules
+
+### [Module 1: Introduction to Redis](module-01-introduction-to-redis/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** beginner | **Type:** lecture
+
+Learn what Redis is, its key features, and when to use it
+
+### [Module 2: Redis Data Structures](module-02-redis-data-structures/README.md)
+
+**Duration:** 75 minutes | **Difficulty:** beginner | **Type:** hands-on
+
+Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
 
 ### [Module 3: Redis Use Cases](module-03-redis-use-cases/README.md)
 

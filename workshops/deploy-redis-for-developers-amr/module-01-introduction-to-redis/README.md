@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-02-redis-data-structures/README.md">⬅️ Previous<br/><small>Redis Data Structures</small></a>
+      
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/><small>Azure Managed Redis Deployment</small></a>
+      <a href="../module-02-redis-data-structures/README.md">Next ➡️<br/><small>Redis Data Structures</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 3 of 5**
+[🏠 Workshop Home](../README.md) > **Module 1 of 5**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██████░░░░` 60%
+**Progress:** `██░░░░░░░░` 20%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Redis Use Cases
+# Introduction to Redis
 
-**Duration:** 50 minutes  
-**Difficulty:** intermediate  
-**Type:** hands-on
+**Duration:** 45 minutes  
+**Difficulty:** beginner  
+**Type:** lecture
 
 ## Overview
 
-Explore common patterns - caching, session management, pub/sub, and leaderboards
+Learn what Redis is, its key features, and when to use it
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-02-redis-data-structures/README.md">⬅️ Previous<br/>Redis Data Structures</a>
+      
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/>Azure Managed Redis Deployment</a>
+      <a href="../module-02-redis-data-structures/README.md">Next ➡️<br/>Redis Data Structures</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 3 of 5*
+*Module 1 of 5*

@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-02-redis-data-structures/README.md">⬅️ Previous<br/><small>Redis Data Structures</small></a>
+      <a href="../module-01-introduction-to-redis/README.md">⬅️ Previous<br/><small>Introduction to Redis</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/><small>Azure Managed Redis Deployment</small></a>
+      <a href="../module-03-redis-use-cases/README.md">Next ➡️<br/><small>Redis Use Cases</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 3 of 5**
+[🏠 Workshop Home](../README.md) > **Module 2 of 5**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██████░░░░` 60%
+**Progress:** `████░░░░░░` 40%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Redis Use Cases
+# Redis Data Structures
 
-**Duration:** 50 minutes  
-**Difficulty:** intermediate  
+**Duration:** 75 minutes  
+**Difficulty:** beginner  
 **Type:** hands-on
 
 ## Overview
 
-Explore common patterns - caching, session management, pub/sub, and leaderboards
+Hands-on exploration of Strings, Lists, Sets, Hashes, and Sorted Sets
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-02-redis-data-structures/README.md">⬅️ Previous<br/>Redis Data Structures</a>
+      <a href="../module-01-introduction-to-redis/README.md">⬅️ Previous<br/>Introduction to Redis</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/>Azure Managed Redis Deployment</a>
+      <a href="../module-03-redis-use-cases/README.md">Next ➡️<br/>Redis Use Cases</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 3 of 5*
+*Module 2 of 5*
