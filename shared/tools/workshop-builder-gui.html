@@ -2790,7 +2790,16 @@
             const container = document.getElementById('module-browser-list');
             container.innerHTML = '';
 
-            availableModules.forEach(module => {
+            // Filter out modules that are already in the workshop
+            const existingModuleRefs = new Set(workshop.modules.map(m => m.moduleRef));
+            const filteredModules = availableModules.filter(module => !existingModuleRefs.has(module.moduleRef));
+
+            if (filteredModules.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">All available modules have been added to this workshop</div>';
+                return;
+            }
+
+            filteredModules.forEach(module => {
                 const item = document.createElement('div');
                 item.className = 'module-browser-item';
                 item.innerHTML = `
@@ -2813,7 +2822,15 @@
             const container = document.getElementById('module-browser-list');
             container.innerHTML = '';
 
+            // Filter out modules that are already in the workshop
+            const existingModuleRefs = new Set(workshop.modules.map(m => m.moduleRef));
+            
             const filtered = availableModules.filter(module => {
+                // Exclude modules already in the workshop
+                if (existingModuleRefs.has(module.moduleRef)) {
+                    return false;
+                }
+                
                 const matchesSearch = module.name.toLowerCase().includes(search) || 
                                      module.description.toLowerCase().includes(search) ||
                                      module.tags.some(tag => tag.includes(search));
@@ -2822,7 +2839,10 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No modules found</div>';
+                const message = existingModuleRefs.size === availableModules.length 
+                    ? 'All available modules have been added to this workshop'
+                    : 'No modules found matching your search criteria';
+                container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-light);">${message}</div>`;
                 return;
             }
 
