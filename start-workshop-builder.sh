@@ -81,14 +81,30 @@ run_container() {
     echo ""
     echo -e "${BLUE}🚀 Starting Workshop Builder server...${NC}"
     
-    # Mount the repository root as a volume so server can access workshops
-    docker run -d \
-        --name "${CONTAINER_NAME}" \
-        -p "${PORT}:3000" \
-        -v "${REPO_ROOT}:/repo:rw" \
-        -e REPO_ROOT=/repo \
-        --restart unless-stopped \
-        "${IMAGE_NAME}"
+    # Check for GitHub token (optional for PR functionality)
+    if [ -n "${GITHUB_TOKEN}" ]; then
+        echo -e "${GREEN}✅ GitHub token detected - PR creation will be enabled${NC}"
+        # Mount the repository root as a volume so server can access workshops
+        docker run -d \
+            --name "${CONTAINER_NAME}" \
+            -p "${PORT}:3000" \
+            -v "${REPO_ROOT}:/repo:rw" \
+            -e REPO_ROOT=/repo \
+            -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+            --restart unless-stopped \
+            "${IMAGE_NAME}"
+    else
+        echo -e "${YELLOW}ℹ️  No GitHub token found - PR creation will be disabled${NC}"
+        echo -e "${YELLOW}   To enable: export GITHUB_TOKEN='your_token' before running this script${NC}"
+        # Mount the repository root as a volume so server can access workshops
+        docker run -d \
+            --name "${CONTAINER_NAME}" \
+            -p "${PORT}:3000" \
+            -v "${REPO_ROOT}:/repo:rw" \
+            -e REPO_ROOT=/repo \
+            --restart unless-stopped \
+            "${IMAGE_NAME}"
+    fi
     
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✅ Container started successfully${NC}"
@@ -146,7 +162,9 @@ show_info() {
     echo "========================================================================"
     echo ""
     echo "1. Open the Workshop Builder GUI:"
-    echo "   open ${REPO_ROOT}/shared/tools/workshop-builder-gui.html"
+    echo "   🌐 http://localhost:${PORT}"
+    echo ""
+    echo "   Or run: open http://localhost:${PORT}"
     echo ""
     echo "2. The GUI will automatically:"
     echo "   • Detect the server"
@@ -158,6 +176,20 @@ show_info() {
     echo "========================================================================"
 }
 
+# Function to open browser (optional)
+open_browser() {
+    if command -v open &> /dev/null; then
+        # macOS
+        open "http://localhost:${PORT}"
+    elif command -v xdg-open &> /dev/null; then
+        # Linux
+        xdg-open "http://localhost:${PORT}"
+    elif command -v start &> /dev/null; then
+        # Windows
+        start "http://localhost:${PORT}"
+    fi
+}
+
 # Main execution
 main() {
     check_docker
@@ -167,6 +199,15 @@ main() {
     run_container
     wait_for_server
     show_info
+    
+    # Ask if user wants to open browser
+    echo ""
+    read -p "Open Workshop Builder GUI in browser? (y/N): " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${BLUE}🌐 Opening browser...${NC}"
+        open_browser
+    fi
 }
 
 # Run main function

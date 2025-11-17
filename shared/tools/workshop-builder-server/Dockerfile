@@ -1,7 +1,16 @@
 # Use official Node.js LTS image
 FROM node:20-alpine
 
-# Set working directory
+# Install git
+RUN apk add --no-cache git
+
+# Configure git to trust the /repo directory
+RUN git config --global --add safe.directory /repo
+
+# Configure git user identity (required for commits)
+RUN git config --global user.name "Workshop Builder"
+RUN git config --global user.email "workshop-builder@redis.com"
+
 WORKDIR /app
 
 # Copy package files

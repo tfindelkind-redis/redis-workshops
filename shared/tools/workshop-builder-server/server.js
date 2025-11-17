@@ -10,6 +10,7 @@ const path = require('path');
 
 const gitOps = require('./git-ops');
 const workshopOps = require('./workshop-ops');
+const githubOps = require('./github-ops');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -401,6 +402,271 @@ app.get('/api/info', async (req, res) => {
     }
 });
 
+/**
+ * POST /api/workshops/:id/generate-modules
+ * Generate module directories with navigation for a workshop
+ */
+app.post('/api/workshops/:id/generate-modules', async (req, res) => {
+    try {
+        const workshopId = req.params.id;
+        
+        // Get workshop data
+        const workshop = await workshopOps.getWorkshop(workshopId);
+        if (!workshop) {
+            return res.status(404).json({
+                success: false,
+                error: 'Workshop not found'
+            });
+        }
+        
+        // Check if workshop has modules
+        if (!workshop.modules || workshop.modules.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Workshop has no modules to generate'
+            });
+        }
+        
+        // Generate module structure
+        const createdModules = await workshopOps.generateModuleStructure(
+            workshopId,
+            workshop.title,
+            workshop.modules
+        );
+        
+        // Update main README with module links
+        const modulesWithFolders = workshop.modules.map((module, index) => ({
+            ...module,
+            folder: createdModules[index].folderName
+        }));
+        
+        await workshopOps.updateWorkshopWithModuleLinks(workshopId, modulesWithFolders);
+        
+        res.json({
+            success: true,
+            message: `Generated ${createdModules.length} module directories`,
+            modules: createdModules
+        });
+    } catch (error) {
+        console.error('Generate modules error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// ============================================================================
+// Module Discovery & Linking Endpoints
+// ============================================================================
+
+/**
+ * GET /api/modules/all
+ * Get all modules across all workshops
+ */
+app.get('/api/modules/all', async (req, res) => {
+    try {
+        const modules = await workshopOps.findAllModules();
+        res.json({
+            success: true,
+            modules,
+            count: modules.length
+        });
+    } catch (error) {
+        console.error('Find all modules error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/modules/roots
+ * Get all root (parent) modules
+ */
+app.get('/api/modules/roots', async (req, res) => {
+    try {
+        const rootModules = await workshopOps.findRootModules();
+        res.json({
+            success: true,
+            modules: rootModules,
+            count: rootModules.length
+        });
+    } catch (error) {
+        console.error('Find root modules error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/modules/similar
+ * Find similar modules (potential duplicates) grouped by name
+ */
+app.get('/api/modules/similar', async (req, res) => {
+    try {
+        const duplicateGroups = await workshopOps.findSimilarModules();
+        res.json({
+            success: true,
+            groups: duplicateGroups,
+            count: duplicateGroups.length,
+            totalDuplicates: duplicateGroups.reduce((sum, group) => sum + group.count, 0)
+        });
+    } catch (error) {
+        console.error('Find similar modules error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/modules/link
+ * Link a child module to a parent module
+ * Body: { childPath: string, parentPath: string }
+ */
+app.post('/api/modules/link', async (req, res) => {
+    try {
+        const { childPath, parentPath } = req.body;
+        
+        if (!childPath || !parentPath) {
+            return res.status(400).json({
+                success: false,
+                error: 'Both childPath and parentPath are required'
+            });
+        }
+        
+        const result = await workshopOps.linkModuleToParent(childPath, parentPath);
+        res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        console.error('Link module error:', error);
+        res.status(400).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/modules/promote
+ * Promote a module to root (parent) status
+ * Body: { modulePath: string }
+ */
+app.post('/api/modules/promote', async (req, res) => {
+    try {
+        const { modulePath } = req.body;
+        
+        if (!modulePath) {
+            return res.status(400).json({
+                success: false,
+                error: 'modulePath is required'
+            });
+        }
+        
+        const result = await workshopOps.promoteToRoot(modulePath);
+        res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        console.error('Promote module error:', error);
+        res.status(400).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// ============================================================================
+// GitHub Endpoints
+// ============================================================================
+
+/**
+ * GET /api/github/status
+ * Get GitHub configuration and PR status
+ */
+app.get('/api/github/status', async (req, res) => {
+    try {
+        const status = await githubOps.getStatus();
+        res.json({
+            success: true,
+            ...status
+        });
+    } catch (error) {
+        console.error('GitHub status error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/github/pull-request
+ * Create a Pull Request on GitHub
+ * Body: { title: string, body?: string, base?: string }
+ */
+app.post('/api/github/pull-request', async (req, res) => {
+    try {
+        const { title, body, base } = req.body;
+        
+        if (!title) {
+            return res.status(400).json({
+                success: false,
+                error: 'PR title is required'
+            });
+        }
+        
+        // Get current branch
+        const currentBranch = await gitOps.getCurrentBranch();
+        
+        // Check if already on main
+        if (currentBranch === 'main' || currentBranch === 'master') {
+            return res.status(400).json({
+                success: false,
+                error: 'Cannot create PR from main branch. Please commit changes first to create a feature branch.'
+            });
+        }
+        
+        // Check if PR already exists
+        const existingPR = await githubOps.getExistingPR(currentBranch);
+        if (existingPR) {
+            return res.json({
+                success: true,
+                exists: true,
+                ...existingPR
+            });
+        }
+        
+        // Create PR
+        const result = await githubOps.createPullRequest({
+            title,
+            body: body || `Pull request from ${currentBranch}`,
+            head: currentBranch,
+            base: base || 'main'
+        });
+        
+        res.json({
+            success: true,
+            exists: false,
+            ...result
+        });
+    } catch (error) {
+        console.error('Create PR error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
 // Error Handling
 // ============================================================================
@@ -451,6 +717,11 @@ app.listen(PORT, () => {
     console.log('  POST /api/workshops       - Create workshop');
     console.log('  PUT  /api/workshops/:id   - Update workshop');
     console.log('  DELETE /api/workshops/:id - Delete workshop');
+    console.log('  GET  /api/modules/all     - List all modules');
+    console.log('  GET  /api/modules/roots   - List root modules');
+    console.log('  GET  /api/modules/similar - Find duplicate modules');
+    console.log('  POST /api/modules/link    - Link child to parent');
+    console.log('  POST /api/modules/promote - Promote module to root');
     console.log('\n✨ Ready to build workshops!\n');
 });
 

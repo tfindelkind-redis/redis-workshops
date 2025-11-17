@@ -393,6 +393,29 @@
             color: var(--text-color);
         }
 
+        .module-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .module-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -638,12 +661,45 @@
                 width: 220px;
             }
         }
+
+        /* Notification animations */
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🎓 Workshop Builder GUI</h1>
-        <p>Create and manage Redis workshops with visual tools - No command line required!</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 100%;">
+            <div style="flex: 1;">
+                <h1>🎓 Workshop Builder GUI</h1>
+                <p id="header-subtitle">Create and manage Redis workshops with visual tools - No command line required!</p>
+            </div>
+            <div id="github-pr-section" style="display: none; margin-left: 20px;">
+                <button class="btn btn-success" onclick="createPullRequest()" style="padding: 10px 20px; font-size: 14px; white-space: nowrap;">
+                    <span id="pr-button-text">🚀 Create Pull Request</span>
+                </button>
+                <div id="pr-status" style="margin-top: 5px; font-size: 12px; text-align: center;"></div>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -717,6 +773,22 @@
                     <input type="text" id="workshop-author" placeholder="Your Name">
                 </div>
 
+                <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <label style="display: flex; align-items: center; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="auto-generate-modules" checked style="margin-right: 0.5rem; width: auto; cursor: pointer;">
+                        <span style="flex: 1;">
+                            Auto-generate module directories
+                            <span class="tooltip-wrapper" style="margin-left: 0.25rem;">
+                                <span class="tooltip-icon">?</span>
+                                <span class="tooltip-text">Automatically creates individual module directories with navigation when you save the workshop. Uncheck to manually control when modules are generated.</span>
+                            </span>
+                        </span>
+                    </label>
+                    <p style="margin: 0.5rem 0 0 1.5rem; font-size: 0.875rem; color: var(--text-light);">
+                        Creates separate README.md files with navigation for each module
+                    </p>
+                </div>
+
                 <button class="btn btn-primary" style="width: 100%;" onclick="saveWorkshop()">
                     💾 Save Workshop
                     <span class="tooltip-wrapper">
@@ -740,7 +812,7 @@
                     <button class="tab active" onclick="switchTab('modules')">📚 Modules</button>
                     <button class="tab" onclick="switchTab('navigation')">🧭 Navigation</button>
                     <button class="tab" onclick="switchTab('preview')">👁️ Preview</button>
-                    <button class="tab" onclick="switchTab('export')">📤 Export</button>
+                    <button class="tab" onclick="switchTab('module-manager')">🔗 Module Manager</button>
                 </div>
 
                 <!-- Modules Tab -->
@@ -787,11 +859,41 @@
 
                 <!-- Navigation Tab -->
                 <div id="navigation-tab" class="tab-content">
-                    <div class="alert alert-info">
-                        <strong>ℹ️ Navigation Preview</strong><br>
-                        This shows how learners will navigate through your workshop modules.
+                    <div class="alert alert-success">
+                        <strong>✅ Auto-Generation Enabled</strong><br>
+                        Module directories with navigation are automatically created when you save the workshop.
+                        Each module gets its own folder with protected navigation sections.
                     </div>
-                    <div id="navigation-preview">
+                    
+                    <div class="alert alert-info" style="margin-top: 15px;">
+                        <strong>📁 Module Structure</strong><br>
+                        Each module directory contains a README.md with:
+                        <ul style="margin: 10px 0 0 20px; padding: 0;">
+                            <li><strong>Protected Navigation Header:</strong> Breadcrumb, progress bar, workshop title</li>
+                            <li><strong>Editable Content Section:</strong> Your module content (between markers)</li>
+                            <li><strong>Protected Navigation Footer:</strong> Previous/Home/Next navigation buttons</li>
+                        </ul>
+                        Protected sections use <code>&lt;!-- ⚠️ DO NOT EDIT --&gt;</code> markers.
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 20px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border-color);">
+                        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>🔧</span>
+                            <span>Manual Regeneration</span>
+                        </h3>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">
+                            Need to manually regenerate all module directories? Use this if you've reordered modules 
+                            or want to update navigation without saving.
+                        </p>
+                        <button class="btn btn-secondary" onclick="generateModuleStructure()" style="padding: 10px 24px;">
+                            � Regenerate Module Directories
+                        </button>
+                        <p style="margin-top: 0.75rem; font-size: 0.875rem; color: var(--text-light);">
+                            This will recreate all module folders with updated navigation
+                        </p>
+                    </div>
+                    
+                    <div id="navigation-preview" style="margin-top: 30px;">
                         <div class="empty-state">
                             <div class="empty-state-icon">🧭</div>
                             <h3>No Navigation Yet</h3>
@@ -815,43 +917,135 @@
                     </div>
                 </div>
 
-                <!-- Export Tab -->
-                <div id="export-tab" class="tab-content">
-                    <div class="alert alert-success">
-                        <strong>✅ Ready to Export</strong>
-                        <span class="tooltip-wrapper">
-                            <span class="tooltip-icon">?</span>
-                            <span class="tooltip-text">Export generates a workshop.config.json file that you can use with the CLI tools to build your workshop. Save this file in your workshop directory: workshops/your-workshop-id/workshop.config.json</span>
-                        </span>
-                        <br>
-                        Copy the configuration below and save it as <code>workshop.config.json</code>
+                <!-- Module Manager Tab -->
+                <div id="module-manager-tab" class="tab-content">
+                    <div class="alert alert-info">
+                        <strong>🔗 Module Manager</strong><br>
+                        Discover, browse, and link modules across all workshops. Create parent-child relationships to enable module reusability.
                     </div>
 
-                    <div class="action-bar">
-                        <button class="btn btn-primary" onclick="copyToClipboard()">
-                            📋 Copy to Clipboard
-                            <span class="tooltip-wrapper">
-                                <span class="tooltip-icon">?</span>
-                                <span class="tooltip-text">Copy the JSON configuration to your clipboard so you can paste it into a file editor.</span>
-                            </span>
-                        </button>
-                        <button class="btn btn-secondary" onclick="downloadConfig()">
-                            💾 Download File
-                            <span class="tooltip-wrapper">
-                                <span class="tooltip-icon">?</span>
-                                <span class="tooltip-text">Download the configuration as a workshop.config.json file. Save it to workshops/your-workshop-id/ directory.</span>
-                            </span>
-                        </button>
+                    <div class="tabs" style="margin-top: 1rem; border-bottom: 2px solid var(--border-color);">
+                        <button class="tab active" onclick="switchModuleManagerTab('all')">📚 All Modules</button>
+                        <button class="tab" onclick="switchModuleManagerTab('roots')">🌳 Root Modules</button>
+                        <button class="tab" onclick="switchModuleManagerTab('duplicates')">🔍 Find Duplicates</button>
+                        <button class="tab" onclick="switchModuleManagerTab('link')">🔗 Link Modules</button>
                     </div>
 
-                    <div id="config-output" class="code-preview">
-{
-  "workshopId": "",
-  "version": "1.0.0",
-  "title": "",
-  "description": "",
-  "modules": []
-}
+                    <!-- All Modules Sub-Tab -->
+                    <div id="mm-all-tab" class="tab-content active" style="margin-top: 1rem;">
+                        <div class="action-bar" style="margin-bottom: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="loadAllModules()">
+                                🔄 Refresh Modules
+                            </button>
+                            <div style="flex: 1;"></div>
+                            <input type="text" id="all-modules-search" placeholder="Search modules..." style="max-width: 300px;" oninput="filterAllModules()">
+                        </div>
+
+                        <div class="workshop-summary">
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <div class="summary-value" id="mm-total-count">-</div>
+                                    <div class="summary-label">Total Modules</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value" id="mm-root-count">-</div>
+                                    <div class="summary-label">Root Modules</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value" id="mm-child-count">-</div>
+                                    <div class="summary-label">Child Modules</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value" id="mm-standalone-count">-</div>
+                                    <div class="summary-label">Standalone</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="all-modules-list" style="margin-top: 1rem;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📦</div>
+                                <h3>No Modules Loaded</h3>
+                                <p>Click "Refresh Modules" to discover modules across all workshops</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Root Modules Sub-Tab -->
+                    <div id="mm-roots-tab" class="tab-content" style="margin-top: 1rem;">
+                        <div class="alert alert-success">
+                            <strong>🌳 Root Modules</strong><br>
+                            These modules are parents that can be reused in other workshops. They track all child modules that link to them.
+                        </div>
+
+                        <div id="root-modules-list" style="margin-top: 1rem;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🌳</div>
+                                <h3>No Root Modules Yet</h3>
+                                <p>Root modules are created when you link modules together</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Find Duplicates Sub-Tab -->
+                    <div id="mm-duplicates-tab" class="tab-content" style="margin-top: 1rem;">
+                        <div class="alert alert-warning">
+                            <strong>🔍 Find Duplicates</strong><br>
+                            Discover modules with similar names across workshops. Link them to establish parent-child relationships.
+                        </div>
+
+                        <div class="action-bar" style="margin-bottom: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="findDuplicateModules()">
+                                🔍 Scan for Duplicates
+                            </button>
+                        </div>
+
+                        <div id="duplicates-list" style="margin-top: 1rem;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔍</div>
+                                <h3>Click "Scan for Duplicates"</h3>
+                                <p>We'll search for modules with similar names across all workshops</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Link Modules Sub-Tab -->
+                    <div id="mm-link-tab" class="tab-content" style="margin-top: 1rem;">
+                        <div class="alert alert-info">
+                            <strong>🔗 Link Modules</strong><br>
+                            Create parent-child relationships between modules. The child module will reference the parent.
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label for="link-child-module">Child Module (will link TO parent) *</label>
+                            <select id="link-child-module" style="width: 100%;">
+                                <option value="">Select a module to make a child...</option>
+                            </select>
+                            <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-light);">
+                                This module will reference the parent module
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="link-parent-module">Parent Module (will be referenced) *</label>
+                            <select id="link-parent-module" style="width: 100%;">
+                                <option value="">Select a parent module...</option>
+                            </select>
+                            <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-light);">
+                                This module will be marked as root and tracked
+                            </p>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary" onclick="linkModules()" id="link-modules-btn" disabled>
+                                🔗 Link Modules
+                            </button>
+                            <button class="btn btn-outline" onclick="resetLinkForm()">
+                                🔄 Reset
+                            </button>
+                        </div>
+
+                        <div id="link-result" style="margin-top: 1rem;"></div>
                     </div>
                 </div>
             </div>
@@ -864,6 +1058,11 @@
             <div class="modal-header">
                 <h2>📚 Add Module</h2>
                 <button class="modal-close" onclick="closeModuleBrowser()">✕</button>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="showCreateCustomModule()">➕ Create Custom Module</button>
+                <div style="flex: 1;"></div>
             </div>
 
             <div class="form-group">
@@ -882,6 +1081,140 @@
 
             <div class="module-browser" id="module-browser-list">
                 <!-- Modules will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Custom Module Modal -->
+    <div id="custom-module-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Create Custom Module</h2>
+                <button class="modal-close" onclick="closeCustomModule()">✕</button>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom: 1rem;">
+                <strong>ℹ️ Custom Module</strong><br>
+                Create a standalone module that doesn't reference an existing module in the repository.
+            </div>
+
+            <div class="form-group">
+                <label for="custom-module-name">Module Name *</label>
+                <input type="text" id="custom-module-name" placeholder="e.g., Advanced Redis Patterns" required>
+            </div>
+
+            <div class="form-group">
+                <label for="custom-module-description">Description *</label>
+                <textarea id="custom-module-description" rows="3" placeholder="Describe what students will learn in this module..." required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="custom-module-duration">Duration (minutes) *</label>
+                    <input type="number" id="custom-module-duration" value="30" min="5" max="300" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="custom-module-difficulty">Difficulty *</label>
+                    <select id="custom-module-difficulty" required>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate" selected>Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="custom-module-type">Type *</label>
+                    <select id="custom-module-type" required>
+                        <option value="lecture">Lecture</option>
+                        <option value="hands-on" selected>Hands-on</option>
+                        <option value="demo">Demo</option>
+                        <option value="lab">Lab</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="custom-module-ref">Module Reference (optional)</label>
+                <input type="text" id="custom-module-ref" placeholder="e.g., custom/advanced-patterns">
+                <small style="color: var(--text-light);">Optional: A reference ID for this module</small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeCustomModule()">Cancel</button>
+                <button class="btn btn-primary" onclick="createCustomModule()">Create Module</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Module Modal -->
+    <div id="edit-module-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Edit Module</h2>
+                <button class="modal-close" onclick="closeEditModule()">✕</button>
+            </div>
+
+            <div class="alert alert-warning" style="margin-bottom: 1rem;">
+                <strong>⚠️ Edit Module Settings</strong><br>
+                Changes will be saved when you click "Save Changes" and then save the workshop.
+            </div>
+
+            <div class="form-group">
+                <label for="edit-module-name">Module Name *</label>
+                <input type="text" id="edit-module-name" placeholder="e.g., Advanced Redis Patterns" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-module-description">Description *</label>
+                <textarea id="edit-module-description" rows="3" placeholder="Describe what students will learn in this module..." required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="edit-module-duration">Duration (minutes) *</label>
+                    <input type="number" id="edit-module-duration" value="30" min="5" max="300" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-module-difficulty">Difficulty *</label>
+                    <select id="edit-module-difficulty" required>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-module-type">Type *</label>
+                    <select id="edit-module-type" required>
+                        <option value="lecture">Lecture</option>
+                        <option value="hands-on">Hands-on</option>
+                        <option value="demo">Demo</option>
+                        <option value="lab">Lab</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="edit-module-required" checked style="width: auto; margin-right: 0.5rem;">
+                    Required Module
+                </label>
+                <small style="display: block; color: var(--text-light); margin-top: 0.25rem;">
+                    Uncheck if this module is optional for learners
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-module-ref">Module Reference</label>
+                <input type="text" id="edit-module-ref" placeholder="e.g., modules/redis-basics" readonly style="background: var(--bg-light);">
+                <small style="color: var(--text-light);">Reference path (read-only)</small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeEditModule()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveModuleEdits()">💾 Save Changes</button>
             </div>
         </div>
     </div>
@@ -966,6 +1299,35 @@
             } catch (error) {
                 return false;
             }
+        }
+
+        /**
+         * Show notification message
+         */
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type}`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '10000';
+            notification.style.minWidth = '300px';
+            notification.style.maxWidth = '500px';
+            notification.style.animation = 'slideIn 0.3s ease-out';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         /**
@@ -1059,14 +1421,200 @@
         }
 
         /**
+         * Generate module directories with navigation
+         */
+        async function generateModuleStructure() {
+            // Check if workshop is loaded and has modules
+            if (!workshop.workshopId) {
+                showNotification('⚠️ Please load or create a workshop first', 'error');
+                return;
+            }
+            
+            if (!workshop.modules || workshop.modules.length === 0) {
+                showNotification('⚠️ Please add modules to the workshop first', 'error');
+                return;
+            }
+            
+            // Confirm action
+            const confirmed = confirm(
+                `This will create ${workshop.modules.length} module directories with protected navigation headers and footers.\n\n` +
+                `Each module will have:\n` +
+                `• Auto-generated navigation header (DO NOT EDIT)\n` +
+                `• Editable content section\n` +
+                `• Auto-generated navigation footer (DO NOT EDIT)\n\n` +
+                `Continue?`
+            );
+            
+            if (!confirmed) {
+                return;
+            }
+            
+            try {
+                showNotification('🗂️ Generating module directories...', 'info');
+                
+                // Call API to generate modules
+                const result = await apiRequest(`/workshops/${workshop.workshopId}/generate-modules`, {
+                    method: 'POST'
+                });
+                
+                if (result.success) {
+                    showNotification(
+                        `✅ Successfully created ${result.modules.length} module directories with navigation!`,
+                        'success'
+                    );
+                    
+                    // Ask if user wants to commit
+                    const shouldCommit = confirm('Module structure created! Do you want to commit these changes to Git?');
+                    if (shouldCommit) {
+                        const commitMessage = prompt(
+                            'Enter commit message:',
+                            `Add module structure with navigation for ${workshop.title}`
+                        );
+                        if (commitMessage) {
+                            // Prepare list of files to commit
+                            const filesToCommit = [
+                                `workshops/${workshop.workshopId}/README.md`
+                            ];
+                            
+                            // Add each module's README
+                            result.modules.forEach(module => {
+                                filesToCommit.push(`workshops/${workshop.workshopId}/${module.folderName}/README.md`);
+                            });
+                            
+                            await commitChanges(filesToCommit, commitMessage);
+                            showNotification('✅ Module structure created and committed!', 'success');
+                        } else {
+                            showNotification('✅ Module structure created (not committed)', 'success');
+                        }
+                    } else {
+                        showNotification('✅ Module structure created (not committed)', 'success');
+                    }
+                    
+                    // Show details
+                    console.log('Created modules:', result.modules);
+                    
+                    // Update navigation preview
+                    renderNavigation();
+                } else {
+                    showNotification(`❌ Failed to generate modules: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Generate modules error:', error);
+                showNotification(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        /**
          * Update branch display in header
          */
         function updateBranchDisplay(branch, wasCreated = false) {
-            const header = document.querySelector('.header p');
+            const header = document.getElementById('header-subtitle');
             if (wasCreated) {
-                header.innerHTML = `Visual workshop creation interface - <strong style="color: var(--success-color)">Branch: ${branch}</strong> (created)`;
+                header.innerHTML = `
+                    <span style="display: inline-block; background: var(--success-color); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.875rem; margin-right: 0.5rem;">
+                        🌿 Branch: <strong>${branch}</strong> (newly created)
+                    </span>
+                    <span style="color: var(--text-light);">Changes will be saved to your local filesystem</span>
+                `;
             } else {
-                header.innerHTML = `Visual workshop creation interface - <strong style="color: var(--info-color)">Branch: ${branch}</strong>`;
+                header.innerHTML = `
+                    <span style="display: inline-block; background: var(--info-color); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.875rem; margin-right: 0.5rem;">
+                        🌿 Branch: <strong>${branch}</strong>
+                    </span>
+                    <span style="color: var(--text-light);">Changes will be saved to your local filesystem</span>
+                `;
+            }
+            
+            // Check GitHub PR status
+            checkGitHubStatus();
+        }
+
+        /**
+         * Check GitHub status and show/hide PR button
+         */
+        async function checkGitHubStatus() {
+            try {
+                const status = await apiRequest('/github/status');
+                
+                if (status.configured && status.currentBranch && 
+                    status.currentBranch !== 'main' && status.currentBranch !== 'master') {
+                    // Show PR button
+                    const prSection = document.getElementById('github-pr-section');
+                    prSection.style.display = 'block';
+                    
+                    // Update button based on existing PR
+                    const buttonText = document.getElementById('pr-button-text');
+                    const prStatus = document.getElementById('pr-status');
+                    
+                    if (status.existingPR) {
+                        buttonText.textContent = '📋 View Pull Request';
+                        prStatus.innerHTML = `<a href="${status.existingPR.url}" target="_blank" style="color: var(--success-color);">PR #${status.existingPR.number} exists</a>`;
+                    } else {
+                        buttonText.textContent = '🚀 Create Pull Request';
+                        prStatus.textContent = '';
+                    }
+                }
+            } catch (error) {
+                console.log('GitHub not configured or error:', error.message);
+                // Hide PR button if GitHub is not configured
+                document.getElementById('github-pr-section').style.display = 'none';
+            }
+        }
+
+        /**
+         * Create or view Pull Request
+         */
+        async function createPullRequest() {
+            try {
+                // Check status first
+                const status = await apiRequest('/github/status');
+                
+                // If PR already exists, open it
+                if (status.existingPR) {
+                    window.open(status.existingPR.url, '_blank');
+                    return;
+                }
+                
+                // Get PR details from user
+                const title = prompt('Enter Pull Request title:', `Workshop updates from ${status.currentBranch}`);
+                if (!title) {
+                    return; // User cancelled
+                }
+                
+                const body = prompt('Enter PR description (optional):', 
+                    'This PR contains workshop updates made through the Workshop Builder GUI.');
+                
+                showNotification('🚀 Creating Pull Request...', 'info');
+                
+                // Create PR
+                const result = await apiRequest('/github/pull-request', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        body: body || undefined
+                    })
+                });
+                
+                if (result.success) {
+                    if (result.exists) {
+                        showNotification(`✅ Pull Request already exists: PR #${result.number}`, 'success');
+                    } else {
+                        showNotification(`✅ Pull Request created: PR #${result.number}`, 'success');
+                    }
+                    
+                    // Update button to show "View PR"
+                    await checkGitHubStatus();
+                    
+                    // Open PR in browser
+                    if (confirm('Would you like to open the Pull Request in your browser?')) {
+                        window.open(result.url, '_blank');
+                    }
+                } else {
+                    showNotification(`❌ Failed to create PR: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Create PR error:', error);
+                showNotification(`❌ Error: ${error.message}`, 'error');
             }
         }
 
@@ -1196,9 +1744,483 @@
                 renderNavigation();
             } else if (tabName === 'preview') {
                 renderPreview();
-            } else if (tabName === 'export') {
-                renderExport();
+            } else if (tabName === 'module-manager') {
+                // Load all modules when opening Module Manager tab
+                loadAllModules();
             }
+        }
+
+        // ========================================================================
+        // Module Manager Functions
+        // ========================================================================
+
+        let allModulesData = [];
+        let rootModulesData = [];
+
+        // Switch between Module Manager sub-tabs
+        function switchModuleManagerTab(tabName) {
+            // Update tab buttons within module manager
+            const mmTabs = document.querySelectorAll('#module-manager-tab .tabs .tab');
+            mmTabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update sub-tab content
+            const subTabs = ['mm-all-tab', 'mm-roots-tab', 'mm-duplicates-tab', 'mm-link-tab'];
+            subTabs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+            document.getElementById(`mm-${tabName}-tab`).classList.add('active');
+
+            // Load data for specific tabs
+            if (tabName === 'roots') {
+                loadRootModules();
+            } else if (tabName === 'link') {
+                populateLinkSelects();
+            }
+        }
+
+        // Load all modules from API
+        async function loadAllModules() {
+            try {
+                showNotification('Loading modules...', 'info');
+                
+                const response = await fetch('http://localhost:3000/api/modules/all');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allModulesData = data.modules;
+                    renderAllModules(allModulesData);
+                    updateModuleManagerStats(allModulesData);
+                    showNotification(`Loaded ${data.count} modules`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to load modules');
+                }
+            } catch (error) {
+                console.error('Error loading modules:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Render all modules list
+        function renderAllModules(modules) {
+            const container = document.getElementById('all-modules-list');
+            
+            if (!modules || modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No Modules Found</h3>
+                        <p>No modules discovered in any workshop</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+            
+            modules.forEach(module => {
+                const inheritanceIcon = module.inheritance?.isRoot ? '🌳' : 
+                                       (module.inheritance?.parentPath ? '🔗' : '⭐');
+                const inheritanceLabel = module.inheritance?.isRoot ? 'Root' : 
+                                        (module.inheritance?.parentPath ? 'Child' : 'Standalone');
+                const inheritanceColor = module.inheritance?.isRoot ? 'var(--success-color)' : 
+                                        (module.inheritance?.parentPath ? 'var(--info-color)' : 'var(--text-light)');
+                
+                html += `
+                    <div class="module-card" style="border-left: 4px solid ${inheritanceColor};">
+                        <div style="display: flex; align-items: start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">${inheritanceIcon}</span>
+                                    <strong style="font-size: 1.1rem;">${module.title}</strong>
+                                    <span class="badge" style="background: ${inheritanceColor}; color: white;">
+                                        ${inheritanceLabel}
+                                    </span>
+                                </div>
+                                <div style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    📁 ${module.workshopId} / ${module.moduleDir}
+                                </div>
+                                ${module.description ? `<p style="margin: 0.5rem 0; color: var(--text-color);">${module.description}</p>` : ''}
+                                ${module.duration ? `<p style="margin: 0; color: var(--text-light); font-size: 0.9rem;">⏱️ ${module.duration}</p>` : ''}
+                                ${module.inheritance?.parentPath ? `
+                                    <div style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-light); border-radius: 4px; font-size: 0.875rem;">
+                                        🔗 Parent: <code>${module.inheritance.parentPath}</code>
+                                    </div>
+                                ` : ''}
+                                ${module.inheritance?.usedBy?.length > 0 ? `
+                                    <div style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-light); border-radius: 4px; font-size: 0.875rem;">
+                                        👶 Used by ${module.inheritance.usedBy.length} module(s)
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                ${!module.inheritance?.isRoot && !module.inheritance?.parentPath ? `
+                                    <button class="btn btn-sm btn-primary" onclick="promoteModuleToRoot('${module.modulePath}')" title="Make this module a root/parent">
+                                        🌳 Make Root
+                                    </button>
+                                ` : ''}
+                                ${module.inheritance?.parentPath ? `
+                                    <button class="btn btn-sm btn-outline" onclick="promoteModuleToRoot('${module.modulePath}')" title="Make this module independent">
+                                        ⭐ Make Independent
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Update Module Manager statistics
+        function updateModuleManagerStats(modules) {
+            const total = modules.length;
+            const roots = modules.filter(m => m.inheritance?.isRoot).length;
+            const children = modules.filter(m => m.inheritance?.parentPath).length;
+            const standalone = total - roots - children;
+            
+            document.getElementById('mm-total-count').textContent = total;
+            document.getElementById('mm-root-count').textContent = roots;
+            document.getElementById('mm-child-count').textContent = children;
+            document.getElementById('mm-standalone-count').textContent = standalone;
+        }
+
+        // Filter all modules
+        function filterAllModules() {
+            const searchTerm = document.getElementById('all-modules-search').value.toLowerCase();
+            const filtered = allModulesData.filter(module => 
+                module.title.toLowerCase().includes(searchTerm) ||
+                module.moduleDir.toLowerCase().includes(searchTerm) ||
+                module.workshopId.toLowerCase().includes(searchTerm) ||
+                (module.description && module.description.toLowerCase().includes(searchTerm))
+            );
+            renderAllModules(filtered);
+        }
+
+        // Load root modules
+        async function loadRootModules() {
+            try {
+                showNotification('Loading root modules...', 'info');
+                
+                const response = await fetch('http://localhost:3000/api/modules/roots');
+                const data = await response.json();
+                
+                if (data.success) {
+                    rootModulesData = data.modules;
+                    renderRootModules(rootModulesData);
+                    showNotification(`Found ${data.count} root modules`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to load root modules');
+                }
+            } catch (error) {
+                console.error('Error loading root modules:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Render root modules
+        function renderRootModules(modules) {
+            const container = document.getElementById('root-modules-list');
+            
+            if (!modules || modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🌳</div>
+                        <h3>No Root Modules Yet</h3>
+                        <p>Root modules are created when you link modules together</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+            
+            modules.forEach(module => {
+                const childCount = module.inheritance?.usedBy?.length || 0;
+                
+                html += `
+                    <div class="module-card" style="border-left: 4px solid var(--success-color);">
+                        <div style="display: flex; align-items: start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">🌳</span>
+                                    <strong style="font-size: 1.1rem;">${module.title}</strong>
+                                    <span class="badge" style="background: var(--success-color); color: white;">
+                                        Root Module
+                                    </span>
+                                </div>
+                                <div style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    📁 ${module.workshopId} / ${module.moduleDir}
+                                </div>
+                                ${module.description ? `<p style="margin: 0.5rem 0;">${module.description}</p>` : ''}
+                                ${childCount > 0 ? `
+                                    <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-light); border-radius: 4px;">
+                                        <strong>👶 Used by ${childCount} module(s):</strong>
+                                        <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+                                            ${module.inheritance.usedBy.map(child => `
+                                                <li style="margin: 0.25rem 0;">
+                                                    <code>${child.workshop}</code> → <code>${child.modulePath}</code>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                ` : `
+                                    <div style="margin-top: 1rem; padding: 0.5rem; background: var(--bg-light); border-radius: 4px; color: var(--text-light);">
+                                        No child modules yet
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Find duplicate modules
+        async function findDuplicateModules() {
+            try {
+                showNotification('Scanning for duplicates...', 'info');
+                
+                const response = await fetch('http://localhost:3000/api/modules/similar');
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderDuplicates(data.groups);
+                    showNotification(`Found ${data.count} duplicate group(s)`, data.count > 0 ? 'warning' : 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to find duplicates');
+                }
+            } catch (error) {
+                console.error('Error finding duplicates:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Render duplicate groups
+        function renderDuplicates(groups) {
+            const container = document.getElementById('duplicates-list');
+            
+            if (!groups || groups.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <h3>No Duplicates Found</h3>
+                        <p>All modules have unique names</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 1.5rem;">';
+            
+            groups.forEach(group => {
+                const hasRoot = group.modules.some(m => m.inheritance?.isRoot);
+                const rootModule = hasRoot ? group.modules.find(m => m.inheritance?.isRoot) : group.modules[0];
+                
+                html += `
+                    <div class="module-card" style="border-left: 4px solid var(--warning-color); background: #fff9f0;">
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.5rem;">🔍</span>
+                                <strong style="font-size: 1.1rem;">Duplicate Group: "${group.name}"</strong>
+                                <span class="badge" style="background: var(--warning-color); color: white;">
+                                    ${group.count} modules
+                                </span>
+                            </div>
+                            ${hasRoot ? `
+                                <div style="padding: 0.5rem; background: var(--success-color); color: white; border-radius: 4px; font-size: 0.875rem;">
+                                    ✅ Already has a root module
+                                </div>
+                            ` : `
+                                <div style="padding: 0.5rem; background: var(--warning-color); color: white; border-radius: 4px; font-size: 0.875rem;">
+                                    ⚠️ No root module - consider linking these together
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            ${group.modules.map((module, index) => `
+                                <div style="padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                        ${module.inheritance?.isRoot ? '🌳' : (module.inheritance?.parentPath ? '🔗' : '⭐')}
+                                        <strong>${module.workshopId}</strong> / <code>${module.moduleDir}</code>
+                                        ${index === 0 && !hasRoot ? '<span class="badge" style="background: var(--info-color); color: white; font-size: 0.75rem;">Suggested Parent</span>' : ''}
+                                        ${module.inheritance?.isRoot ? '<span class="badge" style="background: var(--success-color); color: white; font-size: 0.75rem;">Root</span>' : ''}
+                                        ${module.inheritance?.parentPath ? '<span class="badge" style="background: var(--info-color); color: white; font-size: 0.75rem;">Linked</span>' : ''}
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">
+                                        ${module.title}
+                                    </div>
+                                    ${!module.inheritance?.parentPath && !module.inheritance?.isRoot && index > 0 ? `
+                                        <button class="btn btn-sm btn-primary" style="margin-top: 0.5rem;" 
+                                                onclick="quickLinkToRoot('${module.modulePath}', '${rootModule.modulePath}')">
+                                            🔗 Link to ${rootModule.workshopId}
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Populate link module selects
+        function populateLinkSelects() {
+            const childSelect = document.getElementById('link-child-module');
+            const parentSelect = document.getElementById('link-parent-module');
+            
+            // Clear existing options
+            childSelect.innerHTML = '<option value="">Select a module to make a child...</option>';
+            parentSelect.innerHTML = '<option value="">Select a parent module...</option>';
+            
+            // Populate with modules (exclude already linked children from parent options)
+            allModulesData.forEach(module => {
+                const option = new Option(
+                    `${module.workshopId} / ${module.moduleDir}`,
+                    module.modulePath
+                );
+                childSelect.add(option.cloneNode(true));
+                
+                // Only add to parent if it's not a child
+                if (!module.inheritance?.parentPath) {
+                    parentSelect.add(option.cloneNode(true));
+                }
+            });
+            
+            // Enable/disable link button based on selection
+            childSelect.onchange = parentSelect.onchange = () => {
+                const btn = document.getElementById('link-modules-btn');
+                btn.disabled = !childSelect.value || !parentSelect.value || childSelect.value === parentSelect.value;
+            };
+        }
+
+        // Link modules
+        async function linkModules() {
+            const childPath = document.getElementById('link-child-module').value;
+            const parentPath = document.getElementById('link-parent-module').value;
+            
+            if (!childPath || !parentPath) {
+                showNotification('Please select both child and parent modules', 'error');
+                return;
+            }
+            
+            if (childPath === parentPath) {
+                showNotification('Cannot link a module to itself', 'error');
+                return;
+            }
+            
+            try {
+                showNotification('Linking modules...', 'info');
+                
+                const response = await fetch('http://localhost:3000/api/modules/link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ childPath, parentPath })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('✅ Modules linked successfully!', 'success');
+                    document.getElementById('link-result').innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>✅ Success!</strong><br>
+                            Child: <code>${childPath}</code><br>
+                            Parent: <code>${parentPath}</code><br>
+                            The modules are now linked. The child references the parent.
+                        </div>
+                    `;
+                    resetLinkForm();
+                    // Reload all modules to refresh the data
+                    loadAllModules();
+                } else {
+                    throw new Error(data.error || 'Failed to link modules');
+                }
+            } catch (error) {
+                console.error('Error linking modules:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+                document.getElementById('link-result').innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>❌ Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Quick link from duplicate finder
+        async function quickLinkToRoot(childPath, parentPath) {
+            if (confirm(`Link ${childPath} to ${parentPath}?`)) {
+                try {
+                    showNotification('Linking modules...', 'info');
+                    
+                    const response = await fetch('http://localhost:3000/api/modules/link', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ childPath, parentPath })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showNotification('✅ Modules linked successfully!', 'success');
+                        // Refresh duplicates view
+                        findDuplicateModules();
+                        // Reload all modules
+                        loadAllModules();
+                    } else {
+                        throw new Error(data.error || 'Failed to link modules');
+                    }
+                } catch (error) {
+                    console.error('Error linking modules:', error);
+                    showNotification(`Error: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Promote module to root
+        async function promoteModuleToRoot(modulePath) {
+            if (confirm(`Promote ${modulePath} to root/independent module?`)) {
+                try {
+                    showNotification('Promoting module...', 'info');
+                    
+                    const response = await fetch('http://localhost:3000/api/modules/promote', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ modulePath })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showNotification('✅ Module promoted successfully!', 'success');
+                        // Reload modules
+                        loadAllModules();
+                    } else {
+                        throw new Error(data.error || 'Failed to promote module');
+                    }
+                } catch (error) {
+                    console.error('Error promoting module:', error);
+                    showNotification(`Error: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Reset link form
+        function resetLinkForm() {
+            document.getElementById('link-child-module').value = '';
+            document.getElementById('link-parent-module').value = '';
+            document.getElementById('link-modules-btn').disabled = true;
+            document.getElementById('link-result').innerHTML = '';
         }
 
         // Workshop management
@@ -1206,9 +2228,13 @@
             workshop.workshopId = document.getElementById('workshop-id').value;
             workshop.title = document.getElementById('workshop-title').value;
             workshop.description = document.getElementById('workshop-description').value;
-            workshop.duration = document.getElementById('workshop-duration').value;
             workshop.difficulty = document.getElementById('workshop-difficulty').value;
             workshop.author = document.getElementById('workshop-author').value;
+            
+            // Calculate duration from modules (auto-sync)
+            const totalDuration = workshop.modules.reduce((sum, m) => sum + (m.duration || 0), 0);
+            workshop.duration = totalDuration;
+            document.getElementById('workshop-duration').value = totalDuration;
 
             if (!workshop.workshopId || !workshop.title || !workshop.description) {
                 alert('Please fill in all required fields (marked with *)');
@@ -1240,21 +2266,57 @@
                     
                     await saveWorkshopToFilesystem(workshop.workshopId, workshopData);
                     
+                    // Check if auto-generate is enabled
+                    const autoGenerate = document.getElementById('auto-generate-modules').checked;
+                    let generatedModules = null;
+                    let filesToCommit = [`workshops/${workshop.workshopId}/README.md`];
+                    
+                    // Auto-generate module directories if enabled and there are modules
+                    if (autoGenerate && workshop.modules && workshop.modules.length > 0) {
+                        try {
+                            showNotification('🗂️ Auto-generating module directories...', 'info');
+                            const result = await apiRequest(`/workshops/${workshop.workshopId}/generate-modules`, {
+                                method: 'POST'
+                            });
+                            
+                            if (result.success) {
+                                generatedModules = result.modules;
+                                showNotification(`✅ Generated ${result.modules.length} module directories!`, 'success');
+                                
+                                // Add module files to commit list
+                                result.modules.forEach(module => {
+                                    filesToCommit.push(`workshops/${workshop.workshopId}/${module.folderName}/README.md`);
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Auto-generate modules error:', error);
+                            showNotification(`⚠️ Module auto-generation failed: ${error.message}`, 'warning');
+                        }
+                    }
+                    
                     // Ask if user wants to commit
-                    const shouldCommit = confirm('Workshop saved! Do you want to commit these changes to Git?');
+                    const commitPrompt = generatedModules 
+                        ? `Workshop saved with ${generatedModules.length} module directories! Commit to Git?`
+                        : 'Workshop saved! Do you want to commit these changes to Git?';
+                    
+                    const shouldCommit = confirm(commitPrompt);
                     if (shouldCommit) {
-                        const commitMessage = prompt('Enter commit message:', `Update ${workshop.title}`);
+                        const defaultMessage = generatedModules
+                            ? `Update ${workshop.title} with ${generatedModules.length} modules`
+                            : `Update ${workshop.title}`;
+                        const commitMessage = prompt('Enter commit message:', defaultMessage);
+                        
                         if (commitMessage) {
-                            await commitChanges(
-                                [`workshops/${workshop.workshopId}/README.md`],
-                                commitMessage
-                            );
+                            await commitChanges(filesToCommit, commitMessage);
                             showNotification('✅ Workshop saved and committed!', 'success');
                         } else {
                             showNotification('✅ Workshop saved (not committed)', 'success');
                         }
                     } else {
-                        showNotification('✅ Workshop saved (not committed)', 'success');
+                        const savedMsg = generatedModules
+                            ? `✅ Workshop saved with ${generatedModules.length} modules (not committed)`
+                            : '✅ Workshop saved (not committed)';
+                        showNotification(savedMsg, 'success');
                     }
                     
                     // Also save to localStorage as backup
@@ -1277,21 +2339,34 @@
                     showNotification('Loading workshop from filesystem...', 'info');
                     const workshopData = await loadWorkshopFromFilesystem(workshopId);
                     
+                    console.log('=== LOAD WORKSHOP DEBUG ===');
+                    console.log('Full workshopData:', workshopData);
+                    console.log('workshopData.modules:', workshopData.modules);
+                    console.log('workshopData.frontmatter?.modules:', workshopData.frontmatter?.modules);
+                    
                     // Get modules from frontmatter first, fallback to top-level modules
                     const modulesList = workshopData.frontmatter?.modules || workshopData.modules || [];
                     
-                    // Transform modules from string array to object array
+                    console.log('Selected modulesList:', modulesList);
+                    console.log('modulesList.length:', modulesList.length);
+                    
+                    // Transform modules - handle both object and string formats
                     const transformedModules = modulesList.map((moduleRef, index) => {
-                        // If it's already an object, use it as-is but ensure it has order
-                        if (typeof moduleRef === 'object') {
+                        // If it's already an object with proper structure, use it with minimal additions
+                        if (typeof moduleRef === 'object' && moduleRef !== null) {
                             return {
-                                ...moduleRef,
                                 order: index + 1,
-                                moduleRef: moduleRef.name || `module-${index + 1}`
+                                name: moduleRef.name || 'Unnamed Module',
+                                description: moduleRef.description || '',
+                                duration: moduleRef.duration || 30,
+                                difficulty: moduleRef.difficulty || 'intermediate',
+                                type: moduleRef.type || 'lecture',
+                                moduleRef: moduleRef.moduleRef || moduleRef.name || `module-${index + 1}`,
+                                required: moduleRef.required !== undefined ? moduleRef.required : true
                             };
                         }
                         
-                        // If it's a string, create a module object
+                        // If it's a string reference, create a full module object
                         const moduleName = moduleRef.split('/').pop() || moduleRef;
                         return {
                             order: index + 1,
@@ -1300,11 +2375,13 @@
                             type: 'canonical',
                             difficulty: 'intermediate',
                             duration: 30,
-                            description: `Module from ${moduleRef}`
+                            description: `Module from ${moduleRef}`,
+                            required: true
                         };
                     });
                     
                     console.log('Transformed modules:', transformedModules);
+                    console.log('Transformed modules length:', transformedModules.length);
                     
                     // Update workshop object
                     workshop = {
@@ -1320,6 +2397,10 @@
                         learningObjectives: workshopData.frontmatter?.learningObjectives || [],
                         lastUpdated: new Date().toISOString().split('T')[0]
                     };
+                    
+                    console.log('Final workshop object:', workshop);
+                    console.log('Final workshop.modules:', workshop.modules);
+                    console.log('Final workshop.modules.length:', workshop.modules.length);
                     
                     // Update form fields
                     document.getElementById('workshop-id').value = workshop.workshopId;
@@ -1555,6 +2636,156 @@
             document.getElementById('module-browser-modal').classList.remove('active');
         }
 
+        function showCreateCustomModule() {
+            document.getElementById('module-browser-modal').classList.remove('active');
+            document.getElementById('custom-module-modal').classList.add('active');
+            // Clear form
+            document.getElementById('custom-module-name').value = '';
+            document.getElementById('custom-module-description').value = '';
+            document.getElementById('custom-module-duration').value = '30';
+            document.getElementById('custom-module-difficulty').value = 'intermediate';
+            document.getElementById('custom-module-type').value = 'hands-on';
+            document.getElementById('custom-module-ref').value = '';
+        }
+
+        function closeCustomModule() {
+            document.getElementById('custom-module-modal').classList.remove('active');
+        }
+
+        function createCustomModule() {
+            const name = document.getElementById('custom-module-name').value.trim();
+            const description = document.getElementById('custom-module-description').value.trim();
+            const duration = parseInt(document.getElementById('custom-module-duration').value);
+            const difficulty = document.getElementById('custom-module-difficulty').value;
+            const type = document.getElementById('custom-module-type').value;
+            const ref = document.getElementById('custom-module-ref').value.trim();
+
+            // Validate required fields
+            if (!name) {
+                alert('Please enter a module name');
+                document.getElementById('custom-module-name').focus();
+                return;
+            }
+
+            if (!description) {
+                alert('Please enter a module description');
+                document.getElementById('custom-module-description').focus();
+                return;
+            }
+
+            if (!duration || duration < 5 || duration > 300) {
+                alert('Please enter a valid duration (5-300 minutes)');
+                document.getElementById('custom-module-duration').focus();
+                return;
+            }
+
+            // Create module reference if not provided
+            const moduleRef = ref || `custom/${name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+
+            // Check if module with same ref already exists
+            if (workshop.modules.some(m => m.moduleRef === moduleRef)) {
+                alert('A module with this reference already exists in the workshop');
+                return;
+            }
+
+            // Add the custom module
+            const newModule = {
+                order: workshop.modules.length + 1,
+                name: name,
+                description: description,
+                duration: duration,
+                difficulty: difficulty,
+                type: type,
+                moduleRef: moduleRef,
+                required: true
+            };
+
+            workshop.modules.push(newModule);
+            
+            closeCustomModule();
+            updateSummary();
+            renderModules();
+            renderNavigation();
+            
+            showNotification(`✅ Custom module "${name}" added successfully!`, 'success');
+        }
+
+        // Edit Module Functions
+        let editingModuleIndex = -1;
+
+        function editModule(index) {
+            editingModuleIndex = index;
+            const module = workshop.modules[index];
+            
+            // Populate form with module data
+            document.getElementById('edit-module-name').value = module.name || '';
+            document.getElementById('edit-module-description').value = module.description || '';
+            document.getElementById('edit-module-duration').value = module.duration || 30;
+            document.getElementById('edit-module-difficulty').value = module.difficulty || 'intermediate';
+            document.getElementById('edit-module-type').value = module.type || 'hands-on';
+            document.getElementById('edit-module-required').checked = module.required !== false;
+            document.getElementById('edit-module-ref').value = module.moduleRef || '';
+            
+            // Show modal
+            document.getElementById('edit-module-modal').classList.add('active');
+        }
+
+        function closeEditModule() {
+            document.getElementById('edit-module-modal').classList.remove('active');
+            editingModuleIndex = -1;
+        }
+
+        function saveModuleEdits() {
+            if (editingModuleIndex < 0 || editingModuleIndex >= workshop.modules.length) {
+                alert('Invalid module index');
+                return;
+            }
+
+            const name = document.getElementById('edit-module-name').value.trim();
+            const description = document.getElementById('edit-module-description').value.trim();
+            const duration = parseInt(document.getElementById('edit-module-duration').value);
+            const difficulty = document.getElementById('edit-module-difficulty').value;
+            const type = document.getElementById('edit-module-type').value;
+            const required = document.getElementById('edit-module-required').checked;
+
+            // Validate required fields
+            if (!name) {
+                alert('Please enter a module name');
+                document.getElementById('edit-module-name').focus();
+                return;
+            }
+
+            if (!description) {
+                alert('Please enter a module description');
+                document.getElementById('edit-module-description').focus();
+                return;
+            }
+
+            if (!duration || duration < 5 || duration > 300) {
+                alert('Please enter a valid duration (5-300 minutes)');
+                document.getElementById('edit-module-duration').focus();
+                return;
+            }
+
+            // Update the module
+            workshop.modules[editingModuleIndex] = {
+                ...workshop.modules[editingModuleIndex],
+                name: name,
+                description: description,
+                duration: duration,
+                difficulty: difficulty,
+                type: type,
+                required: required
+            };
+
+            closeEditModule();
+            updateSummary();
+            renderModules();
+            renderNavigation();
+            
+            showNotification(`✅ Module "${name}" updated successfully!`, 'success');
+        }
+
         function renderModuleBrowser() {
             const container = document.getElementById('module-browser-list');
             container.innerHTML = '';
@@ -1632,6 +2863,7 @@
             closeModuleBrowser();
             updateSummary();
             renderModules();
+            renderNavigation();
         }
 
         function removeModule(index) {
@@ -1641,6 +2873,7 @@
                 workshop.modules.forEach((m, i) => m.order = i + 1);
                 updateSummary();
                 renderModules();
+                renderNavigation();
             }
         }
 
@@ -1649,7 +2882,9 @@
             [workshop.modules[index], workshop.modules[index - 1]] = 
             [workshop.modules[index - 1], workshop.modules[index]];
             workshop.modules.forEach((m, i) => m.order = i + 1);
+            updateSummary();
             renderModules();
+            renderNavigation();
         }
 
         function moveModuleDown(index) {
@@ -1657,7 +2892,9 @@
             [workshop.modules[index], workshop.modules[index + 1]] = 
             [workshop.modules[index + 1], workshop.modules[index]];
             workshop.modules.forEach((m, i) => m.order = i + 1);
+            updateSummary();
             renderModules();
+            renderNavigation();
         }
 
         function clearAllModules() {
@@ -1669,9 +2906,15 @@
         }
 
         function renderModules() {
+            console.log('=== RENDER MODULES DEBUG ===');
+            console.log('workshop object:', workshop);
+            console.log('workshop.modules:', workshop.modules);
+            console.log('workshop.modules.length:', workshop.modules.length);
+            
             const container = document.getElementById('modules-list');
             
             if (workshop.modules.length === 0) {
+                console.log('No modules - showing empty state');
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📦</div>
@@ -1681,6 +2924,8 @@
                 `;
                 return;
             }
+            
+            console.log('Rendering', workshop.modules.length, 'modules');
 
             container.innerHTML = '';
             workshop.modules.forEach((module, index) => {
@@ -1698,11 +2943,14 @@
                 const card = document.createElement('div');
                 card.className = 'module-card';
                 card.innerHTML = `
-                    <div class="module-card-header">
+                    <div class="module-card-header" onclick="editModule(${index})" style="cursor: pointer;" title="Click to edit module">
                         <div style="display: flex; align-items: center; flex: 1;">
                             <div class="module-card-order">${moduleData.order || index + 1}</div>
                             <div>
-                                <div class="module-card-title">${moduleData.name || moduleData.moduleRef || 'Unnamed Module'}</div>
+                                <div class="module-card-title">
+                                    ${moduleData.name || moduleData.moduleRef || 'Unnamed Module'}
+                                    <span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.5rem;">✏️ Click to edit</span>
+                                </div>
                                 <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">
                                     ${moduleData.moduleRef || ''}
                                 </div>
@@ -1710,7 +2958,7 @@
                         </div>
                         <span class="badge ${moduleData.type || 'canonical'}">${moduleData.type || 'canonical'}</span>
                     </div>
-                    <div style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                    <div style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 0.75rem;" onclick="editModule(${index})" style="cursor: pointer;">
                         ${moduleData.description || 'No description'}
                     </div>
                     <div class="module-card-meta">
@@ -1718,9 +2966,9 @@
                         <span class="badge ${moduleData.difficulty || 'intermediate'}">${moduleData.difficulty || 'intermediate'}</span>
                     </div>
                     <div class="module-card-actions">
-                        <button class="btn btn-secondary btn-sm btn-icon" onclick="moveModuleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
-                        <button class="btn btn-secondary btn-sm btn-icon" onclick="moveModuleDown(${index})" ${index === workshop.modules.length - 1 ? 'disabled' : ''}>↓</button>
-                        <button class="btn btn-primary btn-sm" onclick="removeModule(${index})">🗑️ Remove</button>
+                        <button class="btn btn-secondary btn-sm btn-icon" onclick="event.stopPropagation(); moveModuleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="btn btn-secondary btn-sm btn-icon" onclick="event.stopPropagation(); moveModuleDown(${index})" ${index === workshop.modules.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); removeModule(${index})">🗑️ Remove</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1738,6 +2986,13 @@
                 return sum;
             }, 0);
             document.getElementById('total-duration').textContent = totalDuration;
+            
+            // Auto-update the workshop duration field
+            const durationField = document.getElementById('workshop-duration');
+            if (durationField && totalDuration > 0) {
+                durationField.value = totalDuration;
+                workshop.duration = totalDuration;
+            }
             
             // Handle both object and string formats for type
             const canonical = workshop.modules.filter(m => {
@@ -1859,56 +3114,6 @@
 
             html += '</div>';
             container.innerHTML = html;
-        }
-
-        function renderExport() {
-            const config = {
-                workshopId: workshop.workshopId || '',
-                version: workshop.version,
-                title: workshop.title || '',
-                description: workshop.description || '',
-                duration: workshop.duration || '',
-                difficulty: workshop.difficulty,
-                tags: [
-                    'redis',
-                    'workshop',
-                    workshop.difficulty,
-                    workshop.workshopId || ''
-                ].filter(Boolean),
-                modules: workshop.modules.map(m => ({
-                    moduleRef: m.moduleRef,
-                    type: m.type,
-                    required: m.required,
-                    order: m.order
-                })),
-                prerequisites: workshop.prerequisites,
-                learningObjectives: workshop.learningObjectives,
-                author: workshop.author || '',
-                lastUpdated: new Date().toISOString().split('T')[0],
-                repository: `https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/${workshop.workshopId || ''}`
-            };
-
-            document.getElementById('config-output').textContent = JSON.stringify(config, null, 2);
-        }
-
-        function copyToClipboard() {
-            const text = document.getElementById('config-output').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✅ Copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy: ' + err);
-            });
-        }
-
-        function downloadConfig() {
-            const text = document.getElementById('config-output').textContent;
-            const blob = new Blob([text], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'workshop.config.json';
-            a.click();
-            URL.revokeObjectURL(url);
         }
     </script>
 </body>

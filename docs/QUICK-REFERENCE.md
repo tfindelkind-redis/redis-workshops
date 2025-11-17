@@ -59,11 +59,11 @@ redis-workshops/
 │   │   └── list-chapters.sh
 │   └── templates/                 # Templates
 │       ├── workshop-template/
-│       └── chapter-template/
+│       └── module-template/
 └── docs/                          # Documentation
     ├── CONTRIBUTING.md
     ├── workshop-creation-guide.md
-    └── chapter-authoring-guide.md
+    └── module-authoring-guide.md
 ```
 
 ## 🛠️ Common Commands
@@ -224,8 +224,8 @@ jq . file.json
 ### Documentation
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [workshop-creation-guide.md](workshop-creation-guide.md) - Workshop authoring
-- [chapter-authoring-guide.md](chapter-authoring-guide.md) - Chapter authoring
-- [workshop-specific-chapters.md](workshop-specific-chapters.md) - Workshop-specific chapters
+- [module-authoring-guide.md](module-authoring-guide.md) - Module authoring (coming soon)
+- [workshop-specific-modules.md](workshop-specific-modules.md) - Workshop-specific modules (coming soon)
 
 ### External Links
 - [Redis Documentation](https://redis.io/docs/)

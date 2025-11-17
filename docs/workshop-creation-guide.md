@@ -326,7 +326,7 @@ Your workshop should:
 ## 📧 Getting Help
 
 - Review existing workshops for examples
-- Check the [Chapter Authoring Guide](chapter-authoring-guide.md)
+- Check the [Module Authoring Guide](module-authoring-guide.md) (coming soon)
 - See [CONTRIBUTING.md](CONTRIBUTING.md)
 - Open an issue for questions
 

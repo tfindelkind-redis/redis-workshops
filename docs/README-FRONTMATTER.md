@@ -340,5 +340,5 @@ Check that you have all required fields:
 ## 📚 See Also
 
 - [Workshop Creation Guide](workshop-creation-guide.md)
-- [Chapter Authoring Guide](chapter-authoring-guide.md)
+- [Module Authoring Guide](module-authoring-guide.md) (coming soon)
 - [YAML Specification](https://yaml.org/spec/1.2.2/)

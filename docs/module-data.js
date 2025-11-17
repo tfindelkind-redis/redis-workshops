@@ -96,18 +96,18 @@ const learningUnitsData = [
         }
     },
     {
-        "id": "chapter-01-getting-started",
-        "name": "Wait 10 seconds and try to get it",
-        "description": "This chapter introduces you to Redis, an in-memory data structure store used as a database, cache, and message broker. You'll learn the basics of Redis, how to install it, and perform fundamental operations.",
-        "type": "chapter",
+        "id": "getting-started",
+        "name": "Getting Started with Redis",
+        "description": "Introduction to Redis, an in-memory data structure store used as a database, cache, and message broker. Learn the basics of Redis, how to install it, and perform fundamental operations.",
+        "type": "module",
         "style": "shared",
-        "path": "shared/chapters/chapter-01-getting-started",
+        "path": "shared/modules/getting-started",
         "duration": 45,
         "difficulty": "beginner",
-        "tags": [],
-        "legacy": true,
-        "hasVersioning": false,
-        "canMigrate": true
+        "tags": ["redis", "basics", "getting-started", "installation"],
+        "legacy": false,
+        "hasVersioning": true,
+        "canMigrate": false
     },
     {
         "id": "building-the-chat-interface",

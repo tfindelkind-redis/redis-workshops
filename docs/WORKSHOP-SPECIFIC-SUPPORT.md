@@ -192,8 +192,8 @@ mv workshops/my-workshop/chapters/great-chapter \
 ## 📖 Documentation
 
 Complete guides available:
-- [workshop-specific-chapters.md](workshop-specific-chapters.md) - Full guide
-- [chapter-authoring-guide.md](chapter-authoring-guide.md) - Chapter creation
+- [workshop-specific-modules.md](workshop-specific-modules.md) - Full guide (coming soon)
+- [module-authoring-guide.md](module-authoring-guide.md) - Module creation (coming soon)
 - [workshop-creation-guide.md](workshop-creation-guide.md) - Workshop creation
 
 ## ✅ Live Example

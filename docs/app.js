@@ -1,13 +1,13 @@
 // Main application logic
 let filteredWorkshops = [...workshopsData];
-let filteredChapters = [...chaptersData];
+let filteredModules = [...modulesData];
 let filteredLearningUnits = [...learningUnitsData];
 let currentModuleFilter = 'all';
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     renderWorkshops();
-    renderChapters();
+    renderModules();
     renderLearningUnits();
     updateStats();
     initializeEventListeners();
@@ -56,22 +56,22 @@ function renderWorkshops() {
     `).join('');
 }
 
-// Render chapters
-function renderChapters() {
-    const list = document.getElementById('chapters-list');
+// Render modules
+function renderModules() {
+    const list = document.getElementById('modules-list');
     
-    list.innerHTML = filteredChapters.map(chapter => `
-        <div class="chapter-card">
-            <h4>${chapter.title}</h4>
-            <p>${chapter.description}</p>
-            <div class="chapter-meta">
-                <span class="badge difficulty ${chapter.difficulty}">${capitalizeFirst(chapter.difficulty)}</span>
-                <span>⏱️ ${chapter.estimatedMinutes} min</span>
-                ${chapter.workshopSpecific ? `<span>🔒 Workshop-specific</span>` : `<span>🔄 Shared</span>`}
+    list.innerHTML = filteredModules.map(module => `
+        <div class="module-card">
+            <h4>${module.title}</h4>
+            <p>${module.description}</p>
+            <div class="module-meta">
+                <span class="badge difficulty ${module.difficulty}">${capitalizeFirst(module.difficulty)}</span>
+                <span>⏱️ ${module.estimatedMinutes} min</span>
+                ${module.workshopSpecific ? `<span>🔒 Workshop-specific</span>` : `<span>🔄 Shared</span>`}
             </div>
-            ${chapter.workshopSpecific ? 
+            ${module.workshopSpecific ? 
                 `<p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
-                    Part of: <a href="https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/${chapter.workshop}" target="_blank">${chapter.workshop}</a>
+                    Part of: <a href="https://github.com/tfindelkind-redis/redis-workshops/tree/main/workshops/${module.workshop}" target="_blank">${module.workshop}</a>
                 </p>` : 
                 ''
             }
@@ -96,11 +96,11 @@ function initializeEventListeners() {
         filterWorkshops(query);
     });
     
-    // Chapter search
-    const chapterSearch = document.getElementById('chapter-search');
-    chapterSearch.addEventListener('input', (e) => {
+    // Module search
+    const moduleSearch = document.getElementById('module-search');
+    moduleSearch.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
-        filterChapters(query);
+        filterModules(query);
     });
     
     // Filter buttons
@@ -145,16 +145,16 @@ function filterWorkshops(query) {
     renderWorkshops();
 }
 
-// Filter chapters by search query
-function filterChapters(query) {
-    filteredChapters = chaptersData.filter(chapter => {
+// Filter modules by search query
+function filterModules(query) {
+    filteredModules = modulesData.filter(module => {
         return query === '' || 
-            chapter.title.toLowerCase().includes(query) ||
-            chapter.description.toLowerCase().includes(query) ||
-            chapter.tags.some(tag => tag.toLowerCase().includes(query));
+            module.title.toLowerCase().includes(query) ||
+            module.description.toLowerCase().includes(query) ||
+            module.tags.some(tag => tag.toLowerCase().includes(query));
     });
     
-    renderChapters();
+    renderModules();
 }
 
 // Apply difficulty filter

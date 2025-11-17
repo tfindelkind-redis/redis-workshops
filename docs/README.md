@@ -100,8 +100,8 @@ If the website isn't updating:
 This directory also contains:
 - `CONTRIBUTING.md` - Contribution guidelines
 - `workshop-creation-guide.md` - Workshop authoring
-- `chapter-authoring-guide.md` - Chapter authoring
-- `workshop-specific-chapters.md` - Workshop-specific chapters guide
+- `module-authoring-guide.md` - Module authoring (coming soon)
+- `workshop-specific-modules.md` - Workshop-specific modules guide (coming soon)
 - `QUICK-REFERENCE.md` - Quick command reference
 
 ---

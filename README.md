@@ -10,7 +10,7 @@ Welcome to the Redis Workshops repository! This repository hosts multiple hands-
 redis-workshops/
 ├── workshops/              # Individual workshop directories
 ├── shared/                 # Centrally-managed shared resources
-│   ├── chapters/          # Reusable chapter modules
+│   ├── modules/           # Reusable learning modules
 │   ├── tools/             # Shared utilities and scripts
 │   └── templates/         # Templates for creating new content
 └── docs/                  # Repository documentation
@@ -18,16 +18,16 @@ redis-workshops/
 
 ## 🎯 Available Workshops
 
-Browse the `workshops/` directory to find available workshops. Each workshop is self-contained and references shared chapters as needed.
+Browse the `workshops/` directory to find available workshops. Each workshop is self-contained and references shared modules as needed.
 
 ### Workshop Index
 - Coming soon...
 
-## 🧩 Shared Chapters
+## 🧩 Shared Modules
 
-Chapters are modular, reusable learning units that can be included in multiple workshops. They are centrally maintained in `shared/chapters/` to ensure consistency and easy updates.
+Modules are modular, reusable learning units that can be included in multiple workshops. They are centrally maintained in `shared/modules/` to ensure consistency and easy updates.
 
-### Available Chapters
+### Available Modules
 - Coming soon...
 
 ## 🚀 Getting Started
@@ -117,7 +117,7 @@ For advanced users and automation:
 4. **Follow the workshop README**
    - Each workshop has its own README with specific instructions
    - Set up secrets using Codespaces Secrets (for API keys, credentials)
-   - Complete chapters in order
+   - Complete modules in order
    - Redis is already running on localhost:6379!
 
 **Why Fork + Codespaces?**
@@ -131,7 +131,7 @@ For advanced users and automation:
 ### For Workshop Authors
 
 1. Read the [Workshop Creation Guide](docs/workshop-creation-guide.md)
-2. Review the [Chapter Authoring Guide](docs/chapter-authoring-guide.md)
+2. Review the [Module Authoring Guide](docs/module-authoring-guide.md)
 3. Use the templates in `shared/templates/` to get started
 4. See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for contribution guidelines
 
@@ -142,9 +142,9 @@ Create a new workshop:
 ./shared/tools/create-workshop.sh "My Workshop Name"
 ```
 
-Create a new chapter:
+Create a new module:
 ```bash
-./shared/tools/create-chapter.sh "Chapter Name"
+./shared/tools/create-module.sh "Module Name"
 ```
 
 Validate workshop structure:
@@ -156,8 +156,8 @@ Validate workshop structure:
 
 - [Contributing Guide](docs/CONTRIBUTING.md)
 - [Workshop Creation Guide](docs/workshop-creation-guide.md)
-- [Chapter Authoring Guide](docs/chapter-authoring-guide.md)
-- [Workshop-Specific Chapters](docs/workshop-specific-chapters.md)
+- [Module Authoring Guide](docs/module-authoring-guide.md)
+- [Workshop-Specific Modules](docs/workshop-specific-modules.md)
 - [Quick Reference](docs/QUICK-REFERENCE.md)
 
 ## 🤝 Contributing
