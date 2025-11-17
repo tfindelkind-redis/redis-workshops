@@ -4,7 +4,7 @@ title: WORKSHOP_NAME_PLACEHOLDER
 description: Brief description of the workshop
 duration: 4 hours
 difficulty: intermediate
-chapters: shared/chapters/chapter-01-getting-started
+modules: shared/modules/getting-started
 ---
 
 # WORKSHOP_NAME_PLACEHOLDER
@@ -76,49 +76,49 @@ Before starting this workshop, you should:
 - ✅ All workshop dependencies
 - ✅ VS Code in your browser
 
-## 📖 Workshop Chapters
+## 📖 Workshop Modules
 
-Complete these chapters in order:
+Complete these modules in order:
 
 ---
 
-### 📘 Chapter 1: [Chapter Title]
+### 📘 Module 1: [Module Title]
 
 ⏱️ **Time:** XX minutes | 🏷️ **Type:** Shared | 📊 **Difficulty:** Beginner
 
-Brief description of what this chapter covers.
+Brief description of what this module covers.
 
 <div align="center">
 
-### **[▶️ START CHAPTER 1](../../shared/chapters/chapter-XX-name/README.md)**
+### **[▶️ START MODULE 1](../../shared/modules/module-name/README.md)**
 
 </div>
 
 ---
 
-### 📘 Chapter 2: [Chapter Title]
+### 📘 Module 2: [Module Title]
 
 ⏱️ **Time:** XX minutes | 🏷️ **Type:** Workshop-Specific | 📊 **Difficulty:** Intermediate
 
-Brief description of what this chapter covers.
+Brief description of what this module covers.
 
 <div align="center">
 
-### **[▶️ START CHAPTER 2](chapters/chapter-name/README.md)**
+### **[▶️ START MODULE 2](module-01/README.md)**
 
 </div>
 
 ---
 
-### 📘 Chapter 3: [Chapter Title]
+### 📘 Module 3: [Module Title]
 
 ⏱️ **Time:** XX minutes | 🏷️ **Type:** Shared | 📊 **Difficulty:** Advanced
 
-Brief description of what this chapter covers.
+Brief description of what this module covers.
 
 <div align="center">
 
-### **[▶️ START CHAPTER 3](../../shared/chapters/chapter-XX-name/README.md)**
+### **[▶️ START MODULE 3](../../shared/modules/module-name/README.md)**
 
 </div>
 
@@ -140,9 +140,9 @@ Throughout this workshop, you'll build: [describe the final project or outcome]
 
 ## ✅ Completion Checklist
 
-- [ ] Completed Chapter 1
-- [ ] Completed Chapter 2
-- [ ] Completed Chapter 3
+- [ ] Completed Module 1
+- [ ] Completed Module 2
+- [ ] Completed Module 3
 - [ ] Built the final project
 - [ ] Passed all knowledge checks
 
@@ -153,7 +153,7 @@ Upon completion, you will have hands-on experience with [key technologies/concep
 ## 🤝 Getting Help
 
 If you get stuck:
-1. Review the chapter's troubleshooting section
+1. Review the module's troubleshooting section
 2. Check the solutions directory
 3. [Link to community/support resources]
 

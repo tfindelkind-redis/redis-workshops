@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "simple-git": "^3.20.0",
     "js-yaml": "^4.1.0",
-    "body-parser": "^1.20.2"
+    "body-parser": "^1.20.2",
+    "@octokit/rest": "^20.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

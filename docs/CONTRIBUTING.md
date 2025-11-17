@@ -1,13 +1,13 @@
 # Contributing to Redis Workshops
 
-Thank you for your interest in contributing to the Redis Workshops repository! This document provides guidelines for contributing new workshops, chapters, and improvements.
+Thank you for your interest in contributing to the Redis Workshops repository! This document provides guidelines for contributing new workshops, modules, and improvements.
 
 ## 📋 Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
 - [How to Contribute](#how-to-contribute)
 - [Creating Workshops](#creating-workshops)
-- [Creating Chapters](#creating-chapters)
+- [Creating Modules](#creating-modules)
 - [Updating Existing Content](#updating-existing-content)
 - [Submitting Changes](#submitting-changes)
 - [Style Guidelines](#style-guidelines)
@@ -21,7 +21,7 @@ We are committed to providing a welcoming and inclusive environment. Please be r
 There are several ways to contribute:
 
 1. **Create new workshops** - Design complete learning experiences
-2. **Create new chapters** - Add reusable learning modules
+2. **Create new modules** - Add reusable learning units
 3. **Improve existing content** - Fix errors, clarify instructions, add examples
 4. **Report issues** - Point out bugs, unclear instructions, or errors
 5. **Suggest enhancements** - Propose new features or improvements
@@ -97,61 +97,62 @@ workshops/your-workshop/
 2. **Appropriate Duration**: Aim for 2-6 hours total
 3. **Hands-On Focus**: Include practical exercises
 4. **Progressive Difficulty**: Build from simple to complex
-5. **Reuse Chapters**: Reference existing chapters when possible
+5. **Reuse Modules**: Reference existing modules when possible
 
 See [Workshop Creation Guide](workshop-creation-guide.md) for detailed instructions.
 
-## 📚 Creating Chapters
+## 📚 Creating Modules
 
 ### Quick Start
 
 Use our automation tool:
 
 ```bash
-./shared/tools/create-chapter.sh "Your Chapter Name"
+./shared/tools/create-module.sh "Your Module Name"
 ```
 
-This creates a chapter structure from the template.
+This creates a module structure from the template.
 
-### Chapter Structure
+### Module Structure
 
-A chapter should include:
+A module should include:
 
 ```
-shared/chapters/chapter-XX-name/
-├── README.md                           # Chapter content
-├── .chapter-metadata.json              # Metadata
+shared/modules/module-name/
+├── module.yaml                        # Module metadata
+├── content/
+│   └── module-name.md                # Module content
 ├── scripts/
-│   ├── setup.sh                       # Setup script
-│   ├── cleanup.sh                     # Cleanup script
-│   ├── demo.sh                        # Demo script
+│   ├── setup.sh                      # Setup script
+│   ├── cleanup.sh                    # Cleanup script
+│   ├── demo.sh                       # Demo script
 │   └── solutions/
-│       └── exercise-*.sh              # Exercise solutions
-├── assets/                            # Images, diagrams
-└── answers.md                         # Knowledge check answers
+│       └── exercise-*.sh             # Exercise solutions
+├── assets/                           # Images, diagrams
+└── answers.md                        # Knowledge check answers
 ```
 
-### Chapter Guidelines
+### Module Guidelines
 
-1. **Self-Contained**: Each chapter should work independently
+1. **Self-Contained**: Each module should work independently
 2. **Clear Objectives**: State what learners will achieve
 3. **Estimated Time**: Provide realistic time estimates (30-90 minutes)
 4. **Hands-On Exercises**: Include at least 2-3 practical exercises
 5. **Knowledge Checks**: Add quiz questions to reinforce learning
 6. **Versioning**: Update version and changelog for changes
 
-See [Chapter Authoring Guide](chapter-authoring-guide.md) for detailed instructions.
+See [Module Authoring Guide](module-authoring-guide.md) for detailed instructions.
 
 ## 🔄 Updating Existing Content
 
-### Chapter Updates
+### Module Updates
 
-When updating a shared chapter:
+When updating a shared module:
 
-1. **Update version number** in `.chapter-metadata.json`
+1. **Update version number** in `module.yaml`
 2. **Add changelog entry** with date and changes
-3. **Test thoroughly** - chapters are used by multiple workshops
-4. **Update lastUpdated** field
+3. **Test thoroughly** - modules are used by multiple workshops
+4. **Update last_updated** field
 5. **Consider backward compatibility**
 
 ### Workshop Updates
@@ -161,7 +162,7 @@ When updating a workshop:
 1. Update version in `workshop.config.json`
 2. Add changelog entry
 3. Test the entire workshop flow
-4. Update any chapter references if needed
+4. Update any module references if needed
 
 ## 📤 Submitting Changes
 
@@ -202,11 +203,11 @@ Then follow the workflow:
    - Description: Workshop overview, objectives, target audience
    - Complete the PR checklist
 
-**For Chapters, Updates, or Fixes:**
+**For Modules, Updates, or Fixes:**
 
 1. **Create a branch** for your changes
    ```bash
-   git checkout -b chapter/your-chapter-name
+   git checkout -b module/your-module-name
    # or
    git checkout -b fix/description
    ```
@@ -217,11 +218,11 @@ Then follow the workflow:
    ```
 4. **Commit with clear messages**
    ```bash
-   git commit -m "Add chapter: Redis Streams basics"
+   git commit -m "Add module: Redis Streams basics"
    ```
 5. **Push to GitHub**
    ```bash
-   git push -u origin chapter/your-chapter-name
+   git push -u origin module/your-module-name
    ```
 6. **Open a Pull Request** with:
    - Clear description of changes
