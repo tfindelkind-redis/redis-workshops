@@ -84,6 +84,7 @@ async function getWorkshop(workshopId) {
     try {
         const workshopPath = path.join(workshopsDir, workshopId);
         const readmePath = path.join(workshopPath, 'README.md');
+        const yamlPath = path.join(workshopPath, 'workshop.yaml');
         
         // Check if directory exists
         try {
@@ -92,16 +93,24 @@ async function getWorkshop(workshopId) {
             throw new Error(`Workshop directory not found: ${workshopId}`);
         }
         
-        // Read README.md
-        let content;
-        try {
-            content = await fs.readFile(readmePath, 'utf-8');
-        } catch {
-            throw new Error(`README.md not found in workshop: ${workshopId}`);
-        }
+        let frontmatter;
+        let markdownContent = '';
         
-        // Parse frontmatter
-        const { frontmatter, content: markdownContent } = parseFrontmatter(content);
+        // Try to read workshop.yaml first (for test workshops)
+        try {
+            const yamlContent = await fs.readFile(yamlPath, 'utf-8');
+            frontmatter = yaml.load(yamlContent);
+        } catch {
+            // workshop.yaml doesn't exist, try README.md
+            try {
+                const content = await fs.readFile(readmePath, 'utf-8');
+                const parsed = parseFrontmatter(content);
+                frontmatter = parsed.frontmatter;
+                markdownContent = parsed.content;
+            } catch {
+                throw new Error(`Neither workshop.yaml nor README.md found in workshop: ${workshopId}`);
+            }
+        }
         
         if (!frontmatter) {
             throw new Error(`No frontmatter found in workshop: ${workshopId}`);
@@ -617,8 +626,8 @@ async function findAllModules() {
                 const entries = await fs.readdir(workshopPath, { withFileTypes: true });
                 
                 for (const entry of entries) {
-                    // Match module directories: module-XX-name or module-XX
-                    if (entry.isDirectory() && entry.name.match(/^module-\d{2}/)) {
+                    // Match module directories: module-XX-name, module-XX, or test-*
+                    if (entry.isDirectory() && (entry.name.match(/^module-\d{2}/) || entry.name.match(/^test-/))) {
                         const modulePath = path.join(workshopPath, entry.name);
                         const moduleYamlPath = path.join(modulePath, 'module.yaml');
                         const moduleReadmePath = path.join(modulePath, 'README.md');
@@ -670,6 +679,24 @@ async function findAllModules() {
             }
         }
         
+        // Add children count and list to each module
+        for (const module of allModules) {
+            const modulePath = module.modulePath;
+            const children = allModules.filter(m => 
+                m.inheritance?.parentPath === modulePath
+            );
+            
+            module.childrenCount = children.length;
+            if (children.length > 0) {
+                module.children = children.map(c => ({
+                    workshopId: c.workshopId,
+                    moduleDir: c.moduleDir,
+                    title: c.title,
+                    modulePath: c.modulePath
+                }));
+            }
+        }
+        
         return allModules;
     } catch (error) {
         throw new Error(`Failed to find all modules: ${error.message}`);
@@ -677,15 +704,39 @@ async function findAllModules() {
 }
 
 /**
- * Find root (parent) modules
- * @returns {Promise<Array>} Array of root module objects
+ * Find root (parent) modules - modules that have children
+ * @returns {Promise<Array>} Array of root module objects with children
  */
 async function findRootModules() {
     try {
         const allModules = await findAllModules();
-        return allModules.filter(module => 
-            module.inheritance && module.inheritance.isRoot === true
-        );
+        
+        // Find modules that are parents (have children)
+        const parentModules = [];
+        
+        for (const module of allModules) {
+            const modulePath = module.modulePath;
+            
+            // Count children
+            const children = allModules.filter(m => 
+                m.inheritance?.parentPath === modulePath
+            );
+            
+            if (children.length > 0) {
+                parentModules.push({
+                    ...module,
+                    childrenCount: children.length,
+                    children: children.map(c => ({
+                        workshopId: c.workshopId,
+                        moduleDir: c.moduleDir,
+                        title: c.title,
+                        modulePath: c.modulePath
+                    }))
+                });
+            }
+        }
+        
+        return parentModules;
     } catch (error) {
         throw new Error(`Failed to find root modules: ${error.message}`);
     }

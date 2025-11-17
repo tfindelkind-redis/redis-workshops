@@ -293,7 +293,15 @@
             font-weight: 600;
         }
 
+        .badge.canonical {
+            background: #dbeafe;
+            color: #1e40af;
+        }
 
+        .badge.customized {
+            background: #fef3c7;
+            color: #92400e;
+        }
 
         .badge.beginner {
             background: #d1fae5;
@@ -475,6 +483,7 @@
         .module-browser-item {
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
             transition: background 0.3s;
         }
 
@@ -675,117 +684,6 @@
                 opacity: 0;
             }
         }
-
-        /* ========================================
-           File Browser Styles
-           ======================================== */
-        .file-browser-item {
-            padding: 0.5rem 0.75rem;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.2s;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .file-browser-item:hover {
-            background: #f8f9fa;
-        }
-
-        .file-browser-item:last-child {
-            border-bottom: none;
-        }
-
-        .workshop-item {
-            font-weight: 600;
-            background: #f8f9fa;
-            border-left: 4px solid var(--primary-color);
-            padding-left: calc(0.75rem - 4px);
-        }
-
-        .workshop-item:hover {
-            background: #e9ecef;
-        }
-
-        /* Module hierarchy indentation */
-        .module-item {
-            padding-left: 2.5rem;
-            font-size: 0.95rem;
-        }
-
-        .module-item-child {
-            padding-left: 4rem;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-
-        .module-item-grandchild {
-            padding-left: 5.5rem;
-            font-size: 0.85rem;
-            color: #868e96;
-        }
-
-        /* Item components */
-        .item-icon {
-            display: inline-block;
-            width: 1.5rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .item-label {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-badge {
-            font-size: 0.75rem;
-            padding: 0.125rem 0.5rem;
-            border-radius: 12px;
-            background: #e9ecef;
-            color: #495057;
-            margin-left: 0.5rem;
-            flex-shrink: 0;
-        }
-
-        .item-badge.parent {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .item-badge.child {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        /* Collapse/expand functionality */
-        .workshop-collapsed .workshop-modules {
-            display: none;
-        }
-
-        .workshop-expanded .workshop-modules {
-            display: block;
-        }
-
-        .item-chevron {
-            display: inline-block;
-            width: 1rem;
-            transition: transform 0.2s;
-            margin-right: 0.25rem;
-            flex-shrink: 0;
-        }
-
-        .workshop-collapsed .item-chevron {
-            transform: rotate(-90deg);
-        }
-
-        .module-path {
-            font-size: 0.75rem;
-            color: #868e96;
-            margin-left: 0.25rem;
-        }
     </style>
 </head>
 <body>
@@ -913,6 +811,7 @@
                 <div class="tabs">
                     <button class="tab active" onclick="switchTab('modules')">📚 Modules</button>
                     <button class="tab" onclick="switchTab('navigation')">🧭 Navigation</button>
+                    <button class="tab" onclick="switchTab('preview')">👁️ Preview</button>
                     <button class="tab" onclick="switchTab('module-manager')">🔗 Module Manager</button>
                 </div>
 
@@ -930,12 +829,12 @@
                                 <div class="summary-label">Total Minutes</div>
                             </div>
                             <div class="summary-item">
-                                <div class="summary-value" id="hands-on-count">0</div>
-                                <div class="summary-label">Hands-on</div>
+                                <div class="summary-value" id="canonical-count">0</div>
+                                <div class="summary-label">Canonical</div>
                             </div>
                             <div class="summary-item">
-                                <div class="summary-value" id="lecture-count">0</div>
-                                <div class="summary-label">Lectures</div>
+                                <div class="summary-value" id="customized-count">0</div>
+                                <div class="summary-label">Customized</div>
                             </div>
                         </div>
                     </div>
@@ -1003,6 +902,21 @@
                     </div>
                 </div>
 
+                <!-- Preview Tab -->
+                <div id="preview-tab" class="tab-content">
+                    <div class="alert alert-info">
+                        <strong>👁️ Workshop Preview</strong><br>
+                        See how your workshop will look when built.
+                    </div>
+                    <div id="workshop-preview">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📄</div>
+                            <h3>Complete Workshop Details</h3>
+                            <p>Fill in the workshop details and add modules to see the preview</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Module Manager Tab -->
                 <div id="module-manager-tab" class="tab-content">
                     <div class="alert alert-info">
@@ -1016,34 +930,58 @@
                         <button class="tab" onclick="switchModuleManagerTab('link')">🔗 Link Modules</button>
                     </div>
 
-                    <!-- Browse Modules Sub-Tab (File Browser View) -->
+                    <!-- Browse Modules Sub-Tab (Hierarchical View) -->
                     <div id="mm-browse-tab" class="tab-content active" style="margin-top: 1rem;">
-                        <!-- Action Bar -->
-                        <div class="action-bar" style="margin-bottom: 1rem;">
-                            <button class="btn btn-primary btn-sm" onclick="loadModuleBrowser()">
-                                🔄 Refresh
-                            </button>
-                            <button class="btn btn-outline btn-sm" onclick="expandAllWorkshops()">
-                                📂 Expand All
-                            </button>
-                            <button class="btn btn-outline btn-sm" onclick="collapseAllWorkshops()">
-                                📁 Collapse All
-                            </button>
-                            <label style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" id="show-test-modules" onchange="loadModuleBrowser()">
-                                <span>Show test modules</span>
-                            </label>
+                        <!-- Breadcrumb Navigation -->
+                        <div id="hierarchy-breadcrumb" style="display: none; margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-light); border-radius: 6px; border: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <span style="color: var(--text-light); font-size: 0.875rem;">📍 Navigation:</span>
+                                <div id="breadcrumb-items" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;"></div>
+                            </div>
                         </div>
 
-                        <!-- Search Box -->
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <input 
-                                type="text" 
-                                id="module-search" 
-                                placeholder="🔍 Filter by module name, workshop, or path..." 
-                                oninput="filterModuleBrowser()"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 6px; font-size: 0.95rem;"
-                            >
+                        <!-- Action Bar -->
+                        <div class="action-bar" style="margin-bottom: 1rem;">
+                            <button id="back-button" class="btn btn-outline btn-sm" onclick="goBackInHierarchy()" style="display: none;">
+                                ← Back
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="loadTopLevelModules()">
+                                🔄 Refresh
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="toggleTreeView()">
+                                🌳 Tree View
+                            </button>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem; cursor: pointer;">
+                                <input type="checkbox" id="show-test-modules" onchange="toggleTestModules()" checked style="cursor: pointer;">
+                                <span style="font-size: 0.9rem;">Show Test Modules</span>
+                            </label>
+                            <div style="flex: 1;"></div>
+                            <input type="text" id="modules-search" placeholder="Search modules..." style="padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; min-width: 250px; max-width: 350px;" oninput="filterModules()">
+                        </div>
+                        
+                        <!-- Tree View Modal -->
+                        <div id="tree-view-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 2rem;" onclick="closeTreeView(event)">
+                            <div style="background: white; border-radius: 8px; max-width: 1200px; max-height: 90vh; margin: 0 auto; padding: 2rem; overflow: auto;" onclick="event.stopPropagation()">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                    <h2 style="margin: 0;">🌳 Module Hierarchy Tree View</h2>
+                                    <button class="btn btn-outline btn-sm" onclick="closeTreeView()">✕ Close</button>
+                                </div>
+                                <div id="tree-view-content" style="font-family: monospace; white-space: pre; overflow-x: auto; background: var(--bg-light); padding: 1.5rem; border-radius: 6px; line-height: 1.8;">
+                                    Loading tree...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current View Title -->
+                        <div id="view-title" style="margin-bottom: 1rem;">
+                            <h3 style="margin: 0; color: var(--text-color); display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="view-icon">📦</span>
+                                <span id="view-title-text">Top-Level Modules</span>
+                                <span id="view-count" class="badge" style="background: var(--info-color);">0</span>
+                            </h3>
+                            <p id="view-description" style="margin: 0.5rem 0 0 0; color: var(--text-light); font-size: 0.9rem;">
+                                These modules have no parent and can be used as starting points in the hierarchy.
+                            </p>
                         </div>
 
                         <!-- Statistics Summary -->
@@ -1054,12 +992,12 @@
                                     <div class="summary-label">Total Modules</div>
                                 </div>
                                 <div class="summary-item">
-                                    <div class="summary-value" id="mm-workshops-count">-</div>
-                                    <div class="summary-label">Workshops</div>
+                                    <div class="summary-value" id="mm-parent-count">-</div>
+                                    <div class="summary-label">Parent Modules</div>
                                 </div>
                                 <div class="summary-item">
-                                    <div class="summary-value" id="mm-parent-count">-</div>
-                                    <div class="summary-label">Parents</div>
+                                    <div class="summary-value" id="mm-child-count">-</div>
+                                    <div class="summary-label">Child Modules</div>
                                 </div>
                                 <div class="summary-item">
                                     <div class="summary-value" id="mm-depth-count">-</div>
@@ -1068,12 +1006,12 @@
                             </div>
                         </div>
 
-                        <!-- File Browser Tree View -->
-                        <div id="module-browser" style="border: 1px solid var(--border-color); border-radius: 6px; background: white; max-height: 600px; overflow-y: auto;">
+                        <!-- Modules List -->
+                        <div id="hierarchy-modules-list" style="margin-top: 1rem;">
                             <div class="empty-state">
-                                <div class="empty-state-icon">📁</div>
+                                <div class="empty-state-icon">📦</div>
                                 <h3>No Modules Loaded</h3>
-                                <p>Click "Refresh" to browse modules organized by workshop</p>
+                                <p>Click "Refresh" to discover modules across all workshops</p>
                             </div>
                         </div>
                     </div>
@@ -1165,9 +1103,8 @@
                 <label>Filter by Type</label>
                 <select id="module-type-filter" onchange="filterModules()">
                     <option value="all">All Modules</option>
-                    <option value="lecture">Lecture Only</option>
-                    <option value="hands-on">Hands-on Only</option>
-                    <option value="lab">Lab Only</option>
+                    <option value="canonical">Canonical Only</option>
+                    <option value="customized">Customized Only</option>
                 </select>
             </div>
 
@@ -1735,7 +1672,7 @@
                 description: 'Introduction to Redis core concepts and data structures',
                 duration: 60,
                 difficulty: 'beginner',
-                type: 'lecture',
+                type: 'canonical',
                 tags: ['fundamentals', 'basics', 'data-structures']
             },
             {
@@ -1744,7 +1681,7 @@
                 description: 'Securing Redis deployments with authentication and encryption',
                 duration: 45,
                 difficulty: 'intermediate',
-                type: 'hands-on',
+                type: 'canonical',
                 tags: ['security', 'authentication', 'encryption']
             },
             {
@@ -1753,7 +1690,7 @@
                 description: 'Optimizing Redis for high performance applications',
                 duration: 90,
                 difficulty: 'advanced',
-                type: 'lab',
+                type: 'canonical',
                 tags: ['performance', 'optimization', 'tuning']
             },
             {
@@ -1762,7 +1699,7 @@
                 description: 'Setting up and managing Redis clusters',
                 duration: 75,
                 difficulty: 'advanced',
-                type: 'hands-on',
+                type: 'canonical',
                 tags: ['clustering', 'scalability', 'high-availability']
             },
             {
@@ -1771,7 +1708,7 @@
                 description: 'Working with Redis Streams for event processing',
                 duration: 60,
                 difficulty: 'intermediate',
-                type: 'hands-on',
+                type: 'canonical',
                 tags: ['streams', 'messaging', 'events']
             },
             {
@@ -1780,7 +1717,7 @@
                 description: 'Using Redis as a JSON document store',
                 duration: 45,
                 difficulty: 'beginner',
-                type: 'lecture',
+                type: 'canonical',
                 tags: ['json', 'documents', 'data-structures']
             }
         ];
@@ -1834,6 +1771,8 @@
             // Update specific tab content
             if (tabName === 'navigation') {
                 renderNavigation();
+            } else if (tabName === 'preview') {
+                renderPreview();
             } else if (tabName === 'module-manager') {
                 // Ensure Browse Modules sub-tab is selected and load modules
                 initializeModuleManager();
@@ -1856,174 +1795,12 @@
             document.getElementById('mm-browse-tab')?.classList.add('active');
             
             // Load top-level modules
-            loadModuleBrowser();
+            loadTopLevelModules();
         }
 
         // ========================================================================
         // Module Manager Functions - Hierarchical Navigation
         // ========================================================================
-
-        // ========================================================================
-        // File Browser Functions (New Implementation)
-        // ========================================================================
-        let browserData = { workshops: {}, allModules: [], filteredModules: [] };
-
-        async function loadModuleBrowser() {
-            try {
-                const showTest = document.getElementById('show-test-modules').checked;
-                const response = await apiRequest('/modules/all');
-                const modules = response.modules || response;
-                
-                if (!modules || modules.length === 0) {
-                    document.getElementById('module-browser').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><h3>No Modules Found</h3></div>';
-                    updateBrowserStats([], 0, 0, 0);
-                    return;
-                }
-
-                browserData.allModules = showTest ? modules : modules.filter(m => !m.workshopId.startsWith('test-'));
-                browserData.filteredModules = [...browserData.allModules];
-                browserData.workshops = {};
-                browserData.allModules.forEach(module => {
-                    if (!browserData.workshops[module.workshopId]) {
-                        browserData.workshops[module.workshopId] = { id: module.workshopId, modules: [], expanded: false };
-                    }
-                    browserData.workshops[module.workshopId].modules.push(module);
-                });
-
-                const parents = browserData.allModules.filter(m => m.childrenCount > 0).length;
-                const maxDepth = calculateMaxDepth(browserData.allModules);
-                updateBrowserStats(browserData.allModules, Object.keys(browserData.workshops).length, parents, maxDepth);
-                renderFileBrowser();
-                showNotification(`Loaded ${browserData.allModules.length} modules from ${Object.keys(browserData.workshops).length} workshops`, 'success');
-            } catch (error) {
-                console.error('Failed to load:', error);
-                showNotification('Failed to load modules: ' + error.message, 'error');
-            }
-        }
-
-        function renderFileBrowser() {
-            const container = document.getElementById('module-browser');
-            if (!container) {
-                console.error('module-browser container not found!');
-                return;
-            }
-            const workshops = Object.values(browserData.workshops);
-            if (workshops.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">��</div><h3>No Results</h3></div>';
-                return;
-            }
-            let html = '';
-            workshops.forEach(workshop => {
-                const expandedClass = workshop.expanded ? 'workshop-expanded' : 'workshop-collapsed';
-                const chevron = workshop.expanded ? '▼' : '▶';
-                html += `<div class="${expandedClass}">
-                    <div class="file-browser-item workshop-item" onclick="toggleWorkshop('${workshop.id}')">
-                        <span class="item-chevron">${chevron}</span>
-                        <span class="item-icon">📁</span>
-                        <span class="item-label">${workshop.id}</span>
-                        <span class="item-badge">${workshop.modules.length} module${workshop.modules.length !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="workshop-modules">${renderWorkshopModules(workshop.modules)}</div>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function renderWorkshopModules(modules) {
-            let html = '';
-            const topLevel = modules.filter(m => !m.inheritance || !m.inheritance.parentPath);
-            topLevel.forEach(module => { html += renderModuleItem(module, modules, 'module-item'); });
-            return html;
-        }
-
-        function renderModuleItem(module, allModules, cssClass) {
-            const icon = module.childrenCount > 0 ? '📂' : '📄';
-            const badges = [];
-            if (module.childrenCount > 0) badges.push(`<span class="item-badge parent">${module.childrenCount} child${module.childrenCount !== 1 ? 'ren' : ''}</span>`);
-            if (module.inheritance && module.inheritance.parentPath) badges.push(`<span class="item-badge child">child</span>`);
-            
-            let html = `<div class="file-browser-item ${cssClass}" title="${module.modulePath}">
-                <span class="item-icon">${icon}</span>
-                <span class="item-label">${module.title || module.moduleDir} <span class="module-path">${module.moduleDir}</span></span>
-                ${badges.join('')}
-            </div>`;
-            
-            if (module.childrenCount > 0 && module.children) {
-                module.children.forEach(childRef => {
-                    const child = allModules.find(m => m.modulePath === childRef.modulePath);
-                    if (child) html += renderModuleItem(child, allModules, 'module-item-child');
-                });
-            }
-            return html;
-        }
-
-        function toggleWorkshop(workshopId) {
-            browserData.workshops[workshopId].expanded = !browserData.workshops[workshopId].expanded;
-            renderFileBrowser();
-        }
-
-        function expandAllWorkshops() {
-            Object.values(browserData.workshops).forEach(w => w.expanded = true);
-            renderFileBrowser();
-        }
-
-        function collapseAllWorkshops() {
-            Object.values(browserData.workshops).forEach(w => w.expanded = false);
-            renderFileBrowser();
-        }
-
-        function filterModuleBrowser() {
-            const searchTerm = document.getElementById('module-search').value.toLowerCase().trim();
-            if (!searchTerm) {
-                browserData.filteredModules = [...browserData.allModules];
-                browserData.workshops = {};
-                browserData.filteredModules.forEach(module => {
-                    if (!browserData.workshops[module.workshopId]) {
-                        browserData.workshops[module.workshopId] = { id: module.workshopId, modules: [], expanded: false };
-                    }
-                    browserData.workshops[module.workshopId].modules.push(module);
-                });
-                renderFileBrowser();
-                return;
-            }
-            browserData.filteredModules = browserData.allModules.filter(module => 
-                module.title.toLowerCase().includes(searchTerm) ||
-                module.moduleDir.toLowerCase().includes(searchTerm) ||
-                module.workshopId.toLowerCase().includes(searchTerm) ||
-                module.modulePath.toLowerCase().includes(searchTerm) ||
-                (module.description && module.description.toLowerCase().includes(searchTerm))
-            );
-            browserData.workshops = {};
-            browserData.filteredModules.forEach(module => {
-                if (!browserData.workshops[module.workshopId]) {
-                    browserData.workshops[module.workshopId] = { id: module.workshopId, modules: [], expanded: true };
-                }
-                browserData.workshops[module.workshopId].modules.push(module);
-            });
-            renderFileBrowser();
-        }
-
-        function updateBrowserStats(modules, workshopCount, parentCount, maxDepth) {
-            document.getElementById('mm-total-count').textContent = modules.length;
-            document.getElementById('mm-workshops-count').textContent = workshopCount;
-            document.getElementById('mm-parent-count').textContent = parentCount;
-            document.getElementById('mm-depth-count').textContent = maxDepth;
-        }
-
-        function calculateMaxDepth(modules) {
-            let maxDepth = 0;
-            modules.forEach(module => {
-                let depth = 0, current = module;
-                while (current.inheritance && current.inheritance.parentPath) {
-                    depth++;
-                    current = modules.find(m => m.modulePath === current.inheritance.parentPath);
-                    if (!current || depth > 20) break;
-                }
-                maxDepth = Math.max(maxDepth, depth);
-            });
-            return maxDepth;
-        }
-
 
         // Hierarchical view state
         let hierarchyView = {
@@ -2056,7 +1833,7 @@
 
             // Load data for specific tabs
             if (tabName === 'browse') {
-                loadModuleBrowser(); // Use new file browser function
+                loadTopLevelModules();
             } else if (tabName === 'link') {
                 populateLinkSelects();
             }
@@ -2154,7 +1931,7 @@
         // Navigate back in hierarchy
         function goBackInHierarchy() {
             if (hierarchyView.history.length === 0) {
-                loadModuleBrowser();
+                loadTopLevelModules();
                 return;
             }
             
@@ -2183,7 +1960,7 @@
         async function navigateToBreadcrumb(index) {
             if (index < 0) {
                 // Navigate to top level
-                await loadModuleBrowser();
+                await loadTopLevelModules();
                 return;
             }
             
@@ -2195,7 +1972,7 @@
 
         // Render hierarchical view (top-level or children)
         function renderHierarchyView() {
-            const container = document.getElementById('modules-list');
+            const container = document.getElementById('hierarchy-modules-list');
             const modules = hierarchyView.currentModules;
             
             // Update view title and description
@@ -2391,7 +2168,7 @@
 
         // Toggle test modules visibility
         function toggleTestModules() {
-            loadModuleBrowser(); // Reload with filter applied
+            loadTopLevelModules(); // Reload with filter applied
         }
 
         // Check if module is a test module
@@ -2777,7 +2554,7 @@
                     `;
                     resetLinkForm();
                     // Reload top-level modules to refresh the view
-                    loadModuleBrowser();
+                    loadTopLevelModules();
                 } else {
                     throw new Error(data.error || 'Failed to link modules');
                 }
@@ -2832,7 +2609,7 @@
                         // Refresh duplicates view
                         findDuplicateModules();
                         // Reload top-level modules
-                        loadModuleBrowser();
+                        loadTopLevelModules();
                     } else {
                         throw new Error(data.error || 'Failed to link modules');
                     }
@@ -2860,7 +2637,7 @@
                     if (data.success) {
                         showNotification('✅ Module promoted successfully!', 'success');
                         // Reload top-level modules
-                        loadModuleBrowser();
+                        loadTopLevelModules();
                     } else {
                         throw new Error(data.error || 'Failed to promote module');
                     }
@@ -3028,7 +2805,7 @@
                             order: index + 1,
                             name: moduleName.replace(/-/g, ' ').replace(/^\d+\s*/, '').trim(),
                             moduleRef: moduleRef,
-                            type: 'hands-on',
+                            type: 'canonical',
                             difficulty: 'intermediate',
                             duration: 30,
                             description: `Module from ${moduleRef}`,
@@ -3366,42 +3143,6 @@
             showNotification(`✅ Custom module "${name}" added successfully!`, 'success');
         }
 
-        // Duplicate and Customize Module
-        function duplicateAndCustomize(sourceModule) {
-            if (!sourceModule) {
-                alert('Source module not found');
-                return;
-            }
-
-            // Close the module browser modal
-            closeModuleBrowser();
-
-            // Pre-fill the custom module form with the source module's data
-            document.getElementById('custom-module-name').value = `${sourceModule.name} (Copy)`;
-            document.getElementById('custom-module-description').value = sourceModule.description;
-            document.getElementById('custom-module-duration').value = sourceModule.duration;
-            document.getElementById('custom-module-difficulty').value = sourceModule.difficulty;
-            document.getElementById('custom-module-type').value = sourceModule.type;
-            
-            // Generate a new module ref based on the source
-            const timestamp = Date.now();
-            const baseName = sourceModule.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-            document.getElementById('custom-module-ref').value = `custom/${baseName}-${timestamp}`;
-
-            // Show the custom module modal
-            document.getElementById('custom-module-modal').classList.add('active');
-
-            // Add a note in the UI
-            const alertDiv = document.querySelector('#custom-module-modal .alert');
-            if (alertDiv) {
-                alertDiv.innerHTML = `
-                    <strong>📋 Duplicating Module</strong><br>
-                    Creating a customized copy of "<strong>${sourceModule.name}</strong>". 
-                    Modify the details below to customize this module for your workshop.
-                `;
-            }
-        }
-
         // Edit Module Functions
         let editingModuleIndex = -1;
 
@@ -3495,23 +3236,14 @@
                 const item = document.createElement('div');
                 item.className = 'module-browser-item';
                 item.innerHTML = `
-                    <div>
-                        <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
-                        <p>${module.description}</p>
-                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
-                            <span>⏱️ ${module.duration} min</span>
-                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <button class="btn btn-primary" onclick="event.stopPropagation(); addModule(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
-                            ➕ Add
-                        </button>
-                        <button class="btn btn-outline" onclick="event.stopPropagation(); duplicateAndCustomize(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
-                            📋 Duplicate & Customize
-                        </button>
+                    <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
+                    <p>${module.description}</p>
+                    <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light);">
+                        <span>⏱️ ${module.duration} min</span>
+                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
                     </div>
                 `;
+                item.onclick = () => addModule(module);
                 container.appendChild(item);
             });
         }
@@ -3551,23 +3283,14 @@
                 const item = document.createElement('div');
                 item.className = 'module-browser-item';
                 item.innerHTML = `
-                    <div>
-                        <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
-                        <p>${module.description}</p>
-                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
-                            <span>⏱️ ${module.duration} min</span>
-                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <button class="btn btn-primary" onclick="event.stopPropagation(); addModule(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
-                            ➕ Add
-                        </button>
-                        <button class="btn btn-outline" onclick="event.stopPropagation(); duplicateAndCustomize(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
-                            📋 Duplicate & Customize
-                        </button>
+                    <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
+                    <p>${module.description}</p>
+                    <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light);">
+                        <span>⏱️ ${module.duration} min</span>
+                        <span class="badge ${module.difficulty}">${module.difficulty}</span>
                     </div>
                 `;
+                item.onclick = () => addModule(module);
                 container.appendChild(item);
             });
         }
@@ -3641,7 +3364,7 @@
             console.log('workshop.modules:', workshop.modules);
             console.log('workshop.modules.length:', workshop.modules.length);
             
-            const container = document.getElementById('modules-list');
+            const container = document.getElementById('hierarchy-modules-list');
             
             if (workshop.modules.length === 0) {
                 console.log('No modules - showing empty state');
@@ -3664,7 +3387,7 @@
                     order: index + 1,
                     name: module,
                     moduleRef: module,
-                    type: 'hands-on',
+                    type: 'canonical',
                     difficulty: 'intermediate',
                     duration: 30,
                     description: module
@@ -3686,7 +3409,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="badge ${moduleData.type || 'hands-on'}">${moduleData.type || 'hands-on'}</span>
+                        <span class="badge ${moduleData.type || 'canonical'}">${moduleData.type || 'canonical'}</span>
                     </div>
                     <div style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 0.75rem;" onclick="editModule(${index})" style="cursor: pointer;">
                         ${moduleData.description || 'No description'}
@@ -3724,22 +3447,22 @@
                 workshop.duration = totalDuration;
             }
             
-            // Count modules by type
-            const handsOn = workshop.modules.filter(m => {
+            // Handle both object and string formats for type
+            const canonical = workshop.modules.filter(m => {
                 if (typeof m === 'object') {
-                    return m.type === 'hands-on' || m.type === 'lab';
+                    return m.type === 'canonical';
                 }
-                return false;
+                return true; // String modules default to canonical
             }).length;
-            document.getElementById('hands-on-count').textContent = handsOn;
+            document.getElementById('canonical-count').textContent = canonical;
             
-            const lectures = workshop.modules.filter(m => {
+            const customized = workshop.modules.filter(m => {
                 if (typeof m === 'object') {
-                    return m.type === 'lecture';
+                    return m.type === 'customized';
                 }
                 return false;
             }).length;
-            document.getElementById('lecture-count').textContent = lectures;
+            document.getElementById('customized-count').textContent = customized;
         }
 
         function renderNavigation() {
@@ -3793,7 +3516,58 @@
             container.innerHTML = html;
         }
 
+        function renderPreview() {
+            const container = document.getElementById('workshop-preview');
+            
+            if (!workshop.title || workshop.modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>Complete Workshop Details</h3>
+                        <p>Fill in the workshop details and add modules to see the preview</p>
+                    </div>
+                `;
+                return;
+            }
 
+            const totalDuration = workshop.modules.reduce((sum, m) => sum + m.duration, 0);
+            const hours = (totalDuration / 60).toFixed(1);
+
+            let html = `
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h1 style="color: var(--primary-color); margin-bottom: 1rem;">${workshop.title}</h1>
+                    <p style="font-size: 1.125rem; color: var(--text-light); margin-bottom: 2rem;">${workshop.description}</p>
+                    
+                    <div style="background: var(--bg-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">📋 Workshop Details</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div><strong>Duration:</strong> ${workshop.duration} (~${hours} hours)</div>
+                            <div><strong>Difficulty:</strong> <span class="badge ${workshop.difficulty}">${workshop.difficulty}</span></div>
+                            <div><strong>Modules:</strong> ${workshop.modules.length}</div>
+                            <div><strong>Total Time:</strong> ${totalDuration} minutes</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 1rem;">📖 Workshop Modules</h3>
+            `;
+
+            workshop.modules.forEach((module, index) => {
+                html += `
+                    <div style="border-left: 4px solid var(--primary-color); padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">${index + 1}. ${module.name}</h4>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                            <span>⏱️ ${module.duration} minutes</span>
+                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                            <span class="badge ${module.type}">${module.type}</span>
+                        </div>
+                        <p style="color: var(--text-light);">${module.description}</p>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
