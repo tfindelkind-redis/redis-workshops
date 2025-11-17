@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">⬅️ Previous<br/><small>Azure Managed Redis Deployment</small></a>
+      <a href="../module-02-introduction-to-redis/README.md">⬅️ Previous<br/><small>Introduction to Redis</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      
+      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/><small>Azure Managed Redis Deployment</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 5 of 5**
+[🏠 Workshop Home](../README.md) > **Module 3 of 5**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██████████` 100%
+**Progress:** `██████░░░░` 60%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# RedisJSON
+# Redis Use Cases
 
-**Duration:** 45 minutes  
-**Difficulty:** beginner  
-**Type:** canonical
+**Duration:** 50 minutes  
+**Difficulty:** intermediate  
+**Type:** hands-on
 
 ## Overview
 
-Using Redis as a JSON document store
+Explore common patterns - caching, session management, pub/sub, and leaderboards
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-04-azure-managed-redis-deployment/README.md">⬅️ Previous<br/>Azure Managed Redis Deployment</a>
+      <a href="../module-02-introduction-to-redis/README.md">⬅️ Previous<br/>Introduction to Redis</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      ✅ Workshop Complete!
+      <a href="../module-04-azure-managed-redis-deployment/README.md">Next ➡️<br/>Azure Managed Redis Deployment</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 5 of 5*
+*Module 3 of 5*

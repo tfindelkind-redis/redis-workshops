@@ -9,7 +9,7 @@
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-azure-managed-redis-deployment/README.md">Next ➡️<br/><small>Azure Managed Redis Deployment</small></a>
+      <a href="../module-03-redis-use-cases/README.md">Next ➡️<br/><small>Redis Use Cases</small></a>
     </td>
   </tr>
 </table>
@@ -80,7 +80,7 @@ Key takeaways from this module...
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-azure-managed-redis-deployment/README.md">Next ➡️<br/>Azure Managed Redis Deployment</a>
+      <a href="../module-03-redis-use-cases/README.md">Next ➡️<br/>Redis Use Cases</a>
     </td>
   </tr>
 </table>
