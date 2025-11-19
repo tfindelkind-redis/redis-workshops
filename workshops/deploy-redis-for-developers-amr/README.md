@@ -1,36 +1,20 @@
 ---
 workshopId: deploy-redis-for-developers-amr
 title: Deploy Redis for Developers - Azure Managed Redis
-description: Deploy Redis for Developers - Azure Managed Redis
-duration: 120
+description: dv
+duration: 60
 difficulty: intermediate
-modules:
-  - order: 1
-    name: Redis Fundamentals
-    description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-    duration: 60
-    difficulty: beginner
-    type: lecture
-    moduleRef: custom/redis-fundamentals
-    required: true
-  - order: 2
-    name: Azure Managed Redis Architecture
-    description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-    duration: 60
-    difficulty: intermediate
-    type: lecture
-    moduleRef: custom/azure-managed-redis-architecture
-    required: true
+chapters: '[object Object]'
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
 
-**Duration:** 120  
+**Duration:** 60  
 **Difficulty:** intermediate
 
 ## 📋 Overview
 
-Deploy Redis for Developers - Azure Managed Redis
+dv
 
 ## 🎯 Learning Objectives
 
@@ -75,14 +59,13 @@ Before starting this workshop, you should have:
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 2h 0m | **Modules:** 2
+**Total Duration:** 1h 0m | **Modules:** 1
 
 Complete the modules in order for the best learning experience:
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | beginner | lecture | ✅ Yes |
-| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60m | intermediate | lecture | ✅ Yes |
+| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | intermediate | lecture | ✅ Yes |
 
 ---
 
@@ -90,21 +73,9 @@ Complete the modules in order for the best learning experience:
 
 📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** lecture
-
-Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-
-> ✅ **Required Module** - Essential for workshop completion
-
----
-
-### Module 2: Azure Managed Redis Architecture
-
-📂 **[Go to Module](module-02-azure-managed-redis-architecture/README.md)**
-
 **Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+sdgsd
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -156,15 +127,9 @@ After completing this workshop:
 
 ## 📚 Workshop Modules
 
-### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
+### [Module 1: undefined](module-01-untitled-module/README.md)
 
-**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** lecture
+**Duration:** undefined minutes | **Difficulty:** undefined | **Type:** undefined
 
-Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-
-### [Module 2: Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
-
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+undefined
 
