@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/><small>Redis Fundamentals</small></a>
+      <a href="../module-05-cost-optimization--operational-excellence/README.md">⬅️ Previous<br/><small>Cost Optimization & Operational Excellence</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/><small>Well-Architected Framework Overview</small></a>
+      <a href="../module-07-provision--connect-lab/README.md">Next ➡️<br/><small>Provision & Connect Lab</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 8**
+[🏠 Workshop Home](../README.md) > **Module 6 of 8**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██░░░░░░░░` 25%
+**Progress:** `███████░░░` 75%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Azure Managed Redis Architecture
+# Performance Efficiency & Data Modeling
 
 **Duration:** 60 minutes  
-**Difficulty:** intermediate  
+**Difficulty:** advanced  
 **Type:** lecture
 
 ## Overview
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+Master performance optimization and data modeling patterns for Redis deployments.
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/>Redis Fundamentals</a>
+      <a href="../module-05-cost-optimization--operational-excellence/README.md">⬅️ Previous<br/>Cost Optimization & Operational Excellence</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/>Well-Architected Framework Overview</a>
+      <a href="../module-07-provision--connect-lab/README.md">Next ➡️<br/>Provision & Connect Lab</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 2 of 8*
+*Module 6 of 8*

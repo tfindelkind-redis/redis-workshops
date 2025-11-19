@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/><small>Redis Fundamentals</small></a>
+      <a href="../module-06-performance-efficiency--data-modeling/README.md">⬅️ Previous<br/><small>Performance Efficiency & Data Modeling</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/><small>Well-Architected Framework Overview</small></a>
+      <a href="../module-08-implement-caching-lab/README.md">Next ➡️<br/><small>Implement Caching Lab</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 8**
+[🏠 Workshop Home](../README.md) > **Module 7 of 8**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██░░░░░░░░` 25%
+**Progress:** `████████░░` 88%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Azure Managed Redis Architecture
+# Provision & Connect Lab
 
 **Duration:** 60 minutes  
 **Difficulty:** intermediate  
-**Type:** lecture
+**Type:** hands-on
 
 ## Overview
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/>Redis Fundamentals</a>
+      <a href="../module-06-performance-efficiency--data-modeling/README.md">⬅️ Previous<br/>Performance Efficiency & Data Modeling</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/>Well-Architected Framework Overview</a>
+      <a href="../module-08-implement-caching-lab/README.md">Next ➡️<br/>Implement Caching Lab</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 2 of 8*
+*Module 7 of 8*

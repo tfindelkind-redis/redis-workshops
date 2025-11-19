@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/><small>Redis Fundamentals</small></a>
+      <a href="../module-04-reliability--security-deep-dive/README.md">⬅️ Previous<br/><small>Reliability & Security Deep Dive</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/><small>Well-Architected Framework Overview</small></a>
+      <a href="../module-06-performance-efficiency--data-modeling/README.md">Next ➡️<br/><small>Performance Efficiency & Data Modeling</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 8**
+[🏠 Workshop Home](../README.md) > **Module 5 of 8**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██░░░░░░░░` 25%
+**Progress:** `██████░░░░` 63%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Azure Managed Redis Architecture
+# Cost Optimization & Operational Excellence
 
-**Duration:** 60 minutes  
-**Difficulty:** intermediate  
+**Duration:** 45 minutes  
+**Difficulty:** advanced  
 **Type:** lecture
 
 ## Overview
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+Deep dive into Cost Optimization and Operational Excellence pillars for Redis deployments.
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-01-redis-fundamentals/README.md">⬅️ Previous<br/>Redis Fundamentals</a>
+      <a href="../module-04-reliability--security-deep-dive/README.md">⬅️ Previous<br/>Reliability & Security Deep Dive</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">Next ➡️<br/>Well-Architected Framework Overview</a>
+      <a href="../module-06-performance-efficiency--data-modeling/README.md">Next ➡️<br/>Performance Efficiency & Data Modeling</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 2 of 8*
+*Module 5 of 8*
