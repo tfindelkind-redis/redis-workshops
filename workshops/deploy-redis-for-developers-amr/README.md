@@ -4,7 +4,15 @@ title: Deploy Redis for Developers - Azure Managed Redis
 description: egg
 duration: 60
 difficulty: intermediate
-chapters: '[object Object]'
+modules:
+  - order: 1
+    name: Redis Fundamentals
+    description: stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+    duration: 60
+    difficulty: intermediate
+    type: lecture
+    moduleRef: custom/redis-fundamentals
+    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
@@ -23,7 +31,7 @@ Complete the modules in order for the best learning experience:
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | intermediate | hands-on | ✅ Yes |
+| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | intermediate | lecture | ✅ Yes |
 
 ---
 
@@ -31,9 +39,9 @@ Complete the modules in order for the best learning experience:
 
 📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
 
-efge
+stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -48,9 +56,9 @@ efge
 
 ## 📚 Workshop Modules
 
-### [Module 1: undefined](module-01-untitled-module/README.md)
+### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
 
-**Duration:** undefined minutes | **Difficulty:** undefined | **Type:** undefined
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
 
-undefined
+stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
