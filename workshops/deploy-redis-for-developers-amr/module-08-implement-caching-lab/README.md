@@ -9,16 +9,16 @@
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      
+      <a href="../module-09-monitoring--alerts-lab/README.md">Next ➡️<br/><small>Monitoring & Alerts Lab</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 8 of 8**
+[🏠 Workshop Home](../README.md) > **Module 8 of 11**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `██████████` 100%
+**Progress:** `███████░░░` 73%
 
 ---
 
@@ -80,11 +80,11 @@ Key takeaways from this module...
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      ✅ Workshop Complete!
+      <a href="../module-09-monitoring--alerts-lab/README.md">Next ➡️<br/>Monitoring & Alerts Lab</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 8 of 8*
+*Module 8 of 11*

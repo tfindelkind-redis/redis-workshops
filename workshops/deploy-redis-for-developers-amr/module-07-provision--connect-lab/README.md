@@ -14,11 +14,11 @@
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 7 of 8**
+[🏠 Workshop Home](../README.md) > **Module 7 of 11**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `████████░░` 88%
+**Progress:** `██████░░░░` 64%
 
 ---
 
@@ -87,4 +87,4 @@ Key takeaways from this module...
 
 ---
 
-*Module 7 of 8*
+*Module 7 of 11*

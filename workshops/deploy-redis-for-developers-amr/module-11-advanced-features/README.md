@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">⬅️ Previous<br/><small>Well-Architected Framework Overview</small></a>
+      <a href="../module-10-troubleshooting--migration/README.md">⬅️ Previous<br/><small>Troubleshooting & Migration</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-05-cost-optimization--operational-excellence/README.md">Next ➡️<br/><small>Cost Optimization & Operational Excellence</small></a>
+      
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 4 of 11**
+[🏠 Workshop Home](../README.md) > **Module 11 of 11**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `███░░░░░░░` 36%
+**Progress:** `██████████` 100%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Reliability & Security Deep Dive
+# Advanced Features
 
 **Duration:** 60 minutes  
 **Difficulty:** advanced  
-**Type:** lecture
+**Type:** hands-on
 
 ## Overview
 
-Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.
+This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">⬅️ Previous<br/>Well-Architected Framework Overview</a>
+      <a href="../module-10-troubleshooting--migration/README.md">⬅️ Previous<br/>Troubleshooting & Migration</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-05-cost-optimization--operational-excellence/README.md">Next ➡️<br/>Cost Optimization & Operational Excellence</a>
+      ✅ Workshop Complete!
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 4 of 11*
+*Module 11 of 11*

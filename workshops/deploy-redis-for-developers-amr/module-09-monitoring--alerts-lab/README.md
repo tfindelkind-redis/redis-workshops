@@ -3,36 +3,36 @@
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">⬅️ Previous<br/><small>Well-Architected Framework Overview</small></a>
+      <a href="../module-08-implement-caching-lab/README.md">⬅️ Previous<br/><small>Implement Caching Lab</small></a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-05-cost-optimization--operational-excellence/README.md">Next ➡️<br/><small>Cost Optimization & Operational Excellence</small></a>
+      <a href="../module-10-troubleshooting--migration/README.md">Next ➡️<br/><small>Troubleshooting & Migration</small></a>
     </td>
   </tr>
 </table>
 
-[🏠 Workshop Home](../README.md) > **Module 4 of 11**
+[🏠 Workshop Home](../README.md) > **Module 9 of 11**
 
 ### Deploy Redis for Developers - Azure Managed Redis
 
-**Progress:** `███░░░░░░░` 36%
+**Progress:** `████████░░` 82%
 
 ---
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Reliability & Security Deep Dive
+# Monitoring & Alerts Lab
 
-**Duration:** 60 minutes  
-**Difficulty:** advanced  
-**Type:** lecture
+**Duration:** 45 minutes  
+**Difficulty:** intermediate  
+**Type:** hands-on
 
 ## Overview
 
-Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.
+In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
 
 ## Learning Objectives
 
@@ -74,17 +74,17 @@ Key takeaways from this module...
 <table width="100%">
   <tr>
     <td align="left" width="33%">
-      <a href="../module-03-well-architected-framework-overview/README.md">⬅️ Previous<br/>Well-Architected Framework Overview</a>
+      <a href="../module-08-implement-caching-lab/README.md">⬅️ Previous<br/>Implement Caching Lab</a>
     </td>
     <td align="center" width="33%">
       <a href="../README.md">🏠 Workshop Home</a>
     </td>
     <td align="right" width="33%">
-      <a href="../module-05-cost-optimization--operational-excellence/README.md">Next ➡️<br/>Cost Optimization & Operational Excellence</a>
+      <a href="../module-10-troubleshooting--migration/README.md">Next ➡️<br/>Troubleshooting & Migration</a>
     </td>
   </tr>
 </table>
 
 ---
 
-*Module 4 of 11*
+*Module 9 of 11*

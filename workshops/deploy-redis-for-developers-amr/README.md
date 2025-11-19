@@ -2,7 +2,7 @@
 workshopId: deploy-redis-for-developers-amr
 title: Deploy Redis for Developers - Azure Managed Redis
 description: egg
-duration: 450
+duration: 615
 difficulty: intermediate
 modules:
   - order: 1
@@ -69,11 +69,35 @@ modules:
     type: hands-on
     moduleRef: custom/implement-caching-lab
     required: true
+  - order: 9
+    name: Monitoring & Alerts Lab
+    description: In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
+    duration: 45
+    difficulty: intermediate
+    type: hands-on
+    moduleRef: custom/monitoring--alerts-lab
+    required: true
+  - order: 10
+    name: Troubleshooting & Migration
+    description: This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
+    duration: 60
+    difficulty: advanced
+    type: hands-on
+    moduleRef: custom/troubleshooting--migration
+    required: true
+  - order: 11
+    name: Advanced Features
+    description: This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
+    duration: 60
+    difficulty: advanced
+    type: hands-on
+    moduleRef: custom/advanced-features
+    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
 
-**Duration:** 450 | **Difficulty:** intermediate
+**Duration:** 615 | **Difficulty:** intermediate
 
 ## 📋 Overview
 
@@ -81,7 +105,7 @@ egg
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 7h 30m | **Modules:** 8
+**Total Duration:** 10h 15m | **Modules:** 11
 
 Complete the modules in order for the best learning experience:
 
@@ -95,6 +119,9 @@ Complete the modules in order for the best learning experience:
 | 6 | [Performance Efficiency & Data Modeling](module-06-performance-efficiency-data-modeling/README.md) | 60m | advanced | lecture | ✅ Yes |
 | 7 | [Provision & Connect Lab](module-07-provision-connect-lab/README.md) | 60m | intermediate | hands-on | ✅ Yes |
 | 8 | [Implement Caching Lab](module-08-implement-caching-lab/README.md) | 60m | intermediate | hands-on | ✅ Yes |
+| 9 | [Monitoring & Alerts Lab](module-09-monitoring-alerts-lab/README.md) | 45m | intermediate | hands-on | ✅ Yes |
+| 10 | [Troubleshooting & Migration](module-10-troubleshooting-migration/README.md) | 60m | advanced | hands-on | ✅ Yes |
+| 11 | [Advanced Features](module-11-advanced-features/README.md) | 60m | advanced | hands-on | ✅ Yes |
 
 ---
 
@@ -194,6 +221,42 @@ Build a real-world Flask API with PostgreSQL backend and implement Redis caching
 
 ---
 
+### Module 9: Monitoring & Alerts Lab
+
+📂 **[Go to Module](module-09-monitoring-alerts-lab/README.md)**
+
+**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
+
+> ✅ **Required Module** - Essential for workshop completion
+
+---
+
+### Module 10: Troubleshooting & Migration
+
+📂 **[Go to Module](module-10-troubleshooting-migration/README.md)**
+
+**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+
+This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
+
+> ✅ **Required Module** - Essential for workshop completion
+
+---
+
+### Module 11: Advanced Features
+
+📂 **[Go to Module](module-11-advanced-features/README.md)**
+
+**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+
+This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
+
+> ✅ **Required Module** - Essential for workshop completion
+
+---
+
 
 
 ---
@@ -250,4 +313,22 @@ Deploy Azure Managed Redis and establish secure connectivity using Infrastructur
 **Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
 
 Build a real-world Flask API with PostgreSQL backend and implement Redis caching patterns.
+
+### [Module 9: Monitoring & Alerts Lab](module-09-monitoring--alerts-lab/README.md)
+
+**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** hands-on
+
+In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
+
+### [Module 10: Troubleshooting & Migration](module-10-troubleshooting--migration/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+
+This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
+
+### [Module 11: Advanced Features](module-11-advanced-features/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+
+This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
 
