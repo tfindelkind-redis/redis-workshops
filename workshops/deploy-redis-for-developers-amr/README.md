@@ -2,9 +2,25 @@
 workshopId: deploy-redis-for-developers-amr
 title: Deploy Redis for Developers - Azure Managed Redis
 description: Deploy Redis for Developers - Azure Managed Redis
-duration: 60
+duration: 120
 difficulty: intermediate
-chapters: '[object Object]'
+modules:
+  - order: 1
+    name: Redis Fundamentals
+    description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+    duration: 60
+    difficulty: beginner
+    type: lecture
+    moduleRef: custom/redis-fundamentals
+    required: true
+  - order: 2
+    name: Azure Managed Redis Architecture
+    description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+    duration: 60
+    difficulty: intermediate
+    type: lecture
+    moduleRef: custom/azure-managed-redis-architecture
+    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
@@ -70,3 +86,19 @@ Throughout this workshop, you'll build and learn about Redis concepts.
 ## 🎓 Next Steps
 
 Continue your Redis learning journey with more workshops!
+
+
+## 📚 Workshop Modules
+
+### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** lecture
+
+Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+
+### [Module 2: Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md)
+
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
+
+Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+
