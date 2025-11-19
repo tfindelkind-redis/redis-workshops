@@ -4,15 +4,4 @@
 const workshopsData = [
 ];
 const chaptersData = [
-    {
-        id: "chapter-01-getting-started",
-        title: "",
-        description: "",
-        difficulty: "",
-        estimatedMinutes: ,
-        tags: ,
-        path: "shared/chapters/chapter-01-getting-started",
-        version: "",
-        workshopSpecific: false
-    }
 ];
