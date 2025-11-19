@@ -2182,62 +2182,8 @@
         };
 
         // Available modules (in a real app, this would be fetched from the server)
-        const availableModules = [
-            {
-                moduleRef: 'core.redis-fundamentals.v1',
-                name: 'Redis Fundamentals',
-                description: 'Introduction to Redis core concepts and data structures',
-                duration: 60,
-                difficulty: 'beginner',
-                type: 'lecture',
-                tags: ['fundamentals', 'basics', 'data-structures']
-            },
-            {
-                moduleRef: 'core.redis-security.v1',
-                name: 'Redis Security',
-                description: 'Securing Redis deployments with authentication and encryption',
-                duration: 45,
-                difficulty: 'intermediate',
-                type: 'hands-on',
-                tags: ['security', 'authentication', 'encryption']
-            },
-            {
-                moduleRef: 'core.redis-performance.v1',
-                name: 'Redis Performance',
-                description: 'Optimizing Redis for high performance applications',
-                duration: 90,
-                difficulty: 'advanced',
-                type: 'lab',
-                tags: ['performance', 'optimization', 'tuning']
-            },
-            {
-                moduleRef: 'core.redis-clustering.v1',
-                name: 'Redis Clustering',
-                description: 'Setting up and managing Redis clusters',
-                duration: 75,
-                difficulty: 'advanced',
-                type: 'hands-on',
-                tags: ['clustering', 'scalability', 'high-availability']
-            },
-            {
-                moduleRef: 'core.redis-streams.v1',
-                name: 'Redis Streams',
-                description: 'Working with Redis Streams for event processing',
-                duration: 60,
-                difficulty: 'intermediate',
-                type: 'hands-on',
-                tags: ['streams', 'messaging', 'events']
-            },
-            {
-                moduleRef: 'core.redis-json.v1',
-                name: 'RedisJSON',
-                description: 'Using Redis as a JSON document store',
-                duration: 45,
-                difficulty: 'beginner',
-                type: 'lecture',
-                tags: ['json', 'documents', 'data-structures']
-            }
-        ];
+        // Available modules - loaded dynamically from API
+        const availableModules = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {

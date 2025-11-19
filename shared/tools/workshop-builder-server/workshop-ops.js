@@ -167,6 +167,15 @@ async function updateWorkshop(workshopId, updates) {
         const workshopPath = path.join(workshopsDir, workshopId);
         const readmePath = path.join(workshopPath, 'README.md');
         
+        // Check if workshop directory exists, create if not
+        try {
+            await fs.access(workshopPath);
+        } catch (error) {
+            // Workshop doesn't exist, create it first
+            console.log(`Workshop ${workshopId} doesn't exist, creating it...`);
+            return await createWorkshop({ workshopId, ...updates });
+        }
+        
         // Read current content
         const content = await fs.readFile(readmePath, 'utf-8');
         const { frontmatter, content: markdownContent } = parseFrontmatter(content);
@@ -184,20 +193,117 @@ async function updateWorkshop(workshopId, updates) {
             updatedFrontmatter.modules = updates.modules;
             // Remove old 'chapters' field if it exists
             delete updatedFrontmatter.chapters;
+            
+            // Regenerate the entire README with updated modules table of contents
+            const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
+            const modulesTableOfContents = generateModulesTableOfContents(updates.modules);
+            
+            const newContent = `${newFrontmatterString}
+# ${updatedFrontmatter.title}
+
+**Duration:** ${updatedFrontmatter.duration} | **Difficulty:** ${updatedFrontmatter.difficulty}
+
+## 📋 Overview
+
+${updatedFrontmatter.description}
+
+${modulesTableOfContents}
+
+---
+
+**Ready to start?** Click on Module 1 above to begin your learning journey!
+`;
+            
+            await fs.writeFile(readmePath, newContent, 'utf-8');
+        } else {
+            // Just update frontmatter, keep existing content
+            const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
+            const newContent = newFrontmatterString + markdownContent;
+            await fs.writeFile(readmePath, newContent, 'utf-8');
         }
-        
-        // Build new content
-        const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
-        const newContent = newFrontmatterString + markdownContent;
-        
-        // Write back to file
-        await fs.writeFile(readmePath, newContent, 'utf-8');
         
         // Return updated workshop
         return await getWorkshop(workshopId);
     } catch (error) {
         throw new Error(`Failed to update workshop ${workshopId}: ${error.message}`);
     }
+}
+
+/**
+ * Generate table of contents for workshop modules
+ * @param {Array} modules - Array of module objects
+ * @returns {string} Formatted markdown table of contents
+ */
+function generateModulesTableOfContents(modules) {
+    if (!modules || modules.length === 0) {
+        return `## 📖 Workshop Modules
+
+*No modules added yet. Use the Workshop Builder GUI to add modules.*
+`;
+    }
+
+    // Calculate total duration
+    const totalMinutes = modules.reduce((sum, mod) => sum + (parseInt(mod.duration) || 0), 0);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+    const totalDuration = totalHours > 0 
+        ? `${totalHours}h ${remainingMinutes}m` 
+        : `${remainingMinutes}m`;
+
+    let toc = `## 📖 Workshop Modules
+
+**Total Duration:** ${totalDuration} | **Modules:** ${modules.length}
+
+Complete the modules in order for the best learning experience:
+
+| # | Module | Duration | Difficulty | Type | Required |
+|---|--------|----------|------------|------|----------|
+`;
+
+    modules.forEach((module, index) => {
+        const order = module.order || (index + 1);
+        const moduleName = module.name || 'Untitled Module';
+        const duration = module.duration ? `${module.duration}m` : 'N/A';
+        const difficulty = module.difficulty || 'intermediate';
+        const type = module.type || 'lecture';
+        const required = module.required ? '✅ Yes' : '⚪ Optional';
+        
+        // Generate module directory name from order and name
+        const moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        const moduleLink = `[${moduleName}](${moduleDir}/README.md)`;
+        
+        toc += `| ${order} | ${moduleLink} | ${duration} | ${difficulty} | ${type} | ${required} |\n`;
+    });
+
+    toc += '\n';
+
+    // Add detailed module sections
+    toc += '---\n\n';
+    
+    modules.forEach((module, index) => {
+        const order = module.order || (index + 1);
+        const moduleName = module.name || 'Untitled Module';
+        const description = module.description || 'No description available.';
+        const duration = module.duration ? `${module.duration} minutes` : 'Duration not specified';
+        const difficulty = module.difficulty || 'intermediate';
+        const type = module.type || 'lecture';
+        
+        // Generate module directory name
+        const moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        
+        toc += `### Module ${order}: ${moduleName}\n\n`;
+        toc += `📂 **[Go to Module](${moduleDir}/README.md)**\n\n`;
+        toc += `**Duration:** ${duration} | **Difficulty:** ${difficulty} | **Type:** ${type}\n\n`;
+        toc += `${description}\n\n`;
+        
+        if (module.required) {
+            toc += `> ✅ **Required Module** - Essential for workshop completion\n\n`;
+        }
+        
+        toc += '---\n\n';
+    });
+
+    return toc;
 }
 
 /**
@@ -228,85 +334,33 @@ async function createWorkshop(workshopData) {
         // Create workshop directory
         await fs.mkdir(workshopPath, { recursive: true });
         
-        // Create chapters directory
-        await fs.mkdir(path.join(workshopPath, 'chapters'), { recursive: true });
-        
         // Build frontmatter
         const frontmatter = {
             workshopId,
             title: title || workshopId,
             description: description || 'Workshop description',
             duration: duration || '4 hours',
-            difficulty: difficulty || 'intermediate',
-            chapters: modules && modules.length > 0 ? modules.join(',') : ''
+            difficulty: difficulty || 'intermediate'
         };
         
-        // Build README content
+        // Build README content with modules table of contents
         const frontmatterString = buildFrontmatter(frontmatter);
+        const modulesTableOfContents = generateModulesTableOfContents(modules || []);
+        
         const template = `${frontmatterString}
 # ${frontmatter.title}
 
-**Duration:** ${frontmatter.duration}  
-**Difficulty:** ${frontmatter.difficulty}
+**Duration:** ${frontmatter.duration} | **Difficulty:** ${frontmatter.difficulty}
 
 ## 📋 Overview
 
 ${frontmatter.description}
 
-## 🎯 Learning Objectives
+${modulesTableOfContents}
 
-By the end of this workshop, you will be able to:
-- Objective 1
-- Objective 2
-- Objective 3
+---
 
-## 📚 Prerequisites
-
-Before starting this workshop, you should:
-- Have a GitHub account
-- Have basic knowledge of Redis
-
-## 🛠️ Setup
-
-### Required Tools
-- GitHub account (for forking)
-- Web browser
-
-### Getting Started
-
-**⚠️ Important:** This workshop uses GitHub Codespaces - no local installation needed!
-
-1. **Fork the repository**
-   - Visit [redis-workshops on GitHub](https://github.com/tfindelkind-redis/redis-workshops)
-   - Click the "Fork" button to create your personal copy
-
-2. **Open in GitHub Codespaces**
-   - Go to your forked repository
-   - Click "Code" → "Codespaces" → "Create codespace on main"
-   - Wait ~1 minute while the environment sets up
-
-3. **Navigate to this workshop**
-   \`\`\`bash
-   cd workshops/${workshopId}
-   \`\`\`
-
-## 📖 Workshop Chapters
-
-Complete these chapters in order. (Add chapters using the Workshop Builder GUI)
-
-## 🏗️ Workshop Project
-
-Throughout this workshop, you'll build and learn about Redis concepts.
-
-## ✅ Completion Checklist
-
-- [ ] Completed all chapters
-- [ ] Built the final project
-- [ ] Passed all knowledge checks
-
-## 🎓 Next Steps
-
-Continue your Redis learning journey with more workshops!
+**Ready to start?** Click on Module 1 above to begin your learning journey!
 `;
         
         // Write README.md
@@ -364,32 +418,22 @@ function generateModuleNavigation(options) {
     
     let nav = `<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->\n\n`;
     
-    // Top navigation bar with prev/next links
-    nav += `<table width="100%">\n`;
-    nav += `  <tr>\n`;
-    nav += `    <td align="left" width="33%">\n`;
+    // Top navigation bar with prev/next links using Markdown tables
+    nav += `| Previous | Home | Next |\n`;
+    nav += `|----------|:----:|------:|\n`;
+    nav += `| `;
     
     if (prevModule) {
-        nav += `      <a href="../${prevModule.folder}/README.md">⬅️ Previous<br/><small>${prevModule.name}</small></a>\n`;
-    } else {
-        nav += `      \n`;
+        nav += `[⬅️ Previous: ${prevModule.name}](../${prevModule.folder}/README.md)`;
     }
     
-    nav += `    </td>\n`;
-    nav += `    <td align="center" width="33%">\n`;
-    nav += `      <a href="../README.md">🏠 Workshop Home</a>\n`;
-    nav += `    </td>\n`;
-    nav += `    <td align="right" width="33%">\n`;
+    nav += ` | [🏠 Workshop Home](../README.md) | `;
     
     if (nextModule) {
-        nav += `      <a href="../${nextModule.folder}/README.md">Next ➡️<br/><small>${nextModule.name}</small></a>\n`;
-    } else {
-        nav += `      \n`;
+        nav += `[Next: ${nextModule.name} ➡️](../${nextModule.folder}/README.md)`;
     }
     
-    nav += `    </td>\n`;
-    nav += `  </tr>\n`;
-    nav += `</table>\n\n`;
+    nav += ` |\n\n`;
     
     // Breadcrumb and progress
     nav += `[🏠 Workshop Home](../README.md) > **Module ${moduleIndex + 1} of ${totalModules}**\n\n`;
@@ -413,31 +457,25 @@ function generateModuleFooter(options) {
     footer += `---\n\n`;
     footer += `<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->\n\n`;
     footer += `## Navigation\n\n`;
-    footer += `<table width="100%">\n`;
-    footer += `  <tr>\n`;
-    footer += `    <td align="left" width="33%">\n`;
+    
+    // Bottom navigation using Markdown table
+    footer += `| Previous | Home | Next |\n`;
+    footer += `|----------|:----:|------:|\n`;
+    footer += `| `;
     
     if (prevModule) {
-        footer += `      <a href="../${prevModule.folder}/README.md">⬅️ Previous<br/>${prevModule.name}</a>\n`;
-    } else {
-        footer += `      \n`;
+        footer += `[⬅️ Previous: ${prevModule.name}](../${prevModule.folder}/README.md)`;
     }
     
-    footer += `    </td>\n`;
-    footer += `    <td align="center" width="33%">\n`;
-    footer += `      <a href="../README.md">🏠 Workshop Home</a>\n`;
-    footer += `    </td>\n`;
-    footer += `    <td align="right" width="33%">\n`;
+    footer += ` | [🏠 Workshop Home](../README.md) | `;
     
     if (nextModule) {
-        footer += `      <a href="../${nextModule.folder}/README.md">Next ➡️<br/>${nextModule.name}</a>\n`;
+        footer += `[Next: ${nextModule.name} ➡️](../${nextModule.folder}/README.md)`;
     } else {
-        footer += `      ✅ Workshop Complete!\n`;
+        footer += `✅ **Workshop Complete!**`;
     }
     
-    footer += `    </td>\n`;
-    footer += `  </tr>\n`;
-    footer += `</table>\n\n`;
+    footer += ` |\n\n`;
     footer += `---\n\n`;
     footer += `*Module ${moduleIndex + 1} of ${totalModules}*\n`;
     
@@ -456,7 +494,10 @@ function generateModuleFooter(options) {
 async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalModules, navOptions) {
     try {
         const workshopPath = path.join(workshopsDir, workshopId);
-        const folderName = `module-${String(moduleIndex + 1).padStart(2, '0')}-${moduleData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+        
+        // Ensure moduleData.name exists, fallback to 'untitled-module'
+        const moduleName = moduleData.name || 'Untitled Module';
+        const folderName = `module-${String(moduleIndex + 1).padStart(2, '0')}-${moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
         const modulePath = path.join(workshopPath, folderName);
         
         // Create module directory
@@ -465,7 +506,7 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
         // Generate navigation
         const header = generateModuleNavigation({
             ...navOptions,
-            moduleName: moduleData.name,
+            moduleName: moduleName,
             moduleIndex,
             totalModules
         });
@@ -478,16 +519,44 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
             nextModule: navOptions.nextModule
         });
         
-        // Create module content
-        const content = `${header}# ${moduleData.name}
+        // Check if README already exists
+        const readmePath = path.join(modulePath, 'README.md');
+        let content;
+        
+        try {
+            // Try to read existing README
+            const existingContent = await fs.readFile(readmePath, 'utf-8');
+            
+            // Extract user content (between edit markers)
+            let userContent = existingContent;
+            
+            // Remove existing navigation header if present
+            const headerMatch = existingContent.match(/<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->.*?<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->\n\n/s);
+            if (headerMatch) {
+                userContent = existingContent.substring(headerMatch[0].length);
+            }
+            
+            // Remove existing navigation footer if present
+            const footerMatch = userContent.match(/\n\n<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->.*$/s);
+            if (footerMatch) {
+                userContent = userContent.substring(0, userContent.length - footerMatch[0].length);
+            }
+            
+            // Preserve existing content with new navigation
+            content = header + userContent.trim() + footer;
+            
+            console.log(`ℹ️  Preserved existing content for: ${folderName}`);
+        } catch (error) {
+            // README doesn't exist, create new with template
+            content = `${header}# ${moduleName}
 
-**Duration:** ${moduleData.duration} minutes  
-**Difficulty:** ${moduleData.difficulty}  
-**Type:** ${moduleData.type}
+**Duration:** ${moduleData.duration || 60} minutes  
+**Difficulty:** ${moduleData.difficulty || 'intermediate'}  
+**Type:** ${moduleData.type || 'lecture'}
 
 ## Overview
 
-${moduleData.description}
+${moduleData.description || 'Module description goes here.'}
 
 ## Learning Objectives
 
@@ -517,9 +586,11 @@ Add exercises here...
 Key takeaways from this module...
 
 ${footer}`;
+            
+            console.log(`✨ Created new README for: ${folderName}`);
+        }
         
         // Write README.md
-        const readmePath = path.join(modulePath, 'README.md');
         await fs.writeFile(readmePath, content, 'utf-8');
         
         return { folderName, path: modulePath };
@@ -543,12 +614,12 @@ async function generateModuleStructure(workshopId, workshopTitle, modules) {
             const moduleData = modules[i];
             
             // Prepare navigation options
-            const prevModule = i > 0 ? {
+            const prevModule = i > 0 && modules[i - 1].name ? {
                 name: modules[i - 1].name,
                 folder: `module-${String(i).padStart(2, '0')}-${modules[i - 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
             } : null;
             
-            const nextModule = i < modules.length - 1 ? {
+            const nextModule = i < modules.length - 1 && modules[i + 1].name ? {
                 name: modules[i + 1].name,
                 folder: `module-${String(i + 2).padStart(2, '0')}-${modules[i + 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
             } : null;
@@ -711,10 +782,15 @@ async function findRootModules() {
     try {
         const allModules = await findAllModules();
         
-        // Find modules that are parents (have children)
+        // Find modules that are parents (have children) and are not from test workshops
         const parentModules = [];
         
         for (const module of allModules) {
+            // Skip test workshops
+            if (module.workshopId.startsWith('test-')) {
+                continue;
+            }
+            
             const modulePath = module.modulePath;
             
             // Count children
@@ -750,10 +826,15 @@ async function findSimilarModules() {
     try {
         const allModules = await findAllModules();
         
+        // Filter out test workshops
+        const nonTestModules = allModules.filter(module => 
+            !module.workshopId.startsWith('test-')
+        );
+        
         // Group modules by normalized name (remove module-XX- prefix)
         const groups = {};
         
-        for (const module of allModules) {
+        for (const module of nonTestModules) {
             // Extract name after module-XX-
             const nameMatch = module.moduleDir.match(/^module-\d{2}-(.+)$/);
             const normalizedName = nameMatch ? nameMatch[1] : module.moduleDir;
@@ -976,10 +1057,12 @@ async function getTopLevelModules() {
     try {
         const allModules = await findAllModules();
         
-        // Top-level modules have no parentPath
-        const topLevel = allModules.filter(module => 
-            !module.inheritance || !module.inheritance.parentPath
-        );
+        // Top-level modules have no parentPath and are not from test workshops
+        const topLevel = allModules.filter(module => {
+            const isTopLevel = !module.inheritance || !module.inheritance.parentPath;
+            const isNotTestWorkshop = !module.workshopId.startsWith('test-');
+            return isTopLevel && isNotTestWorkshop;
+        });
         
         // Add child counts for each top-level module
         for (const module of topLevel) {
@@ -1302,6 +1385,107 @@ async function copyDirectory(src, dest) {
     }
 }
 
+/**
+ * Update module navigation while preserving content
+ * @param {string} workshopId - Workshop ID
+ * @returns {Promise<object>} Result with updated modules count
+ */
+async function updateModuleNavigation(workshopId) {
+    try {
+        const workshopPath = path.join(workshopsDir, workshopId);
+        
+        // Get workshop data
+        const workshop = await getWorkshop(workshopId);
+        if (!workshop || !workshop.modules || workshop.modules.length === 0) {
+            throw new Error('Workshop not found or has no modules');
+        }
+        
+        const modules = workshop.modules;
+        const totalModules = modules.length;
+        const updatedModules = [];
+        
+        for (let i = 0; i < modules.length; i++) {
+            const moduleData = modules[i];
+            const moduleName = moduleData.name || 'Untitled Module';
+            const folderName = `module-${String(i + 1).padStart(2, '0')}-${moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+            const modulePath = path.join(workshopPath, folderName);
+            const readmePath = path.join(modulePath, 'README.md');
+            
+            // Check if module README exists
+            try {
+                await fs.access(readmePath);
+            } catch {
+                console.log(`Skipping ${folderName} - README.md not found`);
+                continue;
+            }
+            
+            // Read current content
+            let content = await fs.readFile(readmePath, 'utf-8');
+            
+            // Extract user content (between edit markers)
+            let userContent = content;
+            
+            // Remove existing navigation header if present
+            const headerMatch = content.match(/<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->.*?<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->\n\n/s);
+            if (headerMatch) {
+                userContent = content.substring(headerMatch[0].length);
+            }
+            
+            // Remove existing navigation footer if present
+            const footerMatch = userContent.match(/\n\n<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->.*$/s);
+            if (footerMatch) {
+                userContent = userContent.substring(0, userContent.length - footerMatch[0].length);
+            }
+            
+            // Prepare navigation options
+            const prevModule = i > 0 ? {
+                name: modules[i - 1].name,
+                folder: `module-${String(i).padStart(2, '0')}-${modules[i - 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
+            } : null;
+            
+            const nextModule = i < modules.length - 1 ? {
+                name: modules[i + 1].name,
+                folder: `module-${String(i + 2).padStart(2, '0')}-${modules[i + 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
+            } : null;
+            
+            // Generate new navigation
+            const header = generateModuleNavigation({
+                workshopTitle: workshop.title,
+                workshopId,
+                moduleName,
+                moduleIndex: i,
+                totalModules,
+                prevModule,
+                nextModule
+            });
+            
+            const footer = generateModuleFooter({
+                workshopId,
+                moduleIndex: i,
+                totalModules,
+                prevModule,
+                nextModule
+            });
+            
+            // Combine navigation + user content
+            const newContent = header + userContent.trim() + footer;
+            
+            // Write back
+            await fs.writeFile(readmePath, newContent, 'utf-8');
+            
+            updatedModules.push({ folderName, moduleName });
+        }
+        
+        return {
+            success: true,
+            updated: updatedModules.length,
+            modules: updatedModules
+        };
+    } catch (error) {
+        throw new Error(`Failed to update module navigation: ${error.message}`);
+    }
+}
+
 module.exports = {
     listWorkshops,
     getWorkshop,
@@ -1316,6 +1500,7 @@ module.exports = {
     createModuleDirectory,
     generateModuleStructure,
     updateWorkshopWithModuleLinks,
+    updateModuleNavigation,
     // Module discovery and linking
     findAllModules,
     findRootModules,

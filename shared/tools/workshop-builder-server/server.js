@@ -456,6 +456,40 @@ app.post('/api/workshops/:id/generate-modules', async (req, res) => {
     }
 });
 
+/**
+ * POST /api/workshops/:id/update-navigation
+ * Update module navigation while preserving content
+ */
+app.post('/api/workshops/:id/update-navigation', async (req, res) => {
+    try {
+        const workshopId = req.params.id;
+        
+        // Get workshop data
+        const workshop = await workshopOps.getWorkshop(workshopId);
+        if (!workshop) {
+            return res.status(404).json({
+                success: false,
+                error: 'Workshop not found'
+            });
+        }
+        
+        // Update navigation
+        const result = await workshopOps.updateModuleNavigation(workshopId);
+        
+        res.json({
+            success: true,
+            message: `Updated navigation for ${result.updated} modules`,
+            ...result
+        });
+    } catch (error) {
+        console.error('Update navigation error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
 // Module Discovery & Linking Endpoints
 // ============================================================================
