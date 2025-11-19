@@ -1,30 +1,41 @@
-{
- "cells": [
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "# \ud83d\ude80 Implement Caching Lab - Interactive Edition\n",
+#!/usr/bin/env python3
+"""
+Generate complete Jupyter notebook for Redis Caching Lab
+This creates all 35 cells with full content
+"""
+import json
+import sys
+
+def mk_md(source):
+    """Create markdown cell"""
+    return {"cell_type": "markdown", "metadata": {}, "source": source}
+
+def mk_code(source):
+    """Create code cell"""
+    return {"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [], "source": source}
+
+cells = []
+
+# PART 1: SETUP
+cells.append(mk_md([
+    "# 🚀 Implement Caching Lab - Interactive Edition\n",
     "\n",
     "**Duration:** 45-60 minutes  \n",
     "**Level:** Intermediate\n",
     "\n",
     "Welcome to the interactive caching lab! In this hands-on notebook, you'll:\n",
     "\n",
-    "- \u2705 Implement the **cache-aside pattern** with Redis\n",
-    "- \u2705 Measure **real performance improvements** (10-100x speedup)\n",
-    "- \u2705 Visualize cache effectiveness with **interactive charts**\n",
-    "- \u2705 Learn cache invalidation strategies\n",
-    "- \u2705 Apply best practices for production systems\n",
+    "- ✅ Implement the **cache-aside pattern** with Redis\n",
+    "- ✅ Measure **real performance improvements** (10-100x speedup)\n",
+    "- ✅ Visualize cache effectiveness with **interactive charts**\n",
+    "- ✅ Learn cache invalidation strategies\n",
+    "- ✅ Apply best practices for production systems\n",
     "\n",
     "**No Docker or external database required!** We'll use a mock database to keep things simple."
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## \ud83d\udcda What You'll Learn\n",
+]))
+
+cells.append(mk_md([
+    "## 📚 What You'll Learn\n",
     "\n",
     "By the end of this lab, you'll understand:\n",
     "\n",
@@ -34,25 +45,17 @@
     "4. **Cache Invalidation** - Keep data fresh and consistent\n",
     "5. **TTL Strategy** - Balance freshness vs. performance\n",
     "\n",
-    "Let's get started! \ud83c\udfaf"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+    "Let's get started! 🎯"
+]))
+
+cells.append(mk_md([
     "---\n",
     "## Part 1: Setup and Dependencies (5 minutes)\n",
     "\n",
     "First, let's import all the packages we'll need."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "# Core libraries\n",
     "import redis\n",
     "import time\n",
@@ -67,24 +70,16 @@
     "# Configure matplotlib for inline display\n",
     "%matplotlib inline\n",
     "\n",
-    "print(\"\u2705 All packages imported successfully!\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udd27 Configure Redis Connection\n",
+    "print(\"✅ All packages imported successfully!\")"
+]))
+
+cells.append(mk_md([
+    "### 🔧 Configure Redis Connection\n",
     "\n",
     "We'll connect to Redis running locally in Codespaces. You can also connect to Azure Redis by changing the configuration."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "# Redis configuration\n",
     "USE_LOCAL_REDIS = True  # Set to False for Azure Redis\n",
     "\n",
@@ -108,28 +103,20 @@
     "# Test connection\n",
     "try:\n",
     "    redis_client.ping()\n",
-    "    print(\"\u2705 Connected to Redis successfully!\")\n",
+    "    print(\"✅ Connected to Redis successfully!\")\n",
     "    print(f\"   Server version: {redis_client.info('server')['redis_version']}\")\n",
     "except Exception as e:\n",
-    "    print(f\"\u274c Redis connection failed: {e}\")\n",
+    "    print(f\"❌ Redis connection failed: {e}\")\n",
     "    print(\"   Make sure Redis is running!\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udcca Create Mock Database\n",
+]))
+
+cells.append(mk_md([
+    "### 📊 Create Mock Database\n",
     "\n",
     "Instead of PostgreSQL, we'll use an in-memory database that simulates realistic query latency."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "class MockDatabase:\n",
     "    def __init__(self):\n",
     "        self.products = [\n",
@@ -158,24 +145,16 @@
     "        self.query_count = 0\n",
     "\n",
     "db = MockDatabase()\n",
-    "print(f\"\u2705 Mock database created with {len(db.products)} products\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83e\uddea Test the Mock Database\n",
+    "print(f\"✅ Mock database created with {len(db.products)} products\")"
+]))
+
+cells.append(mk_md([
+    "### 🧪 Test the Mock Database\n",
     "\n",
     "Let's verify our database works and measure its latency."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "start_time = time.time()\n",
     "product = db.get_product_by_id(1)\n",
     "elapsed_ms = (time.time() - start_time) * 1000\n",
@@ -184,13 +163,11 @@
     "print(f\"Price: ${product['price']}\")\n",
     "print(f\"Query time: {elapsed_ms:.2f}ms\")\n",
     "print(f\"Total queries: {db.query_count}\")\n",
-    "print(\"\\n\ud83d\udca1 Notice: Database queries take 25-30ms each\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+    "print(\"\\n💡 Notice: Database queries take 25-30ms each\")"
+]))
+
+# PART 2: CACHE-ASIDE PATTERN
+cells.append(mk_md([
     "---\n",
     "## Part 2: Implement Cache-Aside Pattern (15 minutes)\n",
     "\n",
@@ -198,19 +175,14 @@
     "\n",
     "```\n",
     "1. Check cache first\n",
-    "2. If hit \u2192 return cached data (fast!)\n",
-    "3. If miss \u2192 query database\n",
+    "2. If hit → return cached data (fast!)\n",
+    "3. If miss → query database\n",
     "4. Store in cache for next time\n",
     "5. Return data\n",
     "```"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "class CacheManager:\n",
     "    def __init__(self, redis_client: redis.Redis, ttl: int = 60):\n",
     "        self.redis = redis_client\n",
@@ -254,24 +226,16 @@
     "        self.misses = 0\n",
     "\n",
     "cache = CacheManager(redis_client, ttl=60)\n",
-    "print(\"\u2705 Cache manager created with 60-second TTL\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udd17 Create Helper Function\n",
+    "print(\"✅ Cache manager created with 60-second TTL\")"
+]))
+
+cells.append(mk_md([
+    "### 🔗 Create Helper Function\n",
     "\n",
     "This function implements the complete cache-aside pattern:"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "def get_product_with_cache(product_id: int, cache_manager: CacheManager, database: MockDatabase) -> Dict:\n",
     "    start_time = time.time()\n",
     "    \n",
@@ -291,34 +255,24 @@
     "    \n",
     "    return {\"product\": product, \"latency_ms\": elapsed_ms, \"source\": source}\n",
     "\n",
-    "print(\"\u2705 Helper function created\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+    "print(\"✅ Helper function created\")"
+]))
+
+# PART 3: PERFORMANCE TESTING
+cells.append(mk_md([
     "---\n",
     "## Part 3: Performance Testing (15 minutes)\n",
     "\n",
     "Let's measure the real performance improvement from caching!"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83e\uddea Test 1: Single Product Lookup\n",
+]))
+
+cells.append(mk_md([
+    "### 🧪 Test 1: Single Product Lookup\n",
     "\n",
     "Compare first request (cache miss) vs. second request (cache hit)."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "cache.reset_stats()\n",
     "db.reset_stats()\n",
     "redis_client.flushdb()\n",
@@ -336,24 +290,16 @@
     "print(f\"  Source: {result2['source']}\")\n",
     "\n",
     "speedup = result1['latency_ms'] / result2['latency_ms']\n",
-    "print(f\"\\n\ud83d\ude80 Speedup: {speedup:.1f}x faster with cache!\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udcc8 Test 2: Realistic Traffic Pattern\n",
+    "print(f\"\\n🚀 Speedup: {speedup:.1f}x faster with cache!\")"
+]))
+
+cells.append(mk_md([
+    "### 📈 Test 2: Realistic Traffic Pattern\n",
     "\n",
     "Simulate 100 requests with 80% focused on popular products."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "cache.reset_stats()\n",
     "db.reset_stats()\n",
     "redis_client.flushdb()\n",
@@ -378,71 +324,53 @@
     "    })\n",
     "\n",
     "stats = cache.get_stats()\n",
-    "print(f\"\\n\u2705 Test complete!\")\n",
+    "print(f\"\\n✅ Test complete!\")\n",
     "print(f\"Cache Hits: {stats['hits']} ({stats['hit_rate']:.1f}%)\")\n",
     "print(f\"Database Queries: {db.query_count}\")\n",
-    "print(f\"\\n\ud83d\udca1 We avoided {stats['hits']} database queries!\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udd04 Test 3: Cache Invalidation\n",
+    "print(f\"\\n💡 We avoided {stats['hits']} database queries!\")"
+]))
+
+cells.append(mk_md([
+    "### 🔄 Test 3: Cache Invalidation\n",
     "\n",
     "What happens when we update a product?"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "result = get_product_with_cache(1, cache, db)\n",
     "print(f\"Before update: Price = ${result['product']['price']}\")\n",
     "\n",
     "# Update in database\n",
     "db.products[0]['price'] = 799.99\n",
-    "print(\"\\n\u270f\ufe0f Updated price in database to $799.99\")\n",
+    "print(\"\\n✏️ Updated price in database to $799.99\")\n",
     "\n",
     "# Still returns old cached value\n",
     "result = get_product_with_cache(1, cache, db)\n",
-    "print(f\"\\nWithout invalidation: Price = ${result['product']['price']} \u26a0\ufe0f\")\n",
+    "print(f\"\\nWithout invalidation: Price = ${result['product']['price']} ⚠️\")\n",
     "\n",
     "# Invalidate cache\n",
     "cache.invalidate_product(1)\n",
-    "print(\"\\n\ud83d\uddd1\ufe0f Cache invalidated\")\n",
+    "print(\"\\n🗑️ Cache invalidated\")\n",
     "\n",
     "# Now get fresh data\n",
     "result = get_product_with_cache(1, cache, db)\n",
-    "print(f\"\\nAfter invalidation: Price = ${result['product']['price']} \u2705\")\n",
-    "print(\"\\n\ud83d\udca1 Always invalidate cache when updating data!\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+    "print(f\"\\nAfter invalidation: Price = ${result['product']['price']} ✅\")\n",
+    "print(\"\\n💡 Always invalidate cache when updating data!\")"
+]))
+
+# PART 4: VISUALIZATIONS
+cells.append(mk_md([
     "---\n",
     "## Part 4: Visualize Performance (10 minutes)\n",
     "\n",
     "Let's create charts to visualize cache effectiveness!"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udcca Chart 1: Request Latency Scatter Plot"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_md([
+    "### 📊 Chart 1: Request Latency Scatter Plot"
+]))
+
+cells.append(mk_code([
     "df = pd.DataFrame(results)\n",
     "\n",
     "plt.figure(figsize=(14, 6))\n",
@@ -459,21 +387,13 @@
     "plt.legend(handles=legend, loc='upper right')\n",
     "plt.tight_layout()\n",
     "plt.show()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udcca Chart 2: Average Latency Comparison"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_md([
+    "### 📊 Chart 2: Average Latency Comparison"
+]))
+
+cells.append(mk_code([
     "cached = df[df['source'] == 'cache']['latency']\n",
     "uncached = df[df['source'] == 'database']['latency']\n",
     "\n",
@@ -497,21 +417,13 @@
     "plt.show()\n",
     "\n",
     "print(f\"\\nSpeedup: {speedup:.1f}x faster with cache\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83d\udcca Chart 3: Cache Hit Rate Over Time"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_md([
+    "### 📊 Chart 3: Cache Hit Rate Over Time"
+]))
+
+cells.append(mk_code([
     "df['is_hit'] = (df['source'] == 'cache').astype(int)\n",
     "df['cumulative_hits'] = df['is_hit'].cumsum()\n",
     "df['hit_rate'] = (df['cumulative_hits'] / df['request_num']) * 100\n",
@@ -532,174 +444,144 @@
     "         bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))\n",
     "plt.tight_layout()\n",
     "plt.show()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+]))
+
+# PART 5: EXERCISES
+cells.append(mk_md([
     "---\n",
     "## Part 5: Advanced Exercises (15 minutes)\n",
     "\n",
     "Try these exercises to deepen your understanding!"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83c\udfaf Exercise 1: Test TTL Expiration\n",
+]))
+
+cells.append(mk_md([
+    "### 🎯 Exercise 1: Test TTL Expiration\n",
     "\n",
     "Create a cache with TTL=5 seconds and observe expiration.\n",
     "\n",
     "**Hints:**\n",
     "- Create `CacheManager` with `ttl=5`\n",
     "- Make requests before and after waiting 6 seconds"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "# Your code here\n",
     "print(\"Exercise 1: TTL Expiration Test\")\n",
     "\n",
     "# TODO: Implement TTL testing"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83c\udfaf Exercise 2: Implement Cache Warming\n",
+]))
+
+cells.append(mk_md([
+    "### 🎯 Exercise 2: Implement Cache Warming\n",
     "\n",
     "Write a function to pre-load popular products before traffic starts."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "# Your code here\n",
     "def warm_cache(product_ids: List[int], cache_manager: CacheManager, database: MockDatabase):\n",
     "    \"\"\"Pre-load products into cache\"\"\"\n",
     "    # TODO: Implement cache warming\n",
     "    pass"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### \ud83c\udfaf Exercise 3: Compare Different TTL Values\n",
+]))
+
+cells.append(mk_md([
+    "### 🎯 Exercise 3: Compare Different TTL Values\n",
     "\n",
     "Test with TTL=30s, 60s, 300s and compare hit rates."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "# Your code here\n",
     "ttl_values = [30, 60, 300]\n",
     "\n",
     "# TODO: Test and compare different TTL values"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
+]))
+
+# PART 6: WRAP UP
+cells.append(mk_md([
     "---\n",
     "## Part 6: Key Takeaways\n",
     "\n",
-    "## \ud83c\udf93 What You've Learned\n",
+    "## 🎓 What You've Learned\n",
     "\n",
-    "### \u2705 Cache-Aside Pattern\n",
+    "### ✅ Cache-Aside Pattern\n",
     "- Check cache first, fall back to database\n",
     "- Store in cache on miss\n",
     "- Simple but effective!\n",
     "\n",
-    "### \u2705 Performance Benefits\n",
+    "### ✅ Performance Benefits\n",
     "- **10-100x speedup** with caching\n",
     "- Hit rates of **80-90%** are common\n",
     "- Dramatically reduces database load\n",
     "\n",
-    "### \u2705 Cache Invalidation\n",
+    "### ✅ Cache Invalidation\n",
     "- **Must invalidate on updates**\n",
     "- Use TTL as safety net\n",
     "\n",
-    "### \u2705 TTL Strategy\n",
+    "### ✅ TTL Strategy\n",
     "- Shorter TTL = fresher data, more DB queries\n",
     "- Longer TTL = better performance, staler data\n",
     "\n",
     "---\n",
     "\n",
-    "## \ud83d\ude80 Next Steps\n",
+    "## 🚀 Next Steps\n",
     "\n",
     "1. Apply these patterns to your own app\n",
     "2. Explore other patterns (write-through, write-behind)\n",
     "3. Learn advanced Redis features (Pub/Sub, Streams, JSON)\n",
     "4. Study monitoring with Azure Monitor\n",
     "\n",
-    "## \ud83d\udcda Resources\n",
+    "## 📚 Resources\n",
     "\n",
     "- [Redis Caching Best Practices](https://redis.io/docs/manual/patterns/caching/)\n",
     "- [Cache-Aside Pattern](https://learn.microsoft.com/azure/architecture/patterns/cache-aside)\n",
     "- [Redis Python Client](https://redis-py.readthedocs.io/)\n",
     "- [Azure Cache for Redis](https://learn.microsoft.com/azure/azure-cache-for-redis/)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## \ud83e\uddf9 Cleanup\n",
+]))
+
+cells.append(mk_md([
+    "## 🧹 Cleanup\n",
     "\n",
     "Run this cell to clean up Redis:"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
+]))
+
+cells.append(mk_code([
     "redis_client.flushdb()\n",
     "cache.reset_stats()\n",
     "db.reset_stats()\n",
     "\n",
-    "print(\"\u2705 Cleanup complete!\")\n",
-    "print(\"\\n\ud83c\udf89 Thank you for completing the Caching Lab!\")\n",
+    "print(\"✅ Cleanup complete!\")\n",
+    "print(\"\\n🎉 Thank you for completing the Caching Lab!\")\n",
     "print(\"   You're now ready to implement Redis caching in production!\")"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python (Redis Workshop)",
-   "language": "python",
-   "name": "redis-workshop"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.0"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
+]))
+
+# Create notebook
+notebook = {
+    "cells": cells,
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python (Redis Workshop)",
+            "language": "python",
+            "name": "redis-workshop"
+        },
+        "language_info": {
+            "codemirror_mode": {"name": "ipython", "version": 3},
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.11.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 4
 }
+
+output_path = "workshops/deploy-redis-for-developers-amr/module-08-implement-caching-lab/implement-caching-lab.ipynb"
+with open(output_path, 'w') as f:
+    json.dump(notebook, f, indent=1)
+
+print(f"✅ Created complete notebook with {len(cells)} cells: {output_path}")
+print(f"   File size: {len(json.dumps(notebook))} bytes")
