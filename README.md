@@ -18,9 +18,39 @@ This repository provides everything you need to create professional Redis traini
 
 ---
 
-## 🚀 Quick Start for Workshop Creators
+## 🚀 Quick Start
 
-### Option 1: Docker (Recommended - 2 Minutes to Start!)
+### For Workshop Participants (Interactive Labs)
+
+**✨ NEW: Complete labs interactively in GitHub Codespaces with Jupyter notebooks!**
+
+```bash
+# 1. Open in Codespaces
+Click "Code" → "Codespaces" → "Create codespace on main"
+
+# 2. Navigate to a workshop module
+cd workshops/deploy-redis-for-developers-amr/module-08-implement-caching-lab/
+
+# 3. Open the Jupyter notebook
+# Click on implement-caching-lab.ipynb
+
+# 4. Run cells step-by-step and see results instantly!
+```
+
+**Features:**
+- ✅ Zero setup - runs in your browser
+- ✅ Interactive code cells with immediate feedback
+- ✅ Real-time performance visualizations
+- ✅ Guided exercises with solutions
+- ✅ Connects to local Redis (or Azure)
+
+📖 **[Learn more about Interactive Labs →](docs/INTERACTIVE-LABS.md)**
+
+---
+
+### For Workshop Creators (Build New Workshops)
+
+**Option 1: Docker (Recommended - 2 Minutes to Start!)**
 
 ```bash
 # 1. Start the Workshop Builder server

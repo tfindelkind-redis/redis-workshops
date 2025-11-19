@@ -12,11 +12,18 @@ sudo apt-get install -y redis-server redis-tools
 echo "▶️ Starting Redis..."
 sudo service redis-server start
 
+# Install Jupyter and common data science packages
+echo "📓 Installing Jupyter and data science tools..."
+pip install jupyter jupyterlab ipykernel matplotlib plotly pandas redis flask psycopg2-binary python-dotenv azure-identity locust
+
 # Install Python dependencies (if requirements.txt exists)
 if [ -f "requirements.txt" ]; then
     echo "🐍 Installing Python dependencies..."
     pip install -r requirements.txt
 fi
+
+# Register Python kernel for Jupyter
+python -m ipykernel install --user --name redis-workshop --display-name "Python (Redis Workshop)"
 
 # Make scripts executable
 echo "🔧 Setting up scripts..."

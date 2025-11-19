@@ -21,6 +21,27 @@
 
 ---
 
+## 📓 Interactive Jupyter Notebook Available!
+
+**✨ New: Complete this lab interactively in GitHub Codespaces!**
+
+This module includes an interactive Jupyter notebook with:
+- ✅ Executable code cells - Run Python code directly in your browser
+- ✅ Real-time performance metrics and visualizations
+- ✅ Interactive exercises with immediate feedback
+- ✅ No local setup required - works in Codespaces
+
+**🚀 To use the interactive notebook:**
+
+1. Open in GitHub Codespaces (or VS Code with Jupyter extension)
+2. Navigate to this module folder
+3. Open: **`implement-caching-lab.ipynb`**
+4. Run cells step-by-step to complete the lab
+
+**📖 Or continue reading below for the traditional guide...**
+
+---
+
 ## Lab Overview
 
 **Objective:** Build a real-world Flask API with PostgreSQL backend and implement Redis caching patterns.

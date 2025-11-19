@@ -18,11 +18,16 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-keymap",
+        "ms-toolsai.jupyter-renderers",
         "redhat.vscode-yaml",
         "davidanson.vscode-markdownlint"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "jupyter.askForKernelRestart": false,
+        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"]
       }
     }
   },
