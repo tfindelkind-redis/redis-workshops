@@ -1,3 +1,19 @@
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting--migration/README.md) |
+
+[🏠 Workshop Home](../README.md) > **Module 9 of 11**
+
+### Deploy Redis for Developers - Azure Managed Redis
+
+**Progress:** `████████░░` 82%
+
+---
+
+<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
+
 # Module 7: Monitoring & Alerts Lab
 
 **Duration:** 45 minutes  
@@ -577,3 +593,19 @@ Continue to **Module 8: Troubleshooting & Migration** to learn advanced diagnost
 **Lab Status:** ✅ Complete  
 **Last Updated:** November 2025  
 **Version:** 2.0
+
+<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->
+
+---
+
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+## Navigation
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting--migration/README.md) |
+
+---
+
+*Module 9 of 11*

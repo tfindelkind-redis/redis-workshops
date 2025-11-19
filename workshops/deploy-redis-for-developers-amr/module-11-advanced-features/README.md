@@ -1,3 +1,19 @@
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting--migration/README.md) | [🏠 Workshop Home](../README.md) |  |
+
+[🏠 Workshop Home](../README.md) > **Module 11 of 11**
+
+### Deploy Redis for Developers - Azure Managed Redis
+
+**Progress:** `██████████` 100%
+
+---
+
+<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
+
 # Module 9: Advanced Features
 
 **Duration:** 60 minutes  
@@ -1247,3 +1263,19 @@ You've completed the advanced Redis workshop. You now have the knowledge to:
 **Lab Status:** ✅ Complete  
 **Last Updated:** November 2025  
 **Version:** 2.0
+
+<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->
+
+---
+
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+## Navigation
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting--migration/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
+
+---
+
+*Module 11 of 11*

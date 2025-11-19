@@ -1,3 +1,19 @@
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring--alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
+
+[🏠 Workshop Home](../README.md) > **Module 10 of 11**
+
+### Deploy Redis for Developers - Azure Managed Redis
+
+**Progress:** `█████████░` 91%
+
+---
+
+<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
+
 # Module 8: Troubleshooting & Migration
 
 **Duration:** 60 minutes  
@@ -1110,3 +1126,19 @@ Continue to **Module 9: Advanced Features** to explore Redis Stack capabilities 
 **Lab Status:** ✅ Complete  
 **Last Updated:** November 2025  
 **Version:** 2.0
+
+<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->
+
+---
+
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+## Navigation
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring--alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
+
+---
+
+*Module 10 of 11*
