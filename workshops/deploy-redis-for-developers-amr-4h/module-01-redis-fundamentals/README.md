@@ -16,7 +16,7 @@
 
 # Module 1: Redis Fundamentals
 **Duration:** 60 minutes  
-**Format:** Theory + Demo  
+**Format:** Theory + Demo -
 **Level:** Foundation
 
 ---

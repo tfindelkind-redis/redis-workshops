@@ -13,23 +13,22 @@ modules:
     type: hands-on
     moduleRef: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
     required: true
-  - moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
+  - order: 2
     name: Azure Managed Redis Architecture
     description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
     duration: 60
     difficulty: intermediate
     type: hands-on
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
-    order: 2
   - order: 3
-    name: 'Module 4C: Performance Efficiency & Data Modeling (Custom)'
+    name: Performance Efficiency & Data Modeling
     description: Master performance optimization and data modeling patterns for Redis deployments.
     duration: 50
     difficulty: intermediate
     type: hands-on
     moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-custom-module-4c-performance-efficiency--data-modeling
     required: true
-    customized: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis 4h
@@ -50,7 +49,7 @@ Complete the modules in order for the best learning experience:
 |---|--------|----------|------------|------|----------|
 | 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | intermediate | hands-on | ✅ Yes |
 | 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60m | intermediate | hands-on | ✅ Yes |
-| 3 | [Module 4C: Performance Efficiency & Data Modeling (Custom)](module-03-module-4c-performance-efficiency-data-modeling-custom-/README.md) | 50m | intermediate | hands-on | ✅ Yes |
+| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency-data-modeling/README.md) | 50m | intermediate | hands-on | ✅ Yes |
 
 ---
 
@@ -78,9 +77,9 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 
 ---
 
-### Module 3: Module 4C: Performance Efficiency & Data Modeling (Custom)
+### Module 3: Performance Efficiency & Data Modeling
 
-📂 **[Go to Module](module-03-module-4c-performance-efficiency-data-modeling-custom-/README.md)**
+📂 **[Go to Module](module-03-performance-efficiency-data-modeling/README.md)**
 
 **Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
 
@@ -111,7 +110,7 @@ Establish foundational understanding of Redis as an in-memory data store, coveri
 
 Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
 
-### [Module 3: Module 4C: Performance Efficiency & Data Modeling (Custom)](module-03-module-4c-performance-efficiency--data-modeling-custom/README.md)
+### [Module 3: Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md)
 
 **Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
 
