@@ -78,7 +78,50 @@ Each interactive lab includes:
 
 ## 📚 Available Interactive Labs
 
-### Module 6: Implement Caching Lab
+### Module 6: Performance Efficiency & Data Modeling
+**File:** `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
+
+**What You'll Learn:**
+- Master Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets)
+- Benchmark performance across all data types
+- Optimize memory usage (Hash vs JSON comparison)
+- Build production-ready shopping cart
+- Choose the right data structure for your use case
+
+**Key Features:**
+- Performance benchmarking (P95, P99 latencies)
+- Memory optimization comparison
+- Real-world examples (leaderboards, shopping cart)
+- Decision guide for data structure selection
+
+**Duration:** 60 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 7: Provision & Connect Lab
+**File:** `module-07-provision--connect-lab/provision-connect-lab.ipynb`
+
+**What You'll Do:**
+- Deploy Azure Managed Redis programmatically with Python SDK
+- Configure Entra ID authentication (passwordless)
+- Implement secure connection patterns
+- Test connectivity and performance
+- Apply production best practices
+
+**Key Features:**
+- Complete Azure SDK automation
+- DefaultAzureCredential pattern
+- No access keys stored in code
+- Performance benchmarking
+- Troubleshooting guide
+
+**Duration:** 60 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 8: Implement Caching Lab
 **File:** `module-08-implement-caching-lab/implement-caching-lab.ipynb`
 
 **What You'll Do:**
@@ -94,7 +137,28 @@ Each interactive lab includes:
 - Interactive exercises
 - Cache statistics dashboard
 
-**Duration:** 45-60 minutes
+**Duration:** 45-60 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 11: Advanced Features
+**File:** `module-11-advanced-features/advanced-features-lab.ipynb`
+
+**What You'll Explore:**
+- **RedisJSON**: Native JSON document storage
+- **Redis Streams**: Event streaming and messaging
+- **HyperLogLog**: Cardinality estimation (unique counting)
+- **Probabilistic structures**: Memory-efficient algorithms
+
+**Key Features:**
+- RedisJSON path-based queries
+- Stream consumer patterns
+- HyperLogLog accuracy testing
+- Performance benchmarks
+
+**Duration:** 60 minutes  
+**Level:** Advanced
 
 ---
 
