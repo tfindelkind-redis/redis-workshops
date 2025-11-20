@@ -25,6 +25,12 @@ fi
 # Register Python kernel for Jupyter
 python -m ipykernel install --user --name redis-workshop --display-name "Python (Redis Workshop)"
 
+# Setup automatic notebook styling
+echo "🎨 Configuring automatic notebook styling..."
+if [ -f "scripts/setup-notebook-styling.sh" ]; then
+    bash scripts/setup-notebook-styling.sh
+fi
+
 # Make scripts executable
 echo "🔧 Setting up scripts..."
 chmod +x shared/tools/*.sh 2>/dev/null || true

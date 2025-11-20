@@ -19,6 +19,45 @@ source .activate-local
 
 ## 📄 Available Scripts
 
+### `setup-notebook-styling.sh`
+
+Configures automatic CSS loading for Jupyter notebooks.
+
+#### What it does:
+
+Installs an IPython startup script that automatically loads `notebook-styles.css` when a Jupyter kernel starts. This provides:
+- **Blue background with frame** for all cell outputs
+- Professional Redis-themed styling
+- Enhanced readability
+
+#### Usage:
+
+```bash
+# Run setup (automatically done in new Codespaces)
+bash scripts/setup-notebook-styling.sh
+
+# Verify installation
+ls -la ~/.ipython/profile_default/startup/00-auto-load-notebook-css.py
+```
+
+#### How it works:
+
+1. Creates `~/.ipython/profile_default/startup/00-auto-load-notebook-css.py`
+2. This script runs automatically when any Jupyter kernel starts
+3. Checks for `notebook-styles.css` in the notebook's directory
+4. If found, injects the CSS into the notebook
+5. Displays confirmation: `✅ Workshop styling loaded automatically!`
+
+#### For existing Codespaces:
+
+If your Codespace was created before this feature, run:
+```bash
+bash scripts/setup-notebook-styling.sh
+```
+Then restart your Jupyter kernel.
+
+---
+
 ### `test-notebooks`
 
 Smart Jupyter notebook test runner with context-aware execution.

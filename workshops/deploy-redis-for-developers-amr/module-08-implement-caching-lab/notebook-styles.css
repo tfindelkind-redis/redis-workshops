@@ -23,6 +23,8 @@
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --output-blue-bg: #dbeafe;
+    --output-blue-border: #3b82f6;
 }
 
 /* Body and main container */
@@ -205,19 +207,25 @@ body {
     font-weight: 600;
 }
 
-/* Output areas */
+/* Output areas - BLUE BACKGROUND WITH FRAME */
 /* VS Code Jupyter Notebook specific selectors */
 .cell-output-wrapper,
 .output,
 .cell-output {
     padding: 1rem !important;
-    background-color: white !important;
+    background-color: var(--output-blue-bg) !important;
+    border: 2px solid var(--output-blue-border) !important;
+    border-radius: 8px !important;
+    margin-top: 0.5rem !important;
 }
 
 /* Classic Jupyter compatibility */
 .jp-OutputArea {
     padding: 1rem;
-    background-color: white;
+    background-color: var(--output-blue-bg);
+    border: 2px solid var(--output-blue-border);
+    border-radius: 8px;
+    margin-top: 0.5rem;
 }
 
 .jp-OutputArea-output,
@@ -226,6 +234,16 @@ body {
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.jp-OutputArea-output pre,
+.output pre {
+    background-color: transparent !important;
+    color: var(--text-primary);
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 
 /* Tables */
