@@ -78,10 +78,128 @@ Each interactive lab includes:
 
 ## 📚 Available Interactive Labs
 
-### Module 6: Performance Efficiency & Data Modeling
+### 📊 Lab Coverage Summary
+
+**Total: 8 of 11 modules (73%)** have interactive Jupyter notebooks
+
+| Module | Topic | Notebook | Cells | Level |
+|--------|-------|----------|-------|-------|
+| **2** | Azure Architecture | ✅ | 13 | Intermediate |
+| **4** | Reliability & Security | ✅ | 13 | Intermediate |
+| **5** | Cost Optimization | ✅ | 15 | Intermediate |
+| **6** | Performance & Data Modeling | ✅ | 28 | Intermediate |
+| **7** | Provision & Connect | ✅ | 31 | Intermediate |
+| **8** | Implement Caching | ✅ | 38 | Intermediate |
+| **10** | Troubleshooting & Migration | ✅ | 16 | Advanced |
+| **11** | Advanced Features | ✅ | 24 | Advanced |
+
+**Total Content:**
+- 🎓 **178 interactive cells** across all notebooks
+- 💾 **~153 KB** of educational content
+- ⏱️ **7-8 hours** of hands-on learning
+- 🎯 **Real-world scenarios** with production patterns
+
+**Modules without notebooks:**
+- Module 1: Redis Fundamentals (theory-focused)
+- Module 3: Well-Architected Framework (theory-focused)
+- Module 9: Monitoring & Alerts (Azure Portal/KQL-focused)
+
+---
+
+### Module 2: Azure Managed Redis Architecture
 **File:** `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
 
 **What You'll Learn:**
+- Master Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets)
+- Benchmark performance across all data types
+- Optimize memory usage (Hash vs JSON comparison)
+- Build production-ready shopping cart
+- Choose the right data structure for your use case
+
+**Key Features:**
+- Performance benchmarking (P95, P99 latencies)
+- Memory optimization comparison
+- Real-world examples (leaderboards, shopping cart)
+- Decision guide for data structure selection
+
+**Duration:** 60 minutes  
+**Level:** Intermediate
+
+---
+
+### 📓 Detailed Lab Descriptions
+
+---
+
+### Module 2: Azure Managed Redis Architecture
+**File:** `module-02-azure-managed-redis-architecture/azure-architecture-lab.ipynb`
+
+**What You'll Learn:**
+- Compare Azure Redis tiers (Basic, Standard, Premium, Enterprise)
+- Query Azure resources with Python SDK
+- Analyze SKU options and pricing
+- Check regional availability
+- Choose the right tier for your workload
+
+**Key Features:**
+- Tier comparison matrix (SLA, clustering, persistence)
+- SKU sizing guide (C-series, P-series)
+- Azure SDK examples
+- Architecture decision framework
+
+**Duration:** 45 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 4: Reliability & Security Deep Dive
+**File:** `module-04-reliability--security-deep-dive/reliability-security-lab.ipynb`
+
+**What You'll Build:**
+- Production-ready connection manager with pooling
+- Retry logic with exponential backoff
+- Circuit breaker pattern implementation
+- Connection health monitoring
+- Security best practices
+
+**Key Features:**
+- RedisConnectionManager class
+- Automatic retry with tenacity
+- Circuit breaker state machine
+- Performance benchmarking with monitoring
+- TLS/SSL and Entra ID examples
+
+**Duration:** 45 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 5: Cost Optimization & Operational Excellence
+**File:** `module-05-cost-optimization--operational-excellence/cost-optimization-lab.ipynb`
+
+**What You'll Optimize:**
+- Memory usage analysis and reduction
+- Data structure efficiency comparison
+- TTL management for cost control
+- Right-sizing calculator with cost estimates
+- Operational best practices
+
+**Key Features:**
+- Azure Redis pricing overview
+- Memory comparison (Strings vs Hashes = 30-50% savings)
+- TTL impact demonstration
+- Cost calculator with workload estimates
+- Optimization checklist
+
+**Duration:** 45 minutes  
+**Level:** Intermediate
+
+---
+
+### Module 6: Performance Efficiency & Data Modeling
+**File:** `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
+
+**What You'll Master:**
 - Master Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets)
 - Benchmark performance across all data types
 - Optimize memory usage (Hash vs JSON comparison)
@@ -162,41 +280,32 @@ Each interactive lab includes:
 
 ---
 
-### Module 7: Monitoring & Alerts Lab
-**File:** `module-09-monitoring--alerts-lab/monitoring-alerts-lab.ipynb` *(Coming Soon)*
+### Module 10: Troubleshooting & Migration
+**File:** `module-10-troubleshooting--migration/troubleshooting-migration-lab.ipynb`
 
-**What You'll Do:**
-- Query Redis metrics programmatically
-- Create custom monitoring dashboards
-- Write KQL queries for Log Analytics
-- Visualize time-series data
-- Test alerting rules
+**What You'll Master:**
+- Comprehensive Redis diagnostics (INFO, SLOWLOG, CLIENT LIST)
+- Memory analysis by key patterns
+- Performance benchmarking and profiling
+- Data migration planning and execution
+- Troubleshooting common production issues
 
 **Key Features:**
-- Live Redis metrics
-- Custom Plotly dashboards
-- KQL query builder
-- Alert simulation
+- Full diagnostic report generator
+- SLOWLOG analysis for query optimization
+- Client connection monitoring
+- Key migration patterns with TTL preservation
+- Troubleshooting guide with solutions
 
-**Duration:** 45 minutes
+**Duration:** 60 minutes  
+**Level:** Advanced
 
 ---
 
-### Module 8: Troubleshooting & Migration Lab
-**File:** `module-10-troubleshooting--migration/troubleshooting-lab.ipynb` *(Coming Soon)*
+### Module 9: Monitoring & Alerts Lab
+**File:** `module-09-monitoring--alerts-lab/monitoring-alerts-lab.ipynb` *(Not included - Azure Portal/KQL based)*
 
-**What You'll Do:**
-- Run diagnostic commands
-- Analyze performance bottlenecks
-- Simulate common issues
-- Test migration tools (RIOT)
-- Validate data integrity
-
-**Key Features:**
-- Interactive diagnostics
-- Performance profiling
-- Data migration simulation
-- Validation tools
+**Note:** This module focuses on Azure Portal, Log Analytics KQL queries, and Azure Monitor alerts rather than programmatic Python code. The interactive notebook format is less suitable for this content.
 
 **Duration:** 60 minutes
 
