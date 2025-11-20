@@ -11,12 +11,6 @@
   
   // Jupyter Notebook Configuration
   "jupyter.notebookFileRoot": "${workspaceFolder}",
-  "jupyter.kernels.filter": [
-    {
-      "path": "${workspaceFolder}/.venv/bin/python",
-      "type": "pythonEnvironment"
-    }
-  ],
   "notebook.output.textLineLimit": 100,
   "notebook.cellToolbarLocation": {
     "default": "right"
@@ -31,5 +25,8 @@
   "notebook.lineNumbers": "on",
   "notebook.cellFocusIndicator": "border",
   "notebook.compactView": false,
-  "notebook.showCellStatusBar": "visible"
+  "notebook.showCellStatusBar": "visible",
+  "jupyter.kernels.excludePythonEnvironments": [
+    "${workspaceFolder}/.venv/bin/python"
+  ]
 }
