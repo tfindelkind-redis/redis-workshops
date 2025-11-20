@@ -1,0 +1,300 @@
+/* Redis Workshop Jupyter Notebook Custom Styling */
+
+/* ==================== CODE CELLS ==================== */
+
+/* Better code cell highlighting */
+.jp-Cell.jp-CodeCell {
+    background: linear-gradient(to right, #f8f9fa 0%, #ffffff 10px) !important;
+    border-left: 4px solid #0078d4 !important;
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+    padding: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.2s ease !important;
+}
+
+.jp-Cell.jp-CodeCell:hover {
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.15) !important;
+    border-left-color: #dc3545 !important;
+}
+
+/* Code cell input area */
+.jp-Cell-inputWrapper {
+    border-radius: 6px !important;
+}
+
+/* Code syntax highlighting improvements */
+.jp-CodeMirrorEditor {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
+/* Code cell execution count */
+.jp-InputPrompt {
+    color: #0078d4 !important;
+    font-weight: 600 !important;
+    font-family: 'Monaco', monospace !important;
+}
+
+/* ==================== MARKDOWN CELLS ==================== */
+
+.jp-MarkdownCell {
+    background: #ffffff !important;
+    border-left: 3px solid #28a745 !important;
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+    padding: 16px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Headers in markdown */
+.jp-MarkdownCell h1 {
+    color: #dc3545 !important;
+    border-bottom: 3px solid #dc3545 !important;
+    padding-bottom: 8px !important;
+    margin-top: 24px !important;
+}
+
+.jp-MarkdownCell h2 {
+    color: #0078d4 !important;
+    border-bottom: 2px solid #0078d4 !important;
+    padding-bottom: 6px !important;
+    margin-top: 20px !important;
+}
+
+.jp-MarkdownCell h3 {
+    color: #17a2b8 !important;
+    margin-top: 16px !important;
+}
+
+/* Emoji and icons */
+.jp-MarkdownCell h1::before,
+.jp-MarkdownCell h2::before {
+    margin-right: 8px !important;
+}
+
+/* Code blocks in markdown */
+.jp-MarkdownCell code {
+    background: #f1f3f5 !important;
+    color: #dc3545 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: 'Monaco', 'Menlo', monospace !important;
+    font-size: 13px !important;
+}
+
+.jp-MarkdownCell pre {
+    background: #2d2d2d !important;
+    color: #f8f8f2 !important;
+    border-left: 4px solid #dc3545 !important;
+    border-radius: 6px !important;
+    padding: 16px !important;
+    overflow-x: auto !important;
+}
+
+/* Lists */
+.jp-MarkdownCell ul,
+.jp-MarkdownCell ol {
+    padding-left: 24px !important;
+}
+
+.jp-MarkdownCell li {
+    margin: 6px 0 !important;
+    line-height: 1.6 !important;
+}
+
+/* Checkboxes */
+.jp-MarkdownCell li::marker {
+    color: #28a745 !important;
+    font-weight: bold !important;
+}
+
+/* ==================== OUTPUT CELLS ==================== */
+
+.jp-OutputArea {
+    background: #f8f9fa !important;
+    border-left: 3px solid #ffc107 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    margin-top: 8px !important;
+}
+
+/* Output prompt */
+.jp-OutputPrompt {
+    color: #ffc107 !important;
+    font-weight: 600 !important;
+}
+
+/* Execution results */
+.jp-OutputArea-output {
+    font-family: 'Monaco', 'Menlo', monospace !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+}
+
+/* Success messages */
+.jp-OutputArea-output pre {
+    background: #d4edda !important;
+    color: #155724 !important;
+    border-left: 4px solid #28a745 !important;
+    padding: 12px !important;
+    border-radius: 4px !important;
+}
+
+/* Error messages */
+.jp-OutputArea-output .jp-OutputArea-executeError {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+    border-left: 4px solid #dc3545 !important;
+    padding: 12px !important;
+    border-radius: 4px !important;
+}
+
+/* ==================== CELL TOOLBAR ==================== */
+
+.jp-Cell-toolbar {
+    background: transparent !important;
+    padding: 4px !important;
+}
+
+.jp-ToolbarButton {
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+.jp-ToolbarButton:hover {
+    background: #e9ecef !important;
+}
+
+/* Run button emphasis */
+.jp-RunIcon {
+    color: #28a745 !important;
+}
+
+/* ==================== NOTEBOOK CONTAINER ==================== */
+
+.jp-Notebook {
+    padding: 20px !important;
+    background: #ffffff !important;
+}
+
+/* ==================== SPECIAL HIGHLIGHTS ==================== */
+
+/* Warning boxes */
+.jp-MarkdownCell blockquote {
+    background: #fff3cd !important;
+    border-left: 4px solid #ffc107 !important;
+    padding: 12px 16px !important;
+    margin: 16px 0 !important;
+    border-radius: 4px !important;
+    color: #856404 !important;
+}
+
+/* Info boxes */
+.jp-MarkdownCell .alert-info {
+    background: #d1ecf1 !important;
+    border-left: 4px solid #17a2b8 !important;
+    padding: 12px 16px !important;
+    border-radius: 4px !important;
+    color: #0c5460 !important;
+}
+
+/* Tables */
+.jp-MarkdownCell table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 16px 0 !important;
+}
+
+.jp-MarkdownCell th {
+    background: #0078d4 !important;
+    color: white !important;
+    padding: 12px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+}
+
+.jp-MarkdownCell td {
+    padding: 10px 12px !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.jp-MarkdownCell tr:hover {
+    background: #f8f9fa !important;
+}
+
+/* ==================== CELL EXECUTION INDICATOR ==================== */
+
+/* Running cell indicator */
+.jp-Cell.jp-mod-selected.jp-mod-active {
+    border-left-color: #ffc107 !important;
+}
+
+/* Executed cell indicator */
+.jp-Cell.jp-mod-executedCell {
+    border-left-color: #28a745 !important;
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+
+.jp-Notebook::-webkit-scrollbar {
+    width: 12px !important;
+}
+
+.jp-Notebook::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 6px !important;
+}
+
+.jp-Notebook::-webkit-scrollbar-thumb {
+    background: #888 !important;
+    border-radius: 6px !important;
+}
+
+.jp-Notebook::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 768px) {
+    .jp-Cell {
+        margin: 8px 0 !important;
+        padding: 6px !important;
+    }
+    
+    .jp-CodeMirrorEditor {
+        font-size: 12px !important;
+    }
+}
+
+/* ==================== PLOTLY & VISUALIZATION ==================== */
+
+/* Plotly charts */
+.plotly {
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ==================== STATUS INDICATORS ==================== */
+
+/* Cell execution status */
+.jp-CellExecutionState {
+    font-weight: 600 !important;
+}
+
+.jp-CellExecutionState-running {
+    color: #ffc107 !important;
+}
+
+.jp-CellExecutionState-completed {
+    color: #28a745 !important;
+}
+
+.jp-CellExecutionState-error {
+    color: #dc3545 !important;
+}

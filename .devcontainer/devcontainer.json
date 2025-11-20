@@ -27,7 +27,13 @@
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
         "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"]
+        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
+        "notebook.lineNumbers": "on",
+        "notebook.cellFocusIndicator": "border",
+        "notebook.compactView": false,
+        "notebook.showCellStatusBar": "visible",
+        "notebook.output.textLineLimit": 100,
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
       }
     }
   },

@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""
+Update all Jupyter notebooks with proper kernel configuration and metadata.
+This ensures notebooks work seamlessly in GitHub Codespaces without kernel selection.
+"""
+
+import json
+import os
+from pathlib import Path
+
+# Proper kernel metadata for Python 3
+KERNEL_METADATA = {
+    "kernelspec": {
+        "display_name": "Python 3 (ipykernel)",
+        "language": "python",
+        "name": "python3"
+    },
+    "language_info": {
+        "codemirror_mode": {
+            "name": "ipython",
+            "version": 3
+        },
+        "file_extension": ".py",
+        "mimetype": "text/x-python",
+        "name": "python",
+        "nbconvert_exporter": "python",
+        "pygments_lexer": "ipython3",
+        "version": "3.10.0"
+    },
+    "vscode": {
+        "interpreter": {
+            "hash": "${workspaceFolder}/.venv/bin/python"
+        }
+    }
+}
+
+def find_notebooks(root_dir="."):
+    """Find all Jupyter notebooks in the repository."""
+    notebooks = []
+    for path in Path(root_dir).rglob("*.ipynb"):
+        # Skip checkpoints and hidden directories
+        if ".ipynb_checkpoints" not in str(path) and not any(part.startswith('.') for part in path.parts[:-1]):
+            notebooks.append(path)
+    return sorted(notebooks)
+
+def update_notebook_metadata(notebook_path):
+    """Update notebook metadata with proper kernel configuration."""
+    try:
+        with open(notebook_path, 'r', encoding='utf-8') as f:
+            notebook = json.load(f)
+        
+        # Update metadata
+        if 'metadata' not in notebook:
+            notebook['metadata'] = {}
+        
+        # Merge kernel metadata
+        notebook['metadata'].update(KERNEL_METADATA)
+        
+        # Ensure nbformat version
+        if 'nbformat' not in notebook:
+            notebook['nbformat'] = 4
+        if 'nbformat_minor' not in notebook:
+            notebook['nbformat_minor'] = 5
+        
+        # Write back
+        with open(notebook_path, 'w', encoding='utf-8') as f:
+            json.dump(notebook, f, indent=1, ensure_ascii=False)
+            f.write('\n')  # Add trailing newline
+        
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
+def main():
+    """Main execution function."""
+    print("🔧 Updating Jupyter Notebooks with Kernel Configuration")
+    print("=" * 60)
+    
+    # Find all notebooks
+    notebooks = find_notebooks("workshops")
+    
+    if not notebooks:
+        print("❌ No notebooks found!")
+        return
+    
+    print(f"📓 Found {len(notebooks)} notebook(s)\n")
+    
+    # Update each notebook
+    success_count = 0
+    failed_count = 0
+    
+    for notebook_path in notebooks:
+        try:
+            rel_path = notebook_path.relative_to(Path.cwd())
+        except ValueError:
+            rel_path = notebook_path
+        success, error = update_notebook_metadata(notebook_path)
+        
+        if success:
+            print(f"✅ Updated: {rel_path}")
+            success_count += 1
+        else:
+            print(f"❌ Failed: {rel_path}")
+            print(f"   Error: {error}")
+            failed_count += 1
+    
+    # Summary
+    print("\n" + "=" * 60)
+    print(f"📊 Summary:")
+    print(f"   ✅ Successfully updated: {success_count}")
+    print(f"   ❌ Failed: {failed_count}")
+    print(f"   📝 Total: {len(notebooks)}")
+    
+    if success_count > 0:
+        print("\n✨ Notebooks now configured with:")
+        print("   • Python 3 (ipykernel) as default")
+        print("   • Proper language info for syntax highlighting")
+        print("   • VS Code integration")
+        print("   • No kernel selection needed in Codespaces!")
+
+if __name__ == "__main__":
+    main()

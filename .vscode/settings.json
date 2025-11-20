@@ -1,0 +1,35 @@
+{
+  "github.copilot.chat.tools.terminal.autoApprove": true,
+  "github.copilot.chat.tools.terminal.allowlist": [
+    "ls",
+    "git status"
+  ],
+  "github.copilot.chat.tools.terminal.denylist": [
+    "rm -rf",
+    "sudo"
+  ],
+  
+  // Jupyter Notebook Configuration
+  "jupyter.notebookFileRoot": "${workspaceFolder}",
+  "jupyter.kernels.filter": [
+    {
+      "path": "${workspaceFolder}/.venv/bin/python",
+      "type": "pythonEnvironment"
+    }
+  ],
+  "notebook.output.textLineLimit": 100,
+  "notebook.cellToolbarLocation": {
+    "default": "right"
+  },
+  "notebook.formatOnSave.enabled": true,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  
+  // Python Configuration
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  
+  // Notebook Display Settings
+  "notebook.lineNumbers": "on",
+  "notebook.cellFocusIndicator": "border",
+  "notebook.compactView": false,
+  "notebook.showCellStatusBar": "visible"
+}
