@@ -214,11 +214,147 @@ duration_minutes: 45
 - Validate YAML structure
 - Review inheritance chains
 
-### 4. Publish
+### 4. Test Your Workshop
+```bash
+# Navigate to your workshop module
+cd workshops/my-workshop/module-01/
+
+# Test current directory
+test-notebooks
+
+# Test entire module (from anywhere in module)
+test-notebooks -m
+
+# Test all workshops
+test-notebooks -a
+
+# Test with Docker (for PostgreSQL/Redis dependent notebooks)
+test-notebooks -d
+```
+
+**Testing Script Features:**
+- ✅ Context-aware (knows where you are in the repo)
+- ✅ Automatically discovers notebooks
+- ✅ Works with any workshop structure
+- ✅ Docker integration for database testing
+- ✅ Detailed error reporting
+
+**Common Usage:**
+```bash
+# Quick test while working on a module
+cd workshops/deploy-redis-for-developers-amr/module-08/
+test-notebooks
+
+# Test everything before committing
+test-notebooks -a -d
+
+# Verbose output for debugging
+test-notebooks -v
+
+# Custom timeout for long-running notebooks
+test-notebooks --timeout 900
+```
+
+### 5. Publish
 - Commit changes to your branch
 - Create Pull Request from GUI
 - Merge to main
 - Workshop automatically appears on GitHub Pages
+
+---
+
+## 🧪 Testing Notebooks
+
+The repository includes a smart testing script that validates Jupyter notebooks:
+
+### Quick Start
+
+```bash
+# Test notebooks in your current directory
+test-notebooks
+
+# Test entire module (even from subfolders)
+test-notebooks -m
+
+# Test all workshops
+test-notebooks -a
+
+# With Docker (PostgreSQL + Redis)
+test-notebooks -d
+```
+
+### Script Features
+
+**Context-Aware Testing:**
+- Automatically detects your location in the repository
+- Tests based on scope: current directory, module, or all workshops
+- No configuration needed for new workshops
+
+**Smart Discovery:**
+- Finds all `.ipynb` files automatically
+- Skips `.ipynb_checkpoints` directories
+- Works with any workshop structure
+
+**Docker Integration:**
+- Automatically starts PostgreSQL 15 (port 5432)
+- Automatically starts Redis 7 (port 6379)
+- Cleans up containers after testing
+
+**Flexible Options:**
+```bash
+test-notebooks [OPTIONS]
+
+Options:
+  (no options)     Test notebooks in current directory
+  -m, --module     Test entire module (parent directory)
+  -a, --all        Test all notebooks in all workshops
+  -d, --docker     Start Docker containers
+  -v, --verbose    Show detailed output
+  --timeout SEC    Set timeout per notebook (default: 600)
+  -h, --help       Show help message
+```
+
+### Testing Workflow Examples
+
+**1. While Developing a Module:**
+```bash
+cd workshops/my-workshop/module-03/
+test-notebooks
+# → Tests only notebooks in module-03
+```
+
+**2. Before Committing:**
+```bash
+test-notebooks -a -d
+# → Tests all notebooks with Docker
+```
+
+**3. Debugging Failures:**
+```bash
+test-notebooks -v --timeout 900
+# → Verbose output with 15-minute timeout
+```
+
+**4. CI/CD Integration:**
+```bash
+# In your GitHub Actions workflow
+- name: Test Notebooks
+  run: |
+    test-notebooks -a -d
+```
+
+### Multi-Workshop Support
+
+The testing script automatically works with **any workshop** you add:
+
+```
+workshops/
+├── deploy-redis-for-developers-amr/    ✅ Tested
+├── my-new-workshop/                    ✅ Tested
+└── another-workshop/                   ✅ Tested
+```
+
+No configuration changes needed! Just add your workshop and run `test-notebooks -a`.
 
 ---
 
