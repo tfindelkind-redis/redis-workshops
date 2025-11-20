@@ -28,7 +28,15 @@ python -m ipykernel install --user --name redis-workshop --display-name "Python 
 # Make scripts executable
 echo "🔧 Setting up scripts..."
 chmod +x shared/tools/*.sh 2>/dev/null || true
+chmod +x scripts/*.sh 2>/dev/null || true
+chmod +x scripts/test-notebooks 2>/dev/null || true
 find workshops -name "*.sh" -type f -exec chmod +x {} \; 2>/dev/null || true
+
+# Run workshop environment setup
+if [ -f "scripts/setup-environment.sh" ]; then
+    echo "🎯 Configuring workshop environment..."
+    bash scripts/setup-environment.sh
+fi
 
 echo "✅ Setup complete!"
 echo ""
@@ -40,3 +48,4 @@ echo "  - Navigate to a workshop: cd workshops/<workshop-name>"
 echo "  - Follow the workshop README for instructions"
 echo "  - Redis is running on localhost:6379"
 echo "  - Test connection: redis-cli ping"
+echo "  - Test notebooks: test-notebooks --help"

@@ -22,6 +22,8 @@ __pycache__/
 venv/
 env/
 ENV/
+.venv/
+**/.venv/
 *.egg-info/
 .pytest_cache/
 
@@ -80,3 +82,7 @@ _site/
 scratch/
 notes.txt
 TODO.md
+
+# Local development (macOS setup)
+.activate-local
+*.local
