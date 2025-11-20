@@ -1,13 +1,13 @@
 ---
 workshopId: deploy-redis-for-developers-amr-4h
-title: Deploy Redis for Developers - Azure Managed Redis
+title: Deploy Redis for Developers - Azure Managed Redis 4h
 description: 4h version
 duration: 0
 difficulty: intermediate
 modules: []
 ---
 
-# Deploy Redis for Developers - Azure Managed Redis
+# Deploy Redis for Developers - Azure Managed Redis 4h
 
 **Duration:** 0 | **Difficulty:** intermediate
 
