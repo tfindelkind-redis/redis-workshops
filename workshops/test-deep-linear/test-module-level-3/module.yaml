@@ -1,0 +1,7 @@
+id: test-module-level-3
+title: "test-module-level-3 (Level 3)"
+description: "Test module at level 3 in hierarchy"
+duration: 15
+inheritance:
+  parentPath: "workshops/test-deep-linear/test-module-level-2"
+  inheritedAt: "2025-11-17T08:04:37Z"
