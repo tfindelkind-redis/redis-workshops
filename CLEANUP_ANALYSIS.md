@@ -297,3 +297,36 @@ git commit -m "chore: cleanup obsolete scripts, empty files, and test data
 "
 ```
 
+
+---
+
+## 🔄 FOLLOW-UP CLEANUP (Python Generators)
+
+### Additional Files Removed
+
+After the initial cleanup, 4 additional Python generator files were identified:
+
+34. ❌ **create-notebook.py** (1.7 KB)
+   - Purpose: Generate implement-caching-lab.ipynb
+   - Status: Notebook already committed
+
+35. ❌ **generate_full_notebook.py** (20 KB)
+   - Purpose: Generate caching lab notebook (duplicate)
+   - Status: Notebook already committed
+
+36. ❌ **generate_module07_notebook.py** (24 KB)
+   - Purpose: Generate provision-connect-lab.ipynb
+   - Status: Notebook already committed
+
+37. ❌ **generate_modules.py** (14 KB)
+   - Purpose: Generate module checklists
+   - Status: Target files already generated
+
+### Updated Statistics
+
+**Total Files Removed:** ~94 files (original 90 + 4 Python files)
+**Additional Disk Space Saved:** ~60 KB
+**Total Disk Space Saved:** ~3.1 MB
+
+All Python generator files were one-time scripts used during initial development, consistent with the shell script generators already removed.
+
