@@ -1,3 +1,19 @@
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Provision & Connect Lab](../module-07-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring--alerts-lab/README.md) |
+
+[🏠 Workshop Home](../README.md) > **Module 8 of 11**
+
+### Deploy Redis for Developers - Azure Managed Redis
+
+**Progress:** `███████░░░` 73%
+
+---
+
+<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
+
 # Module 08: Implement Caching Lab
 
 This interactive Jupyter notebook demonstrates Redis caching patterns with hands-on exercises.
@@ -89,3 +105,19 @@ This ensures **every new Codespace** has automatic styling configured!
 **Still not working?**
 - Manually load CSS using the code snippet above
 - Check kernel output for error messages
+
+<!-- ✏️ EDIT YOUR CONTENT ABOVE THIS LINE ✏️ -->
+
+---
+
+<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
+
+## Navigation
+
+| Previous | Home | Next |
+|----------|:----:|------:|
+| [⬅️ Previous: Provision & Connect Lab](../module-07-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring--alerts-lab/README.md) |
+
+---
+
+*Module 8 of 11*

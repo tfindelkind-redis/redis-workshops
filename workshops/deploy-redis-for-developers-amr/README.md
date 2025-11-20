@@ -331,3 +331,4 @@ This advanced module covers troubleshooting techniques for Azure Cache for Redis
 **Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
 
 This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
+
