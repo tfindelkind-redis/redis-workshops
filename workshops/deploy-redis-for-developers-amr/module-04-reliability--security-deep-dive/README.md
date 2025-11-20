@@ -16,7 +16,7 @@
 
 # Module 4A: Reliability & Security Deep Dive
 **Duration:** 60 minutes  
-**Format:** WAF Deep Dive - Theory + Scenarios  
+**Format:** WAF Deep Dive - Theory + Scenarios -
 **Level:** Advanced
 
 ---

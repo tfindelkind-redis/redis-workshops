@@ -2185,6 +2185,54 @@
         // Available modules - loaded dynamically from API
         const availableModules = [];
 
+        // Load available modules from the API
+        async function loadAvailableModules() {
+            try {
+                console.log('📦 Loading available modules...');
+                const response = await apiRequest('/modules/all');
+                const modules = response.modules || response;
+                
+                if (!modules || modules.length === 0) {
+                    console.warn('No modules found from API');
+                    return;
+                }
+                
+                // Clear existing modules
+                availableModules.length = 0;
+                
+                // Filter out test modules and transform to workshop module format
+                modules.forEach(module => {
+                    // Skip test modules (workshop or module names starting with 'test-')
+                    if (module.workshopId?.startsWith('test-') || 
+                        module.moduleDir?.startsWith('test-')) {
+                        return;
+                    }
+                    
+                    availableModules.push({
+                        name: module.title || module.moduleDir,
+                        title: module.title,
+                        description: module.description || `Module from ${module.workshopId}`,
+                        duration: module.duration || 60,
+                        difficulty: module.difficulty || 'intermediate',
+                        type: module.type || 'hands-on',
+                        moduleRef: module.modulePath,
+                        workshopId: module.workshopId,
+                        moduleDir: module.moduleDir,
+                        modulePath: module.modulePath,
+                        childrenCount: module.childrenCount || 0,
+                        inheritance: module.inheritance,
+                        tags: [module.workshopId, module.moduleDir]
+                    });
+                });
+                
+                console.log(`✅ Loaded ${availableModules.length} available modules (test modules filtered out)`);
+                showNotification(`Loaded ${availableModules.length} available modules`, 'success');
+            } catch (error) {
+                console.error('Failed to load available modules:', error);
+                showNotification('Warning: Could not load available modules', 'warning');
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             // Check if server is available
@@ -2201,6 +2249,9 @@
                     
                     // Load branches and show branch selector
                     await loadBranches();
+                    
+                    // Load available modules from API
+                    await loadAvailableModules();
                     
                     // Show GitHub Pages button
                     const ghPagesSection = document.getElementById('gh-pages-section');
@@ -3687,6 +3738,9 @@
                     renderNavigation();
                     closeWorkshopBrowser();
                     
+                    // Check for module divergence
+                    await checkModuleDivergence();
+                    
                     showNotification('✅ Workshop loaded from filesystem!', 'success');
                 } catch (error) {
                     showNotification(`❌ Failed to load: ${error.message}`, 'error');
@@ -4214,6 +4268,13 @@
             });
         }
 
+        // Track current navigation state
+        let moduleBrowserState = {
+            currentView: 'parents', // 'parents' or 'children'
+            currentParent: null,
+            breadcrumbs: []
+        };
+
         function filterModules() {
             const search = document.getElementById('module-search').value.toLowerCase();
             const typeFilter = document.getElementById('module-type-filter').value;
@@ -4245,19 +4306,157 @@
                 return;
             }
 
-            filtered.forEach(module => {
+            // Show hierarchical view based on current state
+            if (moduleBrowserState.currentView === 'parents') {
+                renderParentModules(filtered, container);
+            } else {
+                renderChildModules(filtered, container);
+            }
+        }
+
+        function renderParentModules(modules, container) {
+            // Show only parent modules (those without parents OR those with children)
+            console.log('=== RENDER PARENT MODULES DEBUG ===');
+            console.log('Total modules to filter:', modules.length);
+            console.log('First module sample:', modules[0]);
+            
+            const parents = modules.filter(m => {
+                const isOriginal = !m.inheritance || !m.inheritance.parentPath;
+                const hasChildren = m.childrenCount > 0;
+                const shouldShow = isOriginal || hasChildren;
+                
+                if (hasChildren) {
+                    console.log(`Module "${m.name}" has ${m.childrenCount} children - INCLUDING`);
+                }
+                
+                return shouldShow;
+            });
+
+            console.log('Filtered parent modules:', parents.length);
+            console.log('Parent module names:', parents.map(p => p.name));
+
+            if (parents.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-light);">No parent modules found</div>`;
+                return;
+            }
+
+            parents.forEach(module => {
                 const item = document.createElement('div');
                 item.className = 'module-browser-item';
+                const workshopName = module.workshopId || 'Unknown Workshop';
+                const moduleDir = module.moduleDir || '';
+                const hasChildren = module.childrenCount > 0;
+                
                 item.innerHTML = `
-                    <div>
-                        <h4>${module.name} <span class="badge ${module.type}">${module.type}</span></h4>
-                        <p>${module.description}</p>
-                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
-                            <span>⏱️ ${module.duration} min</span>
-                            <span class="badge ${module.difficulty}">${module.difficulty}</span>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <h4 style="margin: 0; flex: 1;">
+                                ${hasChildren ? '📂' : '📄'} ${module.name || module.title || 'Unnamed Module'}
+                                <span class="badge ${module.type}" style="margin-left: 0.5rem;">${module.type || 'hands-on'}</span>
+                            </h4>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: var(--text-light); display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <span>📁 ${workshopName}</span>
+                            ${moduleDir ? `<span style="font-family: monospace; background: var(--bg-light); padding: 0.125rem 0.375rem; border-radius: 3px;">${moduleDir}</span>` : ''}
+                        </div>
+                        
+                        <p style="margin: 0; line-height: 1.5; color: var(--text-dark);">
+                            ${module.description || 'No description available'}
+                        </p>
+                        
+                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); flex-wrap: wrap; align-items: center;">
+                            <span>⏱️ ${module.duration || 30} min</span>
+                            <span class="badge ${module.difficulty}" style="text-transform: capitalize;">${module.difficulty || 'intermediate'}</span>
+                            ${hasChildren ? `<span class="item-badge parent">${module.childrenCount} variant${module.childrenCount !== 1 ? 's' : ''}</span>` : ''}
                         </div>
                     </div>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); addModule(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
+                            ➕ Add
+                        </button>
+                        ${hasChildren ? `
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); showModuleVariants('${module.moduleRef}', '${module.name}');" style="flex: 1;">
+                                🔍 View ${module.childrenCount} Variant${module.childrenCount !== 1 ? 's' : ''}
+                            </button>
+                        ` : `
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); duplicateAndCustomize(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
+                                ✏️ Customize
+                            </button>
+                        `}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function renderChildModules(modules, container) {
+            const parent = moduleBrowserState.currentParent;
+            if (!parent) {
+                showParentModules();
+                return;
+            }
+
+            // Add breadcrumb navigation
+            const breadcrumb = document.createElement('div');
+            breadcrumb.style.cssText = 'margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-light); border-radius: 8px; display: flex; align-items: center; gap: 0.5rem;';
+            breadcrumb.innerHTML = `
+                <button class="btn btn-sm btn-outline" onclick="showParentModules();" style="padding: 0.25rem 0.5rem;">
+                    ← Back to All Modules
+                </button>
+                <span style="color: var(--text-light);">Variants of:</span>
+                <strong>${parent.name}</strong>
+            `;
+            container.appendChild(breadcrumb);
+
+            // Show children of the current parent
+            const children = modules.filter(m => 
+                m.inheritance && 
+                m.inheritance.parentPath && 
+                m.inheritance.parentPath.includes(parent.moduleDir)
+            );
+
+            if (children.length === 0) {
+                const noChildren = document.createElement('div');
+                noChildren.style.cssText = 'text-align: center; padding: 2rem; color: var(--text-light);';
+                noChildren.textContent = 'No variants found for this module';
+                container.appendChild(noChildren);
+                return;
+            }
+
+            children.forEach(module => {
+                const item = document.createElement('div');
+                item.className = 'module-browser-item';
+                const workshopName = module.workshopId || 'Unknown Workshop';
+                const moduleDir = module.moduleDir || '';
+                
+                item.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <h4 style="margin: 0; flex: 1;">
+                                📄 ${module.name || module.title || 'Unnamed Module'}
+                                <span class="badge ${module.type}" style="margin-left: 0.5rem;">${module.type || 'hands-on'}</span>
+                                <span class="item-badge child" style="margin-left: 0.5rem;">variant</span>
+                            </h4>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: var(--text-light); display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <span>📁 ${workshopName}</span>
+                            ${moduleDir ? `<span style="font-family: monospace; background: var(--bg-light); padding: 0.125rem 0.375rem; border-radius: 3px;">${moduleDir}</span>` : ''}
+                        </div>
+                        
+                        <p style="margin: 0; line-height: 1.5; color: var(--text-dark);">
+                            ${module.description || 'No description available'}
+                        </p>
+                        
+                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); flex-wrap: wrap; align-items: center;">
+                            <span>⏱️ ${module.duration || 30} min</span>
+                            <span class="badge ${module.difficulty}" style="text-transform: capitalize;">${module.difficulty || 'intermediate'}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
                         <button class="btn btn-primary" onclick="event.stopPropagation(); addModule(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
                             ➕ Add
                         </button>
@@ -4268,6 +4467,26 @@
                 `;
                 container.appendChild(item);
             });
+        }
+
+        function showModuleVariants(moduleRef, moduleName) {
+            const module = availableModules.find(m => m.moduleRef === moduleRef);
+            if (!module) return;
+
+            moduleBrowserState.currentView = 'children';
+            moduleBrowserState.currentParent = {
+                moduleRef: moduleRef,
+                name: moduleName,
+                moduleDir: module.moduleDir
+            };
+
+            filterModules(); // Re-render with new state
+        }
+
+        function showParentModules() {
+            moduleBrowserState.currentView = 'parents';
+            moduleBrowserState.currentParent = null;
+            filterModules(); // Re-render with new state
         }
 
         function addModule(module) {
@@ -4333,6 +4552,66 @@
             }
         }
 
+        // Store divergence info
+        let moduleDivergenceInfo = {};
+
+        /**
+         * Check if modules have diverged from their parents
+         */
+        async function checkModuleDivergence() {
+            if (!useFilesystem || !workshop.workshopId) {
+                return;
+            }
+            
+            try {
+                const response = await apiRequest('/modules/check-divergence', {
+                    method: 'POST',
+                    body: JSON.stringify({ workshopId: workshop.workshopId })
+                });
+                
+                if (response.success) {
+                    moduleDivergenceInfo = {};
+                    response.modules.forEach(mod => {
+                        moduleDivergenceInfo[mod.moduleName] = mod;
+                    });
+                    
+                    // Re-render modules to show divergence indicators
+                    // (Visual indicators on module cards are enough - no notification needed)
+                    renderModules();
+                }
+            } catch (error) {
+                console.error('Failed to check module divergence:', error);
+            }
+        }
+
+        /**
+         * Reset a module to match its parent
+         */
+        async function resetModuleToParent(modulePath, moduleName) {
+            if (!confirm(`Reset "${moduleName}" to match its parent?\n\nThis will delete all local changes and re-copy from the parent module.`)) {
+                return;
+            }
+            
+            try {
+                showNotification('🔄 Resetting module...', 'info');
+                
+                const response = await apiRequest('/modules/reset-to-parent', {
+                    method: 'POST',
+                    body: JSON.stringify({ modulePath: modulePath })
+                });
+                
+                if (response.success) {
+                    showNotification(`✅ Module "${moduleName}" reset to parent state`, 'success');
+                    
+                    // Refresh divergence check
+                    await checkModuleDivergence();
+                }
+            } catch (error) {
+                console.error('Failed to reset module:', error);
+                showNotification(`❌ Failed to reset: ${error.message}`, 'error');
+            }
+        }
+
         function renderModules() {
             console.log('=== RENDER MODULES DEBUG ===');
             console.log('workshop object:', workshop);
@@ -4368,20 +4647,36 @@
                     description: module
                 };
                 
+                // Check if this module has diverged
+                const divInfo = moduleDivergenceInfo[moduleData.name];
+                const hasDiverged = divInfo && divInfo.hasDiverged;
+                const hasParent = divInfo && divInfo.hasParent;
+                
                 const card = document.createElement('div');
                 card.className = 'module-card';
+                if (hasDiverged) {
+                    card.style.borderLeft = '4px solid var(--warning-color)';
+                }
+                
                 card.innerHTML = `
                     <div class="module-card-header" onclick="editModule(${index})" style="cursor: pointer;" title="Click to edit module">
                         <div style="display: flex; align-items: center; flex: 1;">
                             <div class="module-card-order">${moduleData.order || index + 1}</div>
-                            <div>
+                            <div style="flex: 1;">
                                 <div class="module-card-title">
                                     ${moduleData.name || moduleData.moduleRef || 'Unnamed Module'}
+                                    ${hasDiverged ? '<span style="font-size: 0.875rem; color: var(--warning-color); margin-left: 0.5rem;">⚠️ Modified</span>' : ''}
+                                    ${hasParent && !hasDiverged ? '<span style="font-size: 0.875rem; color: var(--success-color); margin-left: 0.5rem;">✓ Synced</span>' : ''}
                                     <span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.5rem;">✏️ Click to edit</span>
                                 </div>
                                 <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">
                                     ${moduleData.moduleRef || ''}
                                 </div>
+                                ${hasDiverged ? `
+                                    <div style="font-size: 0.75rem; color: var(--warning-color); margin-top: 0.25rem; background: #fff3cd; padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                        ${divInfo.reason}
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         <span class="badge ${moduleData.type || 'hands-on'}">${moduleData.type || 'hands-on'}</span>
@@ -4396,6 +4691,11 @@
                     <div class="module-card-actions">
                         <button class="btn btn-secondary btn-sm btn-icon" onclick="event.stopPropagation(); moveModuleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
                         <button class="btn btn-secondary btn-sm btn-icon" onclick="event.stopPropagation(); moveModuleDown(${index})" ${index === workshop.modules.length - 1 ? 'disabled' : ''}>↓</button>
+                        ${hasDiverged ? `
+                            <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); resetModuleToParent('${divInfo.modulePath}', '${moduleData.name}')" title="Reset to parent state">
+                                🔄 Reset
+                            </button>
+                        ` : ''}
                         <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); removeModule(${index})">🗑️ Remove</button>
                     </div>
                 `;

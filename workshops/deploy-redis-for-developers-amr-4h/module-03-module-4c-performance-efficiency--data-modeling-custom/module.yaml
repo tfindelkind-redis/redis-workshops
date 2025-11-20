@@ -1,0 +1,10 @@
+id: module-03-module-4c-performance-efficiency--data-modeling-custom
+title: 'Module 4C: Performance Efficiency & Data Modeling (Custom)'
+description: >-
+  Master performance optimization and data modeling patterns for Redis
+  deployments.
+duration: 50
+inheritance:
+  parentPath: >-
+    workshops/deploy-redis-for-developers-amr-4h/module-custom-module-4c-performance-efficiency--data-modeling
+  inheritedAt: '2025-11-20T21:08:18.242Z'
