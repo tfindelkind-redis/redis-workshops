@@ -2,13 +2,13 @@
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-|  | [🏠 Workshop Home](../README.md) | [Next: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling ➡️](../module-02-workshopsdeploy-redis-for-developers-amr-4hmodule-03-performance-efficiency--data-modeling/README.md) |
+|  | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-02-azure-managed-redis-architecture/README.md) |
 
-[🏠 Workshop Home](../README.md) > **Module 1 of 3**
+[🏠 Workshop Home](../README.md) > **Module 1 of 2**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `███░░░░░░░` 33%
+**Progress:** `█████░░░░░` 50%
 
 ---
 
@@ -1046,8 +1046,8 @@ In the next module, we'll explore:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-|  | [🏠 Workshop Home](../README.md) | [Next: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling ➡️](../module-02-workshopsdeploy-redis-for-developers-amr-4hmodule-03-performance-efficiency--data-modeling/README.md) |
+|  | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-02-azure-managed-redis-architecture/README.md) |
 
 ---
 
-*Module 1 of 3*
+*Module 1 of 2*
