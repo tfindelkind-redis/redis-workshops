@@ -12,11 +12,11 @@ type: hands-on
 |----------|:----:|------:|
 | [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-03-performance-efficiency--data-modeling/README.md) |
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 3**
+[🏠 Workshop Home](../README.md) > **Module 2 of 5**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `██████░░░░` 67%
+**Progress:** `████░░░░░░` 40%
 
 ---
 
@@ -553,4 +553,4 @@ Preview:
 
 ---
 
-*Module 2 of 3*
+*Module 2 of 5*

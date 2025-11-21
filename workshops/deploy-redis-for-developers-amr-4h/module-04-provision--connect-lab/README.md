@@ -10,13 +10,13 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
 
-[🏠 Workshop Home](../README.md) > **Module 7 of 11**
+[🏠 Workshop Home](../README.md) > **Module 4 of 5**
 
-### Deploy Redis for Developers - Azure Managed Redis
+### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `██████░░░░` 64%
+**Progress:** `████████░░` 80%
 
 ---
 
@@ -937,8 +937,8 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
 
 ---
 
-*Module 7 of 11*
+*Module 4 of 5*
