@@ -1,16 +1,20 @@
----
-title: Performance Efficiency & Data Modeling
-description: Master performance optimization and data modeling patterns for Redis deployments.
-duration: 40
-difficulty: intermediate
-type: hands-on
----
-
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization--operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision--connect-lab/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) |  |
+
+[🏠 Workshop Home](../README.md) > **Module 3 of 3**
+
+### Deploy Redis for Developers - Azure Managed Redis 4h
+
+**Progress:** `██████████` 100%
+
+---
+
+<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
+
+d) |
 
 [🏠 Workshop Home](../README.md) > **Module 6 of 11**
 
@@ -1403,8 +1407,8 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization--operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision--connect-lab/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
-*Module 6 of 11*
+*Module 3 of 3*
