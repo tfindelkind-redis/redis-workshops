@@ -12,7 +12,7 @@ modules:
     moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
   - order: 3
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling-custom
+    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling
     required: true
 ---
 
