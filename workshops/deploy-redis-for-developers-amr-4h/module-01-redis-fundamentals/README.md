@@ -4,11 +4,11 @@
 |----------|:----:|------:|
 |  | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-02-azure-managed-redis-architecture/README.md) |
 
-[🏠 Workshop Home](../README.md) > **Module 1 of 2**
+[🏠 Workshop Home](../README.md) > **Module 1 of 3**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `█████░░░░░` 50%
+**Progress:** `███░░░░░░░` 33%
 
 ---
 
@@ -1050,4 +1050,4 @@ In the next module, we'll explore:
 
 ---
 
-*Module 1 of 2*
+*Module 1 of 3*
