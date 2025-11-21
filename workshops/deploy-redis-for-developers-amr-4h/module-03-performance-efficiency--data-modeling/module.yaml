@@ -1,0 +1,5 @@
+inheritance:
+  parentPath: workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency--data-modeling
+  inheritedAt: '2025-11-20T22:04:29.960Z'
+  customized: true
+  customizationReason: 'Duration adjusted for 4h workshop format (50 min vs 60 min)'

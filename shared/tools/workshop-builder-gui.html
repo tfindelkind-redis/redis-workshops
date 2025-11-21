@@ -1165,7 +1165,7 @@
                         <div class="form-group" style="margin-bottom: 1rem;">
                             <input 
                                 type="text" 
-                                id="module-search" 
+                                id="module-manager-search" 
                                 placeholder="🔍 Filter by module name, workshop, or path..." 
                                 oninput="filterModuleBrowser()"
                                 style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 6px; font-size: 0.95rem;"
@@ -1284,17 +1284,7 @@
 
             <div class="form-group">
                 <label for="module-search">Search Modules</label>
-                <input type="text" id="module-search" placeholder="Search by name or tags..." oninput="filterModules()">
-            </div>
-
-            <div class="form-group">
-                <label>Filter by Type</label>
-                <select id="module-type-filter" onchange="filterModules()">
-                    <option value="all">All Modules</option>
-                    <option value="lecture">Lecture Only</option>
-                    <option value="hands-on">Hands-on Only</option>
-                    <option value="lab">Lab Only</option>
-                </select>
+                <input type="text" id="module-search" placeholder="Search by name, description, workshop, or module ID..." oninput="filterModules()">
             </div>
 
             <div class="module-browser" id="module-browser-list">
@@ -2395,7 +2385,15 @@
 
         function renderWorkshopModules(modules) {
             let html = '';
-            const topLevel = modules.filter(m => !m.inheritance || !m.inheritance.parentPath);
+            // Get modules that don't have a parent (top-level/root modules)
+            let topLevel = modules.filter(m => !m.inheritance || !m.inheritance.parentPath);
+            
+            // If no top-level modules (all are children), show all modules at root level
+            // This handles workshops that only reference modules from other workshops
+            if (topLevel.length === 0) {
+                topLevel = modules;
+            }
+            
             topLevel.forEach(module => { html += renderModuleItem(module, modules, 'module-item', true); });
             return html;
         }
@@ -2523,7 +2521,7 @@
         }
 
         function filterModuleBrowser() {
-            const searchTerm = document.getElementById('module-search').value.toLowerCase().trim();
+            const searchTerm = document.getElementById('module-manager-search').value.toLowerCase().trim();
             if (!searchTerm) {
                 browserData.filteredModules = [...browserData.allModules];
                 browserData.workshops = {};
@@ -3664,8 +3662,9 @@
                     console.log('workshopData.modules:', workshopData.modules);
                     console.log('workshopData.frontmatter?.modules:', workshopData.frontmatter?.modules);
                     
-                    // Get modules from frontmatter first, fallback to top-level modules
-                    const modulesList = workshopData.frontmatter?.modules || workshopData.modules || [];
+                    // Use enriched modules from top level (already loaded with metadata from README.md)
+                    // frontmatter.modules only has minimal references {order, moduleRef, required}
+                    const modulesList = workshopData.modules || [];
                     
                     console.log('Selected modulesList:', modulesList);
                     console.log('modulesList.length:', modulesList.length);
@@ -3963,8 +3962,12 @@
 
         // Module management
         function openModuleBrowser() {
+            // Reset to parent view when opening
+            moduleBrowserState.currentView = 'parents';
+            moduleBrowserState.currentParent = null;
+            
             document.getElementById('module-browser-modal').classList.add('active');
-            renderModuleBrowser();
+            filterModules(); // Use new hierarchical view instead of old renderModuleBrowser
         }
 
         function closeModuleBrowser() {
@@ -4023,6 +4026,18 @@
                 // This is a copy operation - call backend to copy the module
                 try {
                     showNotification('🔄 Copying module files...', 'info');
+                    
+                    // Check if module directory already exists
+                    const targetPath = `workshops/${workshop.workshopId}/${ref}`;
+                    const checkResponse = await fetch(`http://localhost:3000/api/modules/exists?path=${encodeURIComponent(targetPath)}`);
+                    const existsData = await checkResponse.json();
+                    
+                    if (existsData.exists) {
+                        const overwrite = confirm(`⚠️ A module directory "${ref}" already exists in this workshop.\n\nDo you want to overwrite it?`);
+                        if (!overwrite) {
+                            return;
+                        }
+                    }
                     
                     const response = await apiRequest('/modules/copy', {
                         method: 'POST',
@@ -4179,7 +4194,7 @@
             editingModuleIndex = -1;
         }
 
-        function saveModuleEdits() {
+        async function saveModuleEdits() {
             if (editingModuleIndex < 0 || editingModuleIndex >= workshop.modules.length) {
                 alert('Invalid module index');
                 return;
@@ -4211,14 +4226,44 @@
                 return;
             }
 
-            // Update the module
+            const oldModule = workshop.modules[editingModuleIndex];
+            const isPhysicalModule = oldModule.moduleRef && !oldModule.moduleRef.startsWith('custom/');
+            
+            // If it's a physical module, update the README.md frontmatter
+            if (isPhysicalModule) {
+                try {
+                    showNotification('Updating module frontmatter...', 'info');
+                    
+                    const response = await apiRequest('/modules/update-frontmatter', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            modulePath: oldModule.moduleRef,
+                            metadata: {
+                                title: name,
+                                description: description,
+                                duration: duration,
+                                difficulty: difficulty,
+                                type: type
+                            }
+                        })
+                    });
+                    
+                    if (!response.success) {
+                        throw new Error(response.error || 'Failed to update module frontmatter');
+                    }
+                    
+                    showNotification(`✅ Module "${name}" updated successfully!`, 'success');
+                } catch (error) {
+                    console.error('Update frontmatter error:', error);
+                    showNotification(`⚠️ Failed to update module: ${error.message}`, 'error');
+                    return;
+                }
+            }
+            
+            // Update workshop.yaml with minimal metadata (only order and required flag)
             workshop.modules[editingModuleIndex] = {
-                ...workshop.modules[editingModuleIndex],
-                name: name,
-                description: description,
-                duration: duration,
-                difficulty: difficulty,
-                type: type,
+                order: oldModule.order,
+                moduleRef: oldModule.moduleRef,
                 required: required
             };
 
@@ -4226,8 +4271,6 @@
             updateSummary();
             renderModules();
             renderNavigation();
-            
-            showNotification(`✅ Module "${name}" updated successfully!`, 'success');
         }
 
         function renderModuleBrowser() {
@@ -4276,8 +4319,8 @@
         };
 
         function filterModules() {
-            const search = document.getElementById('module-search').value.toLowerCase();
-            const typeFilter = document.getElementById('module-type-filter').value;
+            const searchInput = document.getElementById('module-search');
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
 
             const container = document.getElementById('module-browser-list');
             container.innerHTML = '';
@@ -4291,11 +4334,16 @@
                     return false;
                 }
                 
-                const matchesSearch = module.name.toLowerCase().includes(search) || 
-                                     module.description.toLowerCase().includes(search) ||
+                // Enhanced search - check multiple fields
+                const matchesSearch = !search || // Empty search matches all
+                                     (module.name && module.name.toLowerCase().includes(search)) || 
+                                     (module.title && module.title.toLowerCase().includes(search)) ||
+                                     (module.description && module.description.toLowerCase().includes(search)) ||
+                                     (module.workshopId && module.workshopId.toLowerCase().includes(search)) ||
+                                     (module.moduleDir && module.moduleDir.toLowerCase().includes(search)) ||
                                      (module.tags && module.tags.some(tag => tag.toLowerCase().includes(search)));
-                const matchesType = typeFilter === 'all' || module.type === typeFilter;
-                return matchesSearch && matchesType;
+                
+                return matchesSearch;
             });
 
             if (filtered.length === 0) {
@@ -4315,25 +4363,42 @@
         }
 
         function renderParentModules(modules, container) {
-            // Show only parent modules (those without parents OR those with children)
-            console.log('=== RENDER PARENT MODULES DEBUG ===');
-            console.log('Total modules to filter:', modules.length);
-            console.log('First module sample:', modules[0]);
-            
+            // Show only parent modules (those without parents)
+            // Count customized children for each potential parent
             const parents = modules.filter(m => {
                 const isOriginal = !m.inheritance || !m.inheritance.parentPath;
-                const hasChildren = m.childrenCount > 0;
-                const shouldShow = isOriginal || hasChildren;
-                
-                if (hasChildren) {
-                    console.log(`Module "${m.name}" has ${m.childrenCount} children - INCLUDING`);
-                }
-                
-                return shouldShow;
+                return isOriginal;
             });
-
-            console.log('Filtered parent modules:', parents.length);
-            console.log('Parent module names:', parents.map(p => p.name));
+            
+            // For each parent, count how many children are customized (different from parent)
+            parents.forEach(parent => {
+                // Find children by matching:
+                // 1. inheritance.parentPath includes parent.moduleDir, OR
+                // 2. Same title AND child has inheritance (for cross-workshop inheritance)
+                const children = modules.filter(m => {
+                    if (!m.inheritance || !m.inheritance.parentPath) return false;
+                    
+                    // Direct moduleDir match
+                    if (m.inheritance.parentPath.includes(parent.moduleDir)) {
+                        return true;
+                    }
+                    
+                    // Cross-workshop match by title (same title + has inheritance)
+                    if (m.title === parent.title && m.workshopId !== parent.workshopId) {
+                        return true;
+                    }
+                    
+                    return false;
+                });
+                
+                // Count children that have been customized (different duration or description)
+                const customizedChildren = children.filter(child => 
+                    child.duration !== parent.duration || 
+                    child.description !== parent.description
+                );
+                
+                parent.customizedChildrenCount = customizedChildren.length;
+            });
 
             if (parents.length === 0) {
                 container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-light);">No parent modules found</div>`;
@@ -4345,13 +4410,13 @@
                 item.className = 'module-browser-item';
                 const workshopName = module.workshopId || 'Unknown Workshop';
                 const moduleDir = module.moduleDir || '';
-                const hasChildren = module.childrenCount > 0;
+                const hasCustomizedChildren = module.customizedChildrenCount > 0;
                 
                 item.innerHTML = `
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <h4 style="margin: 0; flex: 1;">
-                                ${hasChildren ? '📂' : '📄'} ${module.name || module.title || 'Unnamed Module'}
+                                ${hasCustomizedChildren ? '📂' : '📄'} ${module.name || module.title || 'Unnamed Module'}
                                 <span class="badge ${module.type}" style="margin-left: 0.5rem;">${module.type || 'hands-on'}</span>
                             </h4>
                         </div>
@@ -4368,7 +4433,7 @@
                         <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-light); flex-wrap: wrap; align-items: center;">
                             <span>⏱️ ${module.duration || 30} min</span>
                             <span class="badge ${module.difficulty}" style="text-transform: capitalize;">${module.difficulty || 'intermediate'}</span>
-                            ${hasChildren ? `<span class="item-badge parent">${module.childrenCount} variant${module.childrenCount !== 1 ? 's' : ''}</span>` : ''}
+                            ${hasCustomizedChildren ? `<span class="item-badge parent">${module.customizedChildrenCount} customized variant${module.customizedChildrenCount !== 1 ? 's' : ''}</span>` : ''}
                         </div>
                     </div>
                     
@@ -4376,15 +4441,14 @@
                         <button class="btn btn-primary" onclick="event.stopPropagation(); addModule(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
                             ➕ Add
                         </button>
-                        ${hasChildren ? `
+                        <button class="btn btn-outline" onclick="event.stopPropagation(); duplicateAndCustomize(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
+                            ✏️ Customize
+                        </button>
+                        ${hasCustomizedChildren ? `
                             <button class="btn btn-outline" onclick="event.stopPropagation(); showModuleVariants('${module.moduleRef}', '${module.name}');" style="flex: 1;">
-                                🔍 View ${module.childrenCount} Variant${module.childrenCount !== 1 ? 's' : ''}
+                                🔍 View ${module.customizedChildrenCount} Variant${module.customizedChildrenCount !== 1 ? 's' : ''}
                             </button>
-                        ` : `
-                            <button class="btn btn-outline" onclick="event.stopPropagation(); duplicateAndCustomize(availableModules.find(m => m.moduleRef === '${module.moduleRef}'));" style="flex: 1;">
-                                ✏️ Customize
-                            </button>
-                        `}
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(item);
@@ -4651,11 +4715,14 @@
                 const divInfo = moduleDivergenceInfo[moduleData.name];
                 const hasDiverged = divInfo && divInfo.hasDiverged;
                 const hasParent = divInfo && divInfo.hasParent;
+                const isCustomized = divInfo && divInfo.isCustomized;
                 
                 const card = document.createElement('div');
                 card.className = 'module-card';
                 if (hasDiverged) {
                     card.style.borderLeft = '4px solid var(--warning-color)';
+                } else if (isCustomized) {
+                    card.style.borderLeft = '4px solid #9333ea'; // Purple for customized
                 }
                 
                 card.innerHTML = `
@@ -4666,7 +4733,8 @@
                                 <div class="module-card-title">
                                     ${moduleData.name || moduleData.moduleRef || 'Unnamed Module'}
                                     ${hasDiverged ? '<span style="font-size: 0.875rem; color: var(--warning-color); margin-left: 0.5rem;">⚠️ Modified</span>' : ''}
-                                    ${hasParent && !hasDiverged ? '<span style="font-size: 0.875rem; color: var(--success-color); margin-left: 0.5rem;">✓ Synced</span>' : ''}
+                                    ${isCustomized ? '<span style="font-size: 0.875rem; color: #9333ea; margin-left: 0.5rem;">🎨 Customized</span>' : ''}
+                                    ${hasParent && !hasDiverged && !isCustomized ? '<span style="font-size: 0.875rem; color: var(--success-color); margin-left: 0.5rem;">✓ Synced</span>' : ''}
                                     <span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.5rem;">✏️ Click to edit</span>
                                 </div>
                                 <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">
@@ -4677,6 +4745,17 @@
                                         ${divInfo.reason}
                                     </div>
                                 ` : ''}
+                                ${isCustomized ? `
+                                    <div style="font-size: 0.75rem; color: #9333ea; margin-top: 0.25rem; background: #f3e8ff; padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                        📋 From: ${divInfo.parentPath}<br>
+                                        ${divInfo.customizationReason || 'Customized from parent'}
+                                    </div>
+                                ` : ''}
+                                ${hasParent && !hasDiverged && !isCustomized ? `
+                                    <div style="font-size: 0.75rem; color: var(--success-color); margin-top: 0.25rem; background: #d4edda; padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                        🔗 Synced with: ${divInfo.parentPath}
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         <span class="badge ${moduleData.type || 'hands-on'}">${moduleData.type || 'hands-on'}</span>
@@ -4685,7 +4764,7 @@
                         ${moduleData.description || 'No description'}
                     </div>
                     <div class="module-card-meta">
-                        <span>⏱️ ${moduleData.duration || 30} min</span>
+                        <span>⏱️ ${typeof moduleData.duration === 'string' ? moduleData.duration : (moduleData.duration || 30) + ' min'}</span>
                         <span class="badge ${moduleData.difficulty || 'intermediate'}">${moduleData.difficulty || 'intermediate'}</span>
                     </div>
                     <div class="module-card-actions">
@@ -4709,7 +4788,12 @@
             // Handle both object and string formats for duration
             const totalDuration = workshop.modules.reduce((sum, m) => {
                 if (typeof m === 'object') {
-                    return sum + (m.duration || 0);
+                    // Parse duration - handle both string ("60 minutes") and number (60)
+                    let duration = m.duration || 0;
+                    if (typeof duration === 'string') {
+                        duration = parseInt(duration.match(/\d+/)?.[0] || '0', 10);
+                    }
+                    return sum + duration;
                 }
                 return sum;
             }, 0);

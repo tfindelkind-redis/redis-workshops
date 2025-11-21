@@ -6,28 +6,13 @@ duration: 170
 difficulty: intermediate
 modules:
   - order: 1
-    name: Redis Fundamentals
-    description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-    duration: 60
-    difficulty: intermediate
-    type: hands-on
     moduleRef: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
     required: true
   - order: 2
-    name: Azure Managed Redis Architecture
-    description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-    duration: 60
-    difficulty: intermediate
-    type: hands-on
     moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
   - order: 3
-    name: Performance Efficiency & Data Modeling
-    description: Master performance optimization and data modeling patterns for Redis deployments.
-    duration: 50
-    difficulty: intermediate
-    type: hands-on
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-custom-module-4c-performance-efficiency--data-modeling
+    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling
     required: true
 ---
 
@@ -41,49 +26,49 @@ modules:
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 2h 50m | **Modules:** 3
+**Total Duration:** 1h 30m | **Modules:** 3
 
 Complete the modules in order for the best learning experience:
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | intermediate | hands-on | ✅ Yes |
-| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60m | intermediate | hands-on | ✅ Yes |
-| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency-data-modeling/README.md) | 50m | intermediate | hands-on | ✅ Yes |
+| 1 | [workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals](module-01-workshops-deploy-redis-for-developers-amr-module-01-redis-fundamentals/README.md) | 30 minutesm | intermediate | hands-on | ✅ Yes |
+| 2 | [workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture](module-02-workshops-deploy-redis-for-developers-amr-module-02-azure-managed-redis-architecture/README.md) | 30 minutesm | intermediate | hands-on | ✅ Yes |
+| 3 | [workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling](module-03-workshops-deploy-redis-for-developers-amr-4h-module-03-performance-efficiency-data-modeling/README.md) | 30 minutesm | intermediate | hands-on | ✅ Yes |
 
 ---
 
-### Module 1: Redis Fundamentals
+### Module 1: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
 
-📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
+📂 **[Go to Module](module-01-workshops-deploy-redis-for-developers-amr-module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 30 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
 ---
 
-### Module 2: Azure Managed Redis Architecture
+### Module 2: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
 
-📂 **[Go to Module](module-02-azure-managed-redis-architecture/README.md)**
+📂 **[Go to Module](module-02-workshops-deploy-redis-for-developers-amr-module-02-azure-managed-redis-architecture/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 30 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
 ---
 
-### Module 3: Performance Efficiency & Data Modeling
+### Module 3: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling
 
-📂 **[Go to Module](module-03-performance-efficiency-data-modeling/README.md)**
+📂 **[Go to Module](module-03-workshops-deploy-redis-for-developers-amr-4h-module-03-performance-efficiency-data-modeling/README.md)**
 
-**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 30 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Master performance optimization and data modeling patterns for Redis deployments.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -94,25 +79,3 @@ Master performance optimization and data modeling patterns for Redis deployments
 ---
 
 **Ready to start?** Click on Module 1 above to begin your learning journey!
-
-
-## 📚 Workshop Modules
-
-### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-
-### [Module 2: Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-
-### [Module 3: Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md)
-
-**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Master performance optimization and data modeling patterns for Redis deployments.
-

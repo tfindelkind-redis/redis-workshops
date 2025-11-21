@@ -1,3 +1,11 @@
+---
+title: Troubleshooting & Migration
+description: ''
+duration: 60 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |

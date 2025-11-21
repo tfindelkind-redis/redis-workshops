@@ -1,3 +1,11 @@
+---
+title: Well-Architected Framework Overview
+description: ''
+duration: 45 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |

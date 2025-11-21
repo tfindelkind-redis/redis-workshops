@@ -1,7 +1,3 @@
-id: test-ep1-child-a
-title: "test-ep1-child-a (Level 1)"
-description: "Test module at level 1 in hierarchy"
-duration: 15
 inheritance:
-  parentPath: "workshops/test-multi-roots/test-entry-point-1"
-  inheritedAt: "2025-11-17T08:04:38Z"
+  parentPath: workshops/test-multi-roots/test-entry-point-1
+  inheritedAt: '2025-11-17T08:04:38Z'

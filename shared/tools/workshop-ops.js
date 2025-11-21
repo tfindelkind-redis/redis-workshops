@@ -141,13 +141,19 @@ async function getWorkshop(workshopId) {
         
         console.log(`[getWorkshop] ${workshopId} - Final modules array length:`, modules.length);
         
+        // Enrich module references with metadata from their README.md files
+        // This makes README.md the single source of truth for module metadata
+        const enrichedModules = await enrichModulesWithMetadata(modules);
+        
+        console.log(`[getWorkshop] ${workshopId} - Enriched modules:`, enrichedModules.length);
+        
         return {
             workshopId: frontmatter.workshopId || workshopId,
             title: frontmatter.title || workshopId,
             description: frontmatter.description || '',
             duration: frontmatter.duration || frontmatter.estimatedTime || '',
             difficulty: frontmatter.difficulty || 'intermediate',
-            modules,
+            modules: enrichedModules,
             frontmatter,
             path: workshopPath
         };
@@ -164,6 +170,8 @@ async function getWorkshop(workshopId) {
  */
 async function updateWorkshop(workshopId, updates) {
     try {
+        console.log(`[updateWorkshop] START - workshopId: ${workshopId}, has modules: ${!!updates.modules}, module count: ${updates.modules?.length}`);
+        
         const workshopPath = path.join(workshopsDir, workshopId);
         const readmePath = path.join(workshopPath, 'README.md');
         
@@ -190,13 +198,39 @@ async function updateWorkshop(workshopId, updates) {
         // Keep modules as an array in the frontmatter (modern format)
         // Keep it as-is if it's already provided
         if (updates.modules && Array.isArray(updates.modules)) {
-            updatedFrontmatter.modules = updates.modules;
+            // Convert to minimal format: only store {order, moduleRef, required}
+            // Module metadata lives in each module's README.md (single source of truth)
+            const minimalModules = updates.modules.map((mod, index) => {
+                if (typeof mod === 'string') {
+                    // Old format: string path
+                    return {
+                        order: index + 1,
+                        moduleRef: mod,
+                        required: true
+                    };
+                } else {
+                    // New format: object with potential full metadata
+                    // Extract only the minimal fields we need
+                    return {
+                        order: mod.order || index + 1,
+                        moduleRef: mod.moduleRef || mod.name,
+                        required: mod.required !== undefined ? mod.required : true
+                    };
+                }
+            });
+            
+            console.log('[updateWorkshop] Converting to minimal format:', JSON.stringify(minimalModules, null, 2));
+            updatedFrontmatter.modules = minimalModules;
+            
             // Remove old 'chapters' field if it exists
             delete updatedFrontmatter.chapters;
             
+            // Enrich modules with metadata from README.md for table of contents
+            const enrichedModules = await enrichModulesWithMetadata(updatedFrontmatter.modules);
+            
             // Regenerate the entire README with updated modules table of contents
             const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
-            const modulesTableOfContents = generateModulesTableOfContents(updates.modules);
+            const modulesTableOfContents = generateModulesTableOfContents(enrichedModules);
             
             const newContent = `${newFrontmatterString}
 # ${updatedFrontmatter.title}
@@ -830,12 +864,21 @@ async function findAllModules() {
                                 // README.md doesn't exist or can't be parsed
                             }
                             
+                            // Merge module.yaml values with README values, prioritizing module.yaml
+                            const finalModuleInfo = {
+                                title: moduleYaml?.title || moduleInfo.title,
+                                description: moduleYaml?.description || moduleInfo.description,
+                                duration: moduleYaml?.duration 
+                                    ? (typeof moduleYaml.duration === 'number' ? `${moduleYaml.duration} minutes` : moduleYaml.duration)
+                                    : moduleInfo.duration
+                            };
+                            
                             allModules.push({
                                 workshopId: workshop.workshopId,
                                 workshopTitle: workshop.title,
                                 moduleDir: entry.name,
                                 modulePath: path.relative(repoRoot, modulePath),
-                                ...moduleInfo,
+                                ...finalModuleInfo,
                                 inheritance: moduleYaml?.inheritance || null,
                                 hasYaml: moduleYaml !== null
                             });
@@ -1409,9 +1452,33 @@ async function copyModule(sourceModulePath, workshopId, newModuleName, newModule
         
         console.log(`✓ Copied module from ${sourceModulePath} to ${targetModuleRelativePath}`);
         
-        // Update the module's README.md with new metadata
+        // Determine if metadata was customized
+        const hasMetadataCustomization = 
+            newModuleMetadata.title || 
+            newModuleMetadata.description || 
+            newModuleMetadata.duration || 
+            newModuleMetadata.difficulty || 
+            newModuleMetadata.type;
+        
+        // Create or update module.yaml with inheritance info
+        const moduleYamlPath = path.join(targetModulePath, 'module.yaml');
+        const moduleYamlData = {
+            inheritance: {
+                parentPath: sourceModulePath,
+                inheritedAt: new Date().toISOString(),
+                ...(hasMetadataCustomization && {
+                    customized: true,
+                    customizationReason: 'Metadata customized when copied',
+                    customizedAt: new Date().toISOString()
+                })
+            }
+        };
+        await fs.writeFile(moduleYamlPath, yaml.dump(moduleYamlData), 'utf8');
+        console.log(`✓ Created module.yaml with inheritance tracking`);
+        
+        // Update the module's README.md with new metadata if provided
         const readmePath = path.join(targetModulePath, 'README.md');
-        if (fsSync.existsSync(readmePath)) {
+        if (hasMetadataCustomization && fsSync.existsSync(readmePath)) {
             const content = await fs.readFile(readmePath, 'utf8');
             const { frontmatter, content: markdownContent } = parseFrontmatter(content);
             
@@ -1423,11 +1490,7 @@ async function copyModule(sourceModulePath, workshopId, newModuleName, newModule
                     ...(newModuleMetadata.description && { description: newModuleMetadata.description }),
                     ...(newModuleMetadata.duration && { duration: newModuleMetadata.duration }),
                     ...(newModuleMetadata.difficulty && { difficulty: newModuleMetadata.difficulty }),
-                    ...(newModuleMetadata.type && { type: newModuleMetadata.type }),
-                    // Mark as customized
-                    customized: true,
-                    originalModule: sourceModulePath,
-                    createdAt: new Date().toISOString()
+                    ...(newModuleMetadata.type && { type: newModuleMetadata.type })
                 };
                 
                 // Rebuild file with updated frontmatter
@@ -1439,7 +1502,8 @@ async function copyModule(sourceModulePath, workshopId, newModuleName, newModule
                 return {
                     newModulePath: targetModuleRelativePath,
                     moduleDir: newModuleName,
-                    metadata: updatedFrontmatter
+                    metadata: updatedFrontmatter,
+                    isCustomized: hasMetadataCustomization
                 };
             }
         }
@@ -1628,6 +1692,17 @@ async function checkModuleDivergence(modulePath) {
         // Check if has inheritance info
         if (!moduleYaml || !moduleYaml.inheritance || !moduleYaml.inheritance.parentPath) {
             return { hasDiverged: false, hasParent: false };
+        }
+        
+        // Check if module is marked as customized (independent from parent)
+        if (moduleYaml.inheritance.customized === true) {
+            return {
+                hasDiverged: false,
+                hasParent: true,
+                isCustomized: true,
+                customizationReason: moduleYaml.inheritance.customizationReason || 'Customized module',
+                parentPath: moduleYaml.inheritance.parentPath
+            };
         }
         
         const parentPath = path.join(repoRoot, moduleYaml.inheritance.parentPath);
@@ -1832,6 +1907,656 @@ async function resetModuleToParent(modulePath) {
     }
 }
 
+/**
+ * Update module README.md frontmatter with new metadata
+ * Note: Title cannot be changed once set (immutable)
+ */
+async function updateModuleFrontmatter(modulePath, metadata) {
+    const fullPath = path.join(repoRoot, modulePath);
+    const readmePath = path.join(fullPath, 'README.md');
+    const moduleYamlPath = path.join(fullPath, 'module.yaml');
+    
+    // Read existing README
+    const readmeContent = await fs.readFile(readmePath, 'utf-8');
+    
+    // Parse existing frontmatter
+    const { frontmatter, content } = parseFrontmatter(readmeContent);
+    
+    // Check if module has inheritance
+    let moduleYaml = null;
+    let hasInheritance = false;
+    try {
+        const yamlContent = await fs.readFile(moduleYamlPath, 'utf-8');
+        moduleYaml = yaml.load(yamlContent);
+        hasInheritance = moduleYaml && moduleYaml.inheritance && moduleYaml.inheritance.parentPath;
+    } catch {
+        // No module.yaml or no inheritance
+    }
+    
+    // ⚠️ IMPORTANT: Title is immutable once set
+    // If frontmatter has a title and user tries to change it, use existing title
+    const titleToUse = frontmatter.title || metadata.title;
+    
+    // Warn if user tried to change title
+    if (frontmatter.title && metadata.title && frontmatter.title !== metadata.title) {
+        console.warn(`⚠️ Cannot change module title from "${frontmatter.title}" to "${metadata.title}". Title is immutable.`);
+    }
+    
+    // Merge new metadata with existing frontmatter
+    const updatedFrontmatter = {
+        ...frontmatter,
+        title: titleToUse,  // Use existing title if present
+        description: metadata.description,
+        duration: metadata.duration,
+        difficulty: metadata.difficulty || frontmatter.difficulty || 'intermediate',
+        type: metadata.type || frontmatter.type || 'hands-on'
+    };
+    
+    // If module has inheritance and is not already marked as customized,
+    // check if metadata has changed and mark as customized
+    if (hasInheritance && !moduleYaml.inheritance.customized) {
+        // Check if any metadata field has changed from original
+        const hasMetadataChanges = 
+            frontmatter.title !== updatedFrontmatter.title ||
+            frontmatter.description !== updatedFrontmatter.description ||
+            frontmatter.duration !== updatedFrontmatter.duration ||
+            frontmatter.difficulty !== updatedFrontmatter.difficulty ||
+            frontmatter.type !== updatedFrontmatter.type;
+        
+        if (hasMetadataChanges) {
+            // Mark as customized in module.yaml
+            moduleYaml.inheritance.customized = true;
+            moduleYaml.inheritance.customizationReason = 'Metadata customized via Workshop Builder';
+            moduleYaml.inheritance.customizedAt = new Date().toISOString();
+            
+            // Write updated module.yaml
+            await fs.writeFile(moduleYamlPath, yaml.dump(moduleYaml), 'utf-8');
+            
+            console.log(`✏️ Module marked as customized: ${modulePath}`);
+        }
+    }
+    
+    // Rebuild README with updated frontmatter
+    const newFrontmatterBlock = buildFrontmatter(updatedFrontmatter);
+    const newReadmeContent = `---\n${newFrontmatterBlock}---\n\n${content}`;
+    
+    // Write back to README
+    await fs.writeFile(readmePath, newReadmeContent, 'utf-8');
+    
+    // Check if title change was attempted
+    const titleChangeBlocked = frontmatter.title && metadata.title && frontmatter.title !== metadata.title;
+    
+    return {
+        modulePath,
+        updatedMetadata: updatedFrontmatter,
+        markedAsCustomized: hasInheritance && moduleYaml?.inheritance?.customized,
+        titleChangeBlocked,
+        message: titleChangeBlocked 
+            ? `Metadata updated. Note: Title cannot be changed (kept as "${titleToUse}")`
+            : 'Metadata updated successfully'
+    };
+}
+
+/**
+ * Migrate workshop modules - add metadata to module README.md frontmatter if missing
+ * @param {string} workshopId - Workshop ID
+ * @param {Array} modules - Array of module objects with full metadata
+ * @returns {Promise<void>}
+ */
+async function migrateModulesToFrontmatter(workshopId, modules) {
+    if (!modules || !Array.isArray(modules)) {
+        return;
+    }
+    
+    console.log(`[Migration] Checking ${modules.length} modules for ${workshopId}...`);
+    
+    for (const module of modules) {
+        const moduleRef = module.moduleRef || module.name;
+        if (!moduleRef) continue;
+        
+        try {
+            const modulePath = path.join(repoRoot, moduleRef);
+            const readmePath = path.join(modulePath, 'README.md');
+            
+            // Read existing README
+            const readmeContent = await fs.readFile(readmePath, 'utf-8');
+            const { frontmatter, content } = parseFrontmatter(readmeContent);
+            
+            // Check if frontmatter already has metadata
+            if (frontmatter && frontmatter.title) {
+                console.log(`[Migration] ✓ ${moduleRef} already has frontmatter`);
+                continue;
+            }
+            
+            // Module needs migration - add frontmatter from workshop.yaml metadata
+            console.log(`[Migration] ⚠️  Migrating ${moduleRef} - adding frontmatter from workshop.yaml`);
+            
+            const newFrontmatter = {
+                title: module.name || module.title || moduleRef,
+                description: module.description || '',
+                duration: module.duration || '30 minutes',
+                difficulty: module.difficulty || 'intermediate',
+                type: module.type || 'hands-on'
+            };
+            
+            const newFrontmatterBlock = buildFrontmatter(newFrontmatter);
+            const newReadmeContent = `---\n${newFrontmatterBlock}---\n\n${content}`;
+            
+            await fs.writeFile(readmePath, newReadmeContent, 'utf-8');
+            console.log(`[Migration] ✅ Migrated ${moduleRef}`);
+            
+        } catch (error) {
+            console.warn(`[Migration] ❌ Failed to migrate ${moduleRef}:`, error.message);
+        }
+    }
+    
+    console.log(`[Migration] Complete for ${workshopId}`);
+}
+
+/**
+ * Enrich module references with metadata from their README.md files
+ * @param {Array} moduleRefs - Array of module references (minimal objects with moduleRef, order, required)
+ * @returns {Promise<Array>} Array of modules with full metadata from README.md
+ */
+async function enrichModulesWithMetadata(moduleRefs) {
+    if (!moduleRefs || !Array.isArray(moduleRefs)) {
+        return [];
+    }
+    
+    const enrichedModules = await Promise.all(moduleRefs.map(async (ref, index) => {
+        // Handle different formats
+        let moduleRef, order, required, existingMetadata = null;
+        
+        if (typeof ref === 'string') {
+            // Old format: just a string path
+            moduleRef = ref;
+            order = index + 1;
+            required = true;
+        } else if (typeof ref === 'object') {
+            // Could be minimal format OR old format with full metadata
+            moduleRef = ref.moduleRef || ref.name;
+            order = ref.order || index + 1;
+            required = ref.required !== undefined ? ref.required : true;
+            
+            // Store existing metadata if present (for migration fallback)
+            if (ref.name || ref.title || ref.description || ref.duration) {
+                existingMetadata = {
+                    name: ref.name || ref.title,
+                    title: ref.title || ref.name,
+                    description: ref.description,
+                    duration: ref.duration,
+                    difficulty: ref.difficulty,
+                    type: ref.type
+                };
+            }
+        }
+        
+        if (!moduleRef) {
+            console.warn(`Module reference missing moduleRef at index ${index}:`, ref);
+            return null;
+        }
+        
+        // Read metadata from module's README.md
+        try {
+            const modulePath = path.join(repoRoot, moduleRef);
+            const readmePath = path.join(modulePath, 'README.md');
+            const readmeContent = await fs.readFile(readmePath, 'utf-8');
+            const { frontmatter } = parseFrontmatter(readmeContent);
+            
+            // Also check for module.yaml for inheritance AND metadata
+            let inheritance = null;
+            let moduleYamlMetadata = null;
+            try {
+                const yamlPath = path.join(modulePath, 'module.yaml');
+                const yamlContent = await fs.readFile(yamlPath, 'utf-8');
+                const moduleYaml = yaml.load(yamlContent);
+                inheritance = moduleYaml.inheritance || null;
+                
+                // Extract metadata from module.yaml (fallback source)
+                if (moduleYaml) {
+                    moduleYamlMetadata = {
+                        title: moduleYaml.title,
+                        description: moduleYaml.description,
+                        duration: moduleYaml.duration 
+                            ? (typeof moduleYaml.duration === 'number' ? `${moduleYaml.duration} minutes` : moduleYaml.duration)
+                            : null,
+                        difficulty: moduleYaml.difficulty,
+                        type: moduleYaml.type
+                    };
+                }
+            } catch (e) {
+                // No module.yaml - that's fine
+            }
+            
+            // Priority: README.md frontmatter > module.yaml > workshop.yaml (existingMetadata)
+            let metadata = null;
+            if (frontmatter && frontmatter.title) {
+                metadata = frontmatter; // Single source of truth
+            } else if (moduleYamlMetadata && moduleYamlMetadata.title) {
+                metadata = moduleYamlMetadata; // Fallback to module.yaml
+            } else if (existingMetadata) {
+                metadata = existingMetadata; // Fallback to workshop.yaml (migration scenario)
+            }
+            
+            if (!metadata || !metadata.title) {
+                console.warn(`[Enrichment] ⚠️  No metadata for ${moduleRef} - needs migration!`);
+            }
+            
+            return {
+                order,
+                moduleRef,
+                required,
+                name: metadata?.title || metadata?.name || moduleRef,
+                title: metadata?.title || metadata?.name || moduleRef,
+                description: metadata?.description || '',
+                duration: metadata?.duration || '30 minutes',
+                difficulty: metadata?.difficulty || 'intermediate',
+                type: metadata?.type || 'hands-on',
+                inheritance
+            };
+        } catch (error) {
+            console.warn(`Failed to read metadata for module ${moduleRef}:`, error.message);
+            
+            // Fallback to existing metadata if available
+            if (existingMetadata) {
+                return {
+                    order,
+                    moduleRef,
+                    required,
+                    ...existingMetadata,
+                    inheritance: null
+                };
+            }
+            
+            // Last resort: return minimal data
+            return {
+                order,
+                moduleRef,
+                required,
+                name: moduleRef,
+                title: moduleRef,
+                description: 'Module metadata not found',
+                duration: '30 minutes',
+                difficulty: 'intermediate',
+                type: 'hands-on',
+                inheritance: null
+            };
+        }
+    }));
+    
+    return enrichedModules.filter(m => m !== null);
+}
+
+// ============================================================================
+// MODULE DELETION WITH INHERITANCE CHAIN MANAGEMENT
+// ============================================================================
+
+/**
+ * Find all child modules that reference a specific parent module
+ * @param {string} parentPath - Path to the parent module
+ * @returns {Array} Array of child module info objects
+ */
+async function findChildrenOfModule(parentPath) {
+    const allModules = await findAllModules();
+    const children = [];
+    
+    for (const module of allModules) {
+        if (module.inheritance && module.inheritance.parentPath === parentPath) {
+            children.push({
+                path: module.path,
+                workshopId: module.workshopId,
+                inheritance: module.inheritance,
+                metadata: module.metadata
+            });
+        }
+    }
+    
+    return children;
+}
+
+/**
+ * Analyze the impact of deleting a module
+ * @param {string} modulePath - Path to the module to delete
+ * @returns {Object} Analysis results with affected modules
+ */
+async function analyzeModuleDeletion(modulePath) {
+    const fullPath = path.join(repoRoot, modulePath);
+    
+    // Check if module exists
+    try {
+        await fs.access(fullPath);
+    } catch {
+        throw new Error(`Module not found: ${modulePath}`);
+    }
+    
+    // Load module info
+    const moduleYamlPath = path.join(fullPath, 'module.yaml');
+    const readmePath = path.join(fullPath, 'README.md');
+    
+    let moduleYaml = null;
+    let hasParent = false;
+    let parentPath = null;
+    let grandparentPath = null;
+    
+    try {
+        const yamlContent = await fs.readFile(moduleYamlPath, 'utf-8');
+        moduleYaml = yaml.load(yamlContent);
+        hasParent = moduleYaml?.inheritance?.parentPath ? true : false;
+        parentPath = moduleYaml?.inheritance?.parentPath || null;
+        
+        // Find grandparent if parent exists
+        if (parentPath) {
+            const parentYamlPath = path.join(repoRoot, parentPath, 'module.yaml');
+            try {
+                const parentYamlContent = await fs.readFile(parentYamlPath, 'utf-8');
+                const parentYaml = yaml.load(parentYamlContent);
+                grandparentPath = parentYaml?.inheritance?.parentPath || null;
+            } catch {
+                // Parent has no module.yaml or no inheritance
+            }
+        }
+    } catch {
+        // No module.yaml means no inheritance
+    }
+    
+    // Find all children
+    const children = await findChildrenOfModule(modulePath);
+    const hasChildren = children.length > 0;
+    
+    // Determine deletion scenario
+    let scenario;
+    let action;
+    let affectedModules = [];
+    
+    if (!hasParent && !hasChildren) {
+        scenario = 'standalone';
+        action = 'delete_simple';
+    } else if (!hasParent && hasChildren) {
+        scenario = 'parent_with_children';
+        action = 'delete_parent_orphan_children';
+        affectedModules = children.map(child => ({
+            path: child.path,
+            action: 'orphan',
+            oldState: child.inheritance.customized ? 'Customized' : 'Synced',
+            newState: 'Modified',
+            reason: 'Parent deleted with no grandparent'
+        }));
+    } else if (hasParent && hasChildren) {
+        scenario = 'middle_of_chain';
+        if (grandparentPath) {
+            action = 'delete_middle_relink_to_grandparent';
+            affectedModules = children.map(child => ({
+                path: child.path,
+                action: 'reparent',
+                oldParent: modulePath,
+                newParent: grandparentPath,
+                reason: 'Re-parented to grandparent'
+            }));
+        } else {
+            action = 'delete_middle_orphan_children';
+            affectedModules = children.map(child => ({
+                path: child.path,
+                action: 'orphan',
+                oldState: child.inheritance.customized ? 'Customized' : 'Synced',
+                newState: 'Modified',
+                reason: 'Parent deleted, no grandparent available'
+            }));
+        }
+    } else if (hasParent && !hasChildren) {
+        scenario = 'leaf_node';
+        action = 'delete_simple';
+    }
+    
+    // Get module metadata for warnings
+    let metadata = {};
+    try {
+        const readmeContent = await fs.readFile(readmePath, 'utf-8');
+        const { frontmatter } = parseFrontmatter(readmeContent);
+        metadata = frontmatter || {};
+    } catch {
+        // No README or can't parse
+    }
+    
+    return {
+        modulePath,
+        exists: true,
+        scenario,
+        action,
+        hasParent,
+        parentPath,
+        grandparentPath,
+        hasChildren,
+        childrenCount: children.length,
+        children,
+        affectedModules,
+        metadata,
+        warnings: generateDeletionWarnings(scenario, children.length, metadata)
+    };
+}
+
+/**
+ * Generate warnings for module deletion
+ */
+function generateDeletionWarnings(scenario, childrenCount, metadata) {
+    const warnings = [];
+    
+    if (childrenCount > 0) {
+        warnings.push({
+            type: 'children',
+            severity: 'high',
+            message: `This module has ${childrenCount} child module(s) that will be affected`
+        });
+    }
+    
+    if (metadata.customized || metadata.diverged) {
+        warnings.push({
+            type: 'customized_content',
+            severity: 'medium',
+            message: 'This module has customized content that will be permanently deleted'
+        });
+    }
+    
+    if (scenario === 'parent_with_children') {
+        warnings.push({
+            type: 'orphan_children',
+            severity: 'high',
+            message: 'Child modules will become standalone (orphaned) - no parent available'
+        });
+    }
+    
+    return warnings;
+}
+
+/**
+ * Orphan child modules (remove parent reference, convert to Modified state)
+ * @param {Array} children - Array of child module info objects
+ */
+async function orphanChildren(children) {
+    const results = [];
+    
+    for (const child of children) {
+        try {
+            const childYamlPath = path.join(repoRoot, child.path, 'module.yaml');
+            
+            // Read existing module.yaml
+            const yamlContent = await fs.readFile(childYamlPath, 'utf-8');
+            const moduleYaml = yaml.load(yamlContent);
+            
+            const oldState = moduleYaml.inheritance.customized ? 'Customized' : 'Synced';
+            
+            // Remove inheritance entirely - module becomes standalone (Modified)
+            delete moduleYaml.inheritance;
+            
+            // Write updated module.yaml
+            await fs.writeFile(childYamlPath, yaml.dump(moduleYaml), 'utf-8');
+            
+            results.push({
+                path: child.path,
+                success: true,
+                oldState,
+                newState: 'Modified',
+                action: 'orphaned'
+            });
+            
+            console.log(`✓ Orphaned module: ${child.path} (${oldState} → Modified)`);
+        } catch (error) {
+            results.push({
+                path: child.path,
+                success: false,
+                error: error.message
+            });
+            console.error(`✗ Failed to orphan module: ${child.path}`, error);
+        }
+    }
+    
+    return results;
+}
+
+/**
+ * Re-parent child modules to a new parent (usually grandparent)
+ * @param {Array} children - Array of child module info objects
+ * @param {string} newParentPath - Path to the new parent module
+ */
+async function reparentChildren(children, newParentPath) {
+    const results = [];
+    
+    for (const child of children) {
+        try {
+            const childYamlPath = path.join(repoRoot, child.path, 'module.yaml');
+            
+            // Read existing module.yaml
+            const yamlContent = await fs.readFile(childYamlPath, 'utf-8');
+            const moduleYaml = yaml.load(yamlContent);
+            
+            const oldParent = moduleYaml.inheritance.parentPath;
+            
+            // Update parent reference
+            moduleYaml.inheritance.parentPath = newParentPath;
+            moduleYaml.inheritance.lastSyncedAt = new Date().toISOString();
+            moduleYaml.inheritance.reparentedFrom = oldParent;
+            moduleYaml.inheritance.reparentedAt = new Date().toISOString();
+            
+            // Write updated module.yaml
+            await fs.writeFile(childYamlPath, yaml.dump(moduleYaml), 'utf-8');
+            
+            results.push({
+                path: child.path,
+                success: true,
+                oldParent,
+                newParent: newParentPath,
+                action: 'reparented'
+            });
+            
+            console.log(`✓ Re-parented module: ${child.path}`);
+            console.log(`  ${oldParent} → ${newParentPath}`);
+        } catch (error) {
+            results.push({
+                path: child.path,
+                success: false,
+                error: error.message
+            });
+            console.error(`✗ Failed to re-parent module: ${child.path}`, error);
+        }
+    }
+    
+    return results;
+}
+
+/**
+ * Delete a module and handle inheritance chain
+ * @param {string} modulePath - Path to the module to delete
+ * @param {Object} options - Deletion options
+ * @returns {Object} Deletion results
+ */
+async function deleteModule(modulePath, options = {}) {
+    const {
+        force = false,
+        removeFromWorkshops = true
+    } = options;
+    
+    console.log(`\n🗑️ Deleting module: ${modulePath}`);
+    
+    // Step 1: Analyze deletion impact
+    const analysis = await analyzeModuleDeletion(modulePath);
+    
+    // Step 2: Check for blocking conditions
+    if (!force && analysis.warnings.some(w => w.severity === 'high')) {
+        return {
+            success: false,
+            blocked: true,
+            reason: 'Module has high-severity warnings. Use force=true to override.',
+            analysis
+        };
+    }
+    
+    // Step 3: Handle children based on scenario
+    let childResults = [];
+    
+    if (analysis.action === 'delete_parent_orphan_children' || 
+        analysis.action === 'delete_middle_orphan_children') {
+        // Orphan children (remove parent reference)
+        childResults = await orphanChildren(analysis.children);
+    } else if (analysis.action === 'delete_middle_relink_to_grandparent') {
+        // Re-parent children to grandparent
+        childResults = await reparentChildren(analysis.children, analysis.grandparentPath);
+    }
+    
+    // Step 4: Remove module from workshops if requested
+    const workshopsUpdated = [];
+    if (removeFromWorkshops) {
+        const workshops = await listWorkshops();
+        for (const workshop of workshops) {
+            const hasModule = workshop.modules?.some(m => m.moduleRef === modulePath);
+            if (hasModule) {
+                // Remove module from workshop
+                workshop.modules = workshop.modules.filter(m => m.moduleRef !== modulePath);
+                // Renumber remaining modules
+                workshop.modules.forEach((m, index) => m.order = index + 1);
+                
+                // Update workshop file
+                await updateWorkshop(workshop.id, { modules: workshop.modules });
+                workshopsUpdated.push(workshop.id);
+                console.log(`✓ Removed from workshop: ${workshop.id}`);
+            }
+        }
+    }
+    
+    // Step 5: Delete the physical module directory
+    const fullPath = path.join(repoRoot, modulePath);
+    try {
+        await fs.rm(fullPath, { recursive: true, force: true });
+        console.log(`✓ Deleted module directory: ${modulePath}`);
+    } catch (error) {
+        console.error(`✗ Failed to delete module directory: ${modulePath}`, error);
+        return {
+            success: false,
+            error: `Failed to delete module directory: ${error.message}`,
+            analysis,
+            childResults
+        };
+    }
+    
+    // Step 6: Return comprehensive results
+    return {
+        success: true,
+        deleted: {
+            modulePath,
+            scenario: analysis.scenario,
+            action: analysis.action,
+            hadParent: analysis.hasParent,
+            parentPath: analysis.parentPath,
+            hadChildren: analysis.hasChildren,
+            childrenCount: analysis.childrenCount
+        },
+        affected: {
+            orphanedModules: childResults.filter(r => r.action === 'orphaned'),
+            reparentedModules: childResults.filter(r => r.action === 'reparented'),
+            workshopsUpdated
+        },
+        message: `Module deleted successfully. ${childResults.length} module(s) affected.`
+    };
+}
+
 module.exports = {
     listWorkshops,
     getWorkshop,
@@ -1847,6 +2572,9 @@ module.exports = {
     generateModuleStructure,
     updateWorkshopWithModuleLinks,
     updateModuleNavigation,
+    updateModuleFrontmatter,
+    enrichModulesWithMetadata,
+    migrateModulesToFrontmatter,
     // Module discovery and linking
     findAllModules,
     findRootModules,
@@ -1865,5 +2593,11 @@ module.exports = {
     copyModule,
     // Module divergence checking and reset
     checkModuleDivergence,
-    resetModuleToParent
+    resetModuleToParent,
+    // Module deletion with inheritance chain handling
+    deleteModule,
+    analyzeModuleDeletion,
+    findChildrenOfModule,
+    orphanChildren,
+    reparentChildren
 };

@@ -1,3 +1,11 @@
+---
+title: Performance Efficiency & Data Modeling
+description: Master performance optimization and data modeling patterns for Redis deployments.
+duration: 50 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |

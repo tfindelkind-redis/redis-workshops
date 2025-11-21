@@ -1,3 +1,11 @@
+---
+title: Implement Caching Lab
+description: ''
+duration: 30 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
