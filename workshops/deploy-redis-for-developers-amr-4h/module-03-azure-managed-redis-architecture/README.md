@@ -2,7 +2,7 @@
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling](../module-02-workshopsdeploy-redis-for-developers-amr-4hmodule-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) |  |
+| [⬅️ Previous: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) |  |
 
 [🏠 Workshop Home](../README.md) > **Module 3 of 3**
 
@@ -553,7 +553,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling](../module-02-workshopsdeploy-redis-for-developers-amr-4hmodule-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
+| [⬅️ Previous: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
