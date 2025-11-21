@@ -1,6 +1,6 @@
 ---
 title: Well-Architected Framework Overview
-description: ''
+description: 'Introduce the Azure Well-Architected Framework and understand how its 5 pillars apply to Redis workloads.'
 duration: 45 minutes
 difficulty: intermediate
 type: hands-on

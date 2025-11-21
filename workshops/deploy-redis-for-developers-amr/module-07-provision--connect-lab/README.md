@@ -1,6 +1,6 @@
 ---
 title: Provision & Connect Lab
-description: ''
+description: 'Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.'
 duration: 60 minutes
 difficulty: intermediate
 type: hands-on

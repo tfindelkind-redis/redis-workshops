@@ -1,8 +1,8 @@
 ---
 workshopId: deploy-redis-for-developers-amr-4h
 title: Deploy Redis for Developers - Azure Managed Redis 4h
-description: 4h
-duration: 060 minutes60 minutes504060
+description: A 4-hour hands-on workshop for developers building production applications with Azure Managed Redis, covering fundamentals, architecture, performance optimization, and practical implementation with caching patterns.
+duration: 260 minutes
 difficulty: intermediate
 modules:
   - order: 1
@@ -24,25 +24,35 @@ modules:
 
 # Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Duration:** 060 minutes60 minutes504060 | **Difficulty:** intermediate
+**Duration:** 4h 20m (260 minutes) | **Difficulty:** intermediate
 
 ## 📋 Overview
 
-4h
+A 4-hour hands-on workshop for developers building production applications with Azure Managed Redis. Learn Redis fundamentals, Azure architecture options, performance optimization, and implement caching patterns through practical labs.
+
+**Target Audience:** Backend developers and application architects
+
+**Key Outcomes:**
+- ✅ Deploy production-ready Azure Managed Redis
+- ✅ Implement caching patterns in applications
+- ✅ Understand data modeling and performance best practices
+- ✅ Configure secure connectivity with VNET and Entra ID
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 4h 30m | **Modules:** 5
+**Total Duration:** 4h 20m (260 minutes) | **Modules:** 5
 
-Complete the modules in order for the best learning experience:
+Complete the modules in order for the best learning experience. Total includes 20 minutes for breaks.
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | beginner | hands-on | ✅ Yes |
-| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
-| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md) | 50m | intermediate | hands-on | ✅ Yes |
-| 4 | [Provision & Connect Lab](module-04-provision--connect-lab/README.md) | 40m | intermediate | hands-on | ✅ Yes |
-| 5 | [Implement Caching Lab](module-05-implement-caching-lab/README.md) | 60m | intermediate | hands-on | ✅ Yes |
+| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | beginner | theory + demo | ✅ Yes |
+| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 50m | intermediate | theory + architecture | ✅ Yes |
+| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md) | 50m | intermediate | theory + patterns | ✅ Yes |
+| 4 | [Provision & Connect Lab](module-04-provision--connect-lab/README.md) | 40m | intermediate | hands-on lab | ✅ Yes |
+| 5 | [Implement Caching Lab](module-05-implement-caching-lab/README.md) | 60m | intermediate | hands-on lab | ✅ Yes |
+
+**☕ Break Schedule:** 10-minute breaks recommended after Module 1 and Module 3.
 
 ---
 
@@ -50,7 +60,7 @@ Complete the modules in order for the best learning experience:
 
 📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes minutes | **Difficulty:** beginner | **Type:** hands-on
+**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** theory + demo
 
 Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
@@ -62,9 +72,9 @@ Establish foundational understanding of Redis as an in-memory data store, coveri
 
 📂 **[Go to Module](module-02-azure-managed-redis-architecture/README.md)**
 
-**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** theory + architecture
 
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals. Condensed version focusing on decision framework.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -74,9 +84,9 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 
 📂 **[Go to Module](module-03-performance-efficiency--data-modeling/README.md)**
 
-**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** theory + patterns
 
-Master performance optimization and data modeling patterns for Redis deployments.
+Learn performance optimization and data modeling patterns for Redis, with focus on caching strategies for production applications.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -86,9 +96,9 @@ Master performance optimization and data modeling patterns for Redis deployments
 
 📂 **[Go to Module](module-04-provision--connect-lab/README.md)**
 
-**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on lab
 
-Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
+Deploy Azure Managed Redis using pre-built IaC templates and establish secure connectivity with VNET and Entra ID. Streamlined for 4-hour workshop.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -98,9 +108,9 @@ Deploy Azure Managed Redis and establish secure connectivity using Infrastructur
 
 📂 **[Go to Module](module-05-implement-caching-lab/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on lab
 
-Implement caching patterns with Redis using hands-on exercises in Jupyter notebook.
+Implement caching patterns with Redis using hands-on exercises in an interactive Jupyter notebook. Apply cache-aside patterns and test performance.
 
 > ✅ **Required Module** - Essential for workshop completion
 

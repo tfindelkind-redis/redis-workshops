@@ -1,6 +1,6 @@
 ---
 title: Reliability & Security Deep Dive
-description: ''
+description: 'Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.'
 duration: 60 minutes
 difficulty: intermediate
 type: hands-on

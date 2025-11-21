@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting & Migration
-description: ''
+description: 'Learn troubleshooting techniques and migration strategies for Redis workloads.'
 duration: 60 minutes
 difficulty: intermediate
 type: hands-on

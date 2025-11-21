@@ -1,7 +1,7 @@
 ---
 title: Azure Managed Redis Architecture
 description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-duration: 60 minutes
+duration: 50
 difficulty: intermediate
 type: hands-on
 ---
@@ -23,8 +23,8 @@ type: hands-on
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
 # Module 2: Azure Managed Redis Architecture
-**Duration:** 60 minutes  
-**Format:** Theory + Architecture Review  
+**Duration:** 50 minutes  
+**Format:** Theory + Architecture Review (Condensed for 4h workshop)  
 **Level:** Intermediate
 
 ---
@@ -51,11 +51,13 @@ type: hands-on
 
 | Section | Duration | Type |
 |---------|----------|------|
-| AMR Overview | 12 min | Theory |
-| SKU Selection | 18 min | Theory + Decision Framework |
-| Enterprise Architecture | 20 min | Architecture Patterns |
-| Auth & Security | 10 min | Configuration |
-| **Total** | **60 min** | |
+| AMR Overview | 10 min | Theory |
+| SKU Selection | 15 min | Theory + Decision Framework |
+| Enterprise Architecture | 17 min | Architecture Patterns (Condensed) |
+| Auth & Security | 8 min | Configuration |
+| **Total** | **50 min** | |
+
+**Note:** This is a condensed version for the 4-hour workshop. Capacity planning exercises are streamlined.
 
 ---
 

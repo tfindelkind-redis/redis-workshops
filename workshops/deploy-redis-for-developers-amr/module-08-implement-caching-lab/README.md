@@ -1,6 +1,6 @@
 ---
 title: Implement Caching Lab
-description: ''
+description: 'Implement caching patterns with Redis using hands-on exercises in Jupyter notebook.'
 duration: 30 minutes
 difficulty: intermediate
 type: hands-on

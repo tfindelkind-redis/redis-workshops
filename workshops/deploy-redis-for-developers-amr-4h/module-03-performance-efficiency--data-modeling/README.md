@@ -22,29 +22,28 @@ type: hands-on
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Module 4C: Performance Efficiency & Data Modeling
-**Duration:** 60 minutes  
-**Format:** WAF Deep Dive - Theory + Practical Examples  
-**Level:** Advanced
+# Module 3: Performance Efficiency & Data Modeling
+**Duration:** 50 minutes  
+**Format:** Theory + Practical Examples (Focused on caching patterns)  
+**Level:** Intermediate
 
 ---
 
 ## Module Overview
 
-**Objective:** Master performance optimization and data modeling patterns for Redis deployments.
+**Objective:** Understand performance optimization and data modeling patterns for Redis deployments, with focus on caching strategies.
 
 **Learning Outcomes:**
-- Implement optimal caching patterns (cache-aside, write-through, write-behind, refresh-ahead)
+- Implement optimal caching patterns (cache-aside, write-through, write-behind)
 - Design efficient data models using appropriate Redis data structures
 - Apply key naming conventions and data modeling best practices
-- Optimize connection pooling and command execution
 - Identify and avoid performance anti-patterns
-- Measure and improve cache performance metrics
+- Understand connection pooling basics
 
 **Prerequisites:**
-- Modules 1-4B completed
-- Understanding of Redis data structures
-- Basic performance tuning concepts
+- Module 1: Redis Fundamentals completed
+- Module 2: Azure Redis Architecture completed
+- Basic understanding of caching concepts
 
 ---
 
@@ -53,11 +52,13 @@ type: hands-on
 | Section | Duration | Type |
 |---------|----------|------|
 | Caching Patterns | 20 min | Theory + Code Examples |
-| Data Modeling Best Practices | 15 min | Design Patterns |
-| Key Naming & Organization | 10 min | Standards |
-| Performance Tuning | 10 min | Optimization |
-| Anti-Patterns to Avoid | 5 min | Warnings |
-| **Total** | **60 min** | |
+| Data Modeling Best Practices | 12 min | Design Patterns |
+| Key Naming & Organization | 8 min | Standards |
+| Performance Tuning | 6 min | Optimization Basics |
+| Anti-Patterns to Avoid | 4 min | Quick Warnings |
+| **Total** | **50 min** | |
+
+**Note:** This is a focused version for the 4-hour workshop. Advanced performance tuning is streamlined.
 
 ---
 

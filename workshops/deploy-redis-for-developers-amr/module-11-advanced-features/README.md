@@ -1,6 +1,6 @@
 ---
 title: Advanced Features
-description: ''
+description: 'Explore advanced Redis features including modules, clustering, and enterprise capabilities.'
 duration: 60 minutes
 difficulty: intermediate
 type: hands-on

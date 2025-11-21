@@ -22,7 +22,10 @@ type: hands-on
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Module 08: Implement Caching Lab
+# Module 5: Implement Caching Lab
+**Duration:** 60 minutes  
+**Format:** Hands-On Lab (Interactive Jupyter notebook)  
+**Level:** Intermediate
 
 This interactive Jupyter notebook demonstrates Redis caching patterns with hands-on exercises.
 

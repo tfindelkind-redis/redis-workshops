@@ -1,6 +1,6 @@
 ---
 title: Cost Optimization & Operational Excellence
-description: ''
+description: 'Deep dive into Cost Optimization and Operational Excellence pillars for Redis deployments.'
 duration: 45 minutes
 difficulty: intermediate
 type: hands-on

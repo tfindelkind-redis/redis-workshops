@@ -771,9 +771,28 @@
             color: #0c5460;
         }
 
+        /* Child module states */
         .item-badge.child {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .item-badge.child-in-sync {
+            background: #d4edda;
+            color: #155724;
+            font-weight: 500;
+        }
+
+        .item-badge.child-out-of-sync {
             background: #fff3cd;
             color: #856404;
+            font-weight: 500;
+        }
+
+        .item-badge.child-customized {
+            background: #d1ecf1;
+            color: #0c5460;
+            font-weight: 500;
         }
 
         /* Collapse/expand functionality */
@@ -1308,7 +1327,7 @@
 
             <div class="form-group">
                 <label for="custom-module-name">Module Name *</label>
-                <input type="text" id="custom-module-name" placeholder="e.g., Advanced Redis Patterns" required>
+                <input type="text" id="custom-module-name" placeholder="e.g., Advanced Redis Patterns" required oninput="updateModuleRefFromName()">
             </div>
 
             <div class="form-group">
@@ -2402,8 +2421,32 @@
             const hasChildren = module.childrenCount > 0;
             const icon = hasChildren ? '📂' : '📄';
             const badges = [];
-            if (hasChildren) badges.push(`<span class="item-badge parent">${module.childrenCount} child${module.childrenCount !== 1 ? 'ren' : ''}</span>`);
-            if (module.inheritance && module.inheritance.parentPath) badges.push(`<span class="item-badge child">child</span>`);
+            
+            // Add parent badge
+            if (hasChildren) {
+                badges.push(`<span class="item-badge parent">${module.childrenCount} child${module.childrenCount !== 1 ? 'ren' : ''}</span>`);
+            }
+            
+            // Add child status badges (4 states)
+            if (module.inheritance && module.inheritance.parentPath) {
+                // State 4: Child - Customized
+                if (module.inheritance.customized) {
+                    badges.push(`<span class="item-badge child-customized" title="Customized from parent">✏️ Customized</span>`);
+                } 
+                // State 3: Child - Out of Sync (has syncStatus from backend)
+                else if (module.syncStatus === 'out-of-sync') {
+                    badges.push(`<span class="item-badge child-out-of-sync" title="Parent has been updated">⚠️ Out of Sync</span>`);
+                } 
+                // State 2: Child - In Sync
+                else if (module.syncStatus === 'in-sync') {
+                    badges.push(`<span class="item-badge child-in-sync" title="In sync with parent">✅ In Sync</span>`);
+                }
+                // Fallback: Just show "Child" if sync status unknown
+                else {
+                    badges.push(`<span class="item-badge child" title="Inherited from parent">👶 Child</span>`);
+                }
+            }
+            // State 1: No Child (no parent) - no badge needed, this is the default
             
             // Escape module path for onclick
             const escapedPath = module.modulePath.replace(/'/g, "\\'");
@@ -2485,9 +2528,11 @@
             document.getElementById('custom-module-difficulty').value = 'intermediate';
             document.getElementById('custom-module-type').value = 'hands-on';
             
-            // Generate a suggested module directory name
+            // Generate a suggested module directory name with sequential numbering
+            const nextOrder = workshop.modules.length + 1;
             const baseName = moduleTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-            document.getElementById('custom-module-ref').value = `module-custom-${baseName}`;
+            const orderPrefix = `module-${String(nextOrder).padStart(2, '0')}`;
+            document.getElementById('custom-module-ref').value = `${orderPrefix}-${baseName}`;
             
             // Show the custom module modal
             document.getElementById('custom-module-modal').classList.add('active');
@@ -3974,6 +4019,21 @@
             document.getElementById('module-browser-modal').classList.remove('active');
         }
 
+        function updateModuleRefFromName() {
+            const moduleName = document.getElementById('custom-module-name').value.trim();
+            const currentRef = document.getElementById('custom-module-ref').value;
+            
+            // Extract the current prefix (e.g., "module-03-")
+            const prefixMatch = currentRef.match(/^(module-\d+-)/);
+            if (prefixMatch && moduleName) {
+                const prefix = prefixMatch[1];
+                // Generate new base name from the updated module name
+                const baseName = moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                // Update the ref while keeping the prefix
+                document.getElementById('custom-module-ref').value = `${prefix}${baseName}`;
+            }
+        }
+
         function showCreateCustomModule() {
             document.getElementById('module-browser-modal').classList.remove('active');
             document.getElementById('custom-module-modal').classList.add('active');
@@ -3983,7 +4043,11 @@
             document.getElementById('custom-module-duration').value = '30';
             document.getElementById('custom-module-difficulty').value = 'intermediate';
             document.getElementById('custom-module-type').value = 'hands-on';
-            document.getElementById('custom-module-ref').value = '';
+            
+            // Generate sequential module directory name suggestion
+            const nextOrder = workshop.modules.length + 1;
+            const orderPrefix = `module-${String(nextOrder).padStart(2, '0')}`;
+            document.getElementById('custom-module-ref').value = `${orderPrefix}-new-module-custom`;
         }
 
         function closeCustomModule() {
@@ -3993,6 +4057,13 @@
         }
 
         async function createCustomModule() {
+            // Prevent duplicate calls
+            if (window._isCreatingModule) {
+                console.log('Module creation already in progress, ignoring duplicate call');
+                return;
+            }
+            window._isCreatingModule = true;
+            
             const name = document.getElementById('custom-module-name').value.trim();
             const description = document.getElementById('custom-module-description').value.trim();
             const duration = parseInt(document.getElementById('custom-module-duration').value);
@@ -4002,18 +4073,21 @@
 
             // Validate required fields
             if (!name) {
+                window._isCreatingModule = false;
                 alert('Please enter a module name');
                 document.getElementById('custom-module-name').focus();
                 return;
             }
 
             if (!description) {
+                window._isCreatingModule = false;
                 alert('Please enter a module description');
                 document.getElementById('custom-module-description').focus();
                 return;
             }
 
             if (!duration || duration < 5 || duration > 300) {
+                window._isCreatingModule = false;
                 alert('Please enter a valid duration (5-300 minutes)');
                 document.getElementById('custom-module-duration').focus();
                 return;
@@ -4035,6 +4109,7 @@
                     if (existsData.exists) {
                         const overwrite = confirm(`⚠️ A module directory "${ref}" already exists in this workshop.\n\nDo you want to overwrite it?`);
                         if (!overwrite) {
+                            window._isCreatingModule = false;
                             return;
                         }
                     }
@@ -4073,6 +4148,7 @@
                         
                         // Clear the source module reference
                         delete window._sourceModuleForCopy;
+                        window._isCreatingModule = false;
                         
                         closeCustomModule();
                         updateSummary();
@@ -4088,6 +4164,7 @@
                     alert(`Failed to copy module: ${error.message}\n\nPlease ensure the workshop directory exists.`);
                     // Clear the source module reference on error
                     delete window._sourceModuleForCopy;
+                    window._isCreatingModule = false;
                 }
             } else {
                 // Regular custom module creation (no file copying)
@@ -4095,6 +4172,7 @@
 
                 // Check if module with same ref already exists
                 if (workshop.modules.some(m => m.moduleRef === moduleRef)) {
+                    window._isCreatingModule = false;
                     alert('A module with this reference already exists in the workshop');
                     return;
                 }
@@ -4112,6 +4190,7 @@
                 };
 
                 workshop.modules.push(newModule);
+                window._isCreatingModule = false;
                 
                 closeCustomModule();
                 updateSummary();
@@ -4148,10 +4227,12 @@
             // Store source module reference for later use
             window._sourceModuleForCopy = sourceModule;
             
-            // Generate a suggested module directory name
+            // Generate a suggested module directory name with sequential numbering
             const timestamp = Date.now();
+            const nextOrder = workshop.modules.length + 1;
             const baseName = sourceModule.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-            document.getElementById('custom-module-ref').value = `module-custom-${baseName}`;
+            const orderPrefix = `module-${String(nextOrder).padStart(2, '0')}`;
+            document.getElementById('custom-module-ref').value = `${orderPrefix}-${baseName}`;
 
             // Show the custom module modal
             document.getElementById('custom-module-modal').classList.add('active');

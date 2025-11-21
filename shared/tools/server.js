@@ -1075,22 +1075,24 @@ app.delete('/api/modules/:modulePath(*)', async (req, res) => {
 // Check if module directory exists
 app.get('/api/modules/exists', async (req, res) => {
     try {
-        const { path } = req.query;
+        const { path: modulePath } = req.query;
         
-        if (!path) {
+        if (!modulePath) {
             return res.status(400).json({
                 success: false,
                 error: 'path query parameter is required'
             });
         }
         
-        const fullPath = `${BASE_PATH}/${path}`;
+        const fs = require('fs').promises;
+        const pathLib = require('path');
+        const fullPath = pathLib.join(gitOps.repoRoot, modulePath);
         const exists = await fs.access(fullPath).then(() => true).catch(() => false);
         
         res.json({
             success: true,
             exists: exists,
-            path: path
+            path: modulePath
         });
     } catch (error) {
         console.error('Check module exists error:', error);

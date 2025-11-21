@@ -490,6 +490,51 @@ app.post('/api/workshops/:id/update-navigation', async (req, res) => {
     }
 });
 
+/**
+ * POST /api/workshops/:id/migrate
+ * Migrate workshop modules to use README.md frontmatter as single source of truth
+ */
+app.post('/api/workshops/:id/migrate', async (req, res) => {
+    try {
+        const workshopId = req.params.id;
+        
+        console.log(`[API] Migrating workshop ${workshopId}...`);
+        
+        // Get current workshop with old format
+        const workshop = await workshopOps.getWorkshop(workshopId);
+        
+        if (!workshop || !workshop.modules) {
+            return res.status(404).json({
+                success: false,
+                error: 'Workshop not found or has no modules'
+            });
+        }
+        
+        // Run migration - adds frontmatter to module README.md files
+        await workshopOps.migrateModulesToFrontmatter(workshopId, workshop.modules);
+        
+        // Update workshop to minimal format
+        await workshopOps.updateWorkshop(workshopId, {
+            modules: workshop.modules // updateWorkshop will convert to minimal format
+        });
+        
+        console.log(`[API] Migration complete for ${workshopId}`);
+        
+        res.json({
+            success: true,
+            workshopId,
+            migratedModules: workshop.modules.length,
+            message: 'Workshop migrated to use README.md frontmatter as single source of truth'
+        });
+    } catch (error) {
+        console.error('Migration error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
 // Module Discovery & Linking Endpoints
 // ============================================================================
@@ -840,7 +885,276 @@ app.post('/api/github/pull-request', async (req, res) => {
     }
 });
 
+/**
+ * POST /api/modules/check-divergence
+ * Check if modules in a workshop have diverged from their parents
+ */
+app.post('/api/modules/check-divergence', async (req, res) => {
+    try {
+        const { workshopId } = req.body;
+        
+        if (!workshopId) {
+            return res.status(400).json({
+                success: false,
+                error: 'workshopId is required'
+            });
+        }
+        
+        // Get workshop
+        const workshop = await workshopOps.getWorkshop(workshopId);
+        if (!workshop) {
+            return res.status(404).json({
+                success: false,
+                error: 'Workshop not found'
+            });
+        }
+        
+        // Check each module
+        const results = [];
+        if (workshop.modules && workshop.modules.length > 0) {
+            for (const module of workshop.modules) {
+                // Use the actual moduleRef path from the module, not constructed path
+                // Modules can reference paths from any workshop
+                const modulePath = module.moduleRef || module.name;
+                
+                const divergenceInfo = await workshopOps.checkModuleDivergence(modulePath);
+                
+                results.push({
+                    moduleName: module.name,
+                    modulePath: modulePath,
+                    ...divergenceInfo
+                });
+            }
+        }
+        
+        const divergedModules = results.filter(r => r.hasDiverged);
+        
+        res.json({
+            success: true,
+            workshopId: workshopId,
+            totalModules: results.length,
+            divergedCount: divergedModules.length,
+            modules: results,
+            divergedModules: divergedModules
+        });
+    } catch (error) {
+        console.error('Check divergence error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/modules/reset-to-parent
+ * Reset a module to match its parent
+ */
+app.post('/api/modules/reset-to-parent', async (req, res) => {
+    try {
+        const { modulePath } = req.body;
+        
+        if (!modulePath) {
+            return res.status(400).json({
+                success: false,
+                error: 'modulePath is required'
+            });
+        }
+        
+        const result = await workshopOps.resetModuleToParent(modulePath);
+        
+        res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        console.error('Reset module error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // ============================================================================
+// Update module README.md frontmatter
+// Note: Title is immutable and cannot be changed after module creation
+app.post('/api/modules/update-frontmatter', async (req, res) => {
+    try {
+        const { modulePath, metadata } = req.body;
+        
+        if (!modulePath || !metadata) {
+            return res.status(400).json({
+                success: false,
+                error: 'modulePath and metadata are required'
+            });
+        }
+        
+        const result = await workshopOps.updateModuleFrontmatter(modulePath, metadata);
+        
+        // Return success with warning if title change was blocked
+        res.json({
+            success: true,
+            ...result,
+            warning: result.titleChangeBlocked 
+                ? 'Title cannot be changed after module creation. Other metadata was updated.'
+                : null
+        });
+    } catch (error) {
+        console.error('Update frontmatter error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// ============================================================================
+// MODULE DELETION WITH INHERITANCE CHAIN HANDLING
+// ============================================================================
+
+// Analyze module deletion impact (preview)
+app.post('/api/modules/analyze-deletion', async (req, res) => {
+    try {
+        const { modulePath } = req.body;
+        
+        if (!modulePath) {
+            return res.status(400).json({
+                success: false,
+                error: 'modulePath is required'
+            });
+        }
+        
+        const analysis = await workshopOps.analyzeModuleDeletion(modulePath);
+        
+        res.json({
+            success: true,
+            analysis
+        });
+    } catch (error) {
+        console.error('Analyze deletion error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Delete module with inheritance chain handling
+app.delete('/api/modules/:modulePath(*)', async (req, res) => {
+    try {
+        const modulePath = req.params.modulePath;
+        const { force = false, removeFromWorkshops = true } = req.body || {};
+        
+        if (!modulePath) {
+            return res.status(400).json({
+                success: false,
+                error: 'modulePath is required'
+            });
+        }
+        
+        const result = await workshopOps.deleteModule(modulePath, {
+            force,
+            removeFromWorkshops
+        });
+        
+        if (!result.success) {
+            return res.status(result.blocked ? 400 : 500).json(result);
+        }
+        
+        res.json(result);
+    } catch (error) {
+        console.error('Delete module error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Check if module directory exists
+app.get('/api/modules/exists', async (req, res) => {
+    try {
+        const { path: modulePath } = req.query;
+        
+        if (!modulePath) {
+            return res.status(400).json({
+                success: false,
+                error: 'path query parameter is required'
+            });
+        }
+        
+        const fs = require('fs').promises;
+        const pathLib = require('path');
+        const fullPath = pathLib.join(gitOps.repoRoot, modulePath);
+        const exists = await fs.access(fullPath).then(() => true).catch(() => false);
+        
+        res.json({
+            success: true,
+            exists: exists,
+            path: modulePath
+        });
+    } catch (error) {
+        console.error('Check module exists error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Rename module directory
+app.post('/api/modules/rename', async (req, res) => {
+    try {
+        const { workshopId, oldModuleDir, newModuleDir } = req.body;
+        
+        if (!workshopId || !oldModuleDir || !newModuleDir) {
+            return res.status(400).json({
+                success: false,
+                error: 'workshopId, oldModuleDir, and newModuleDir are required'
+            });
+        }
+        
+        const oldPath = path.join(BASE_PATH, 'workshops', workshopId, oldModuleDir);
+        const newPath = path.join(BASE_PATH, 'workshops', workshopId, newModuleDir);
+        
+        // Check if old path exists
+        const oldExists = await fs.access(oldPath).then(() => true).catch(() => false);
+        if (!oldExists) {
+            return res.status(404).json({
+                success: false,
+                error: `Module directory "${oldModuleDir}" not found`
+            });
+        }
+        
+        // Check if new path already exists
+        const newExists = await fs.access(newPath).then(() => true).catch(() => false);
+        if (newExists) {
+            return res.status(400).json({
+                success: false,
+                error: `A module directory "${newModuleDir}" already exists`
+            });
+        }
+        
+        // Rename the directory
+        await fs.rename(oldPath, newPath);
+        
+        res.json({
+            success: true,
+            oldModuleDir: oldModuleDir,
+            newModuleDir: newModuleDir,
+            oldPath: `workshops/${workshopId}/${oldModuleDir}`,
+            newPath: `workshops/${workshopId}/${newModuleDir}`
+        });
+    } catch (error) {
+        console.error('Rename module error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // Error Handling
 // ============================================================================
 
@@ -899,6 +1213,8 @@ app.listen(PORT, () => {
     console.log('  GET  /api/modules/children/:workshopId/:moduleId - Get module children');
     console.log('  GET  /api/modules/ancestors/:workshopId/:moduleId - Get module ancestors');
     console.log('  POST /api/modules/check-circular - Check for circular dependencies');
+    console.log('  POST /api/modules/check-divergence - Check module divergence from parent');
+    console.log('  POST /api/modules/reset-to-parent - Reset module to parent state');
     console.log('\n✨ Ready to build workshops with multi-level inheritance!\n');
 });
 

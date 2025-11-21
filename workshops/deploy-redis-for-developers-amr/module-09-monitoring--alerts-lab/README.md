@@ -1,6 +1,6 @@
 ---
 title: Monitoring & Alerts Lab
-description: ''
+description: 'Set up monitoring, alerts, and dashboards for Redis deployments.'
 duration: 45 minutes
 difficulty: intermediate
 type: hands-on

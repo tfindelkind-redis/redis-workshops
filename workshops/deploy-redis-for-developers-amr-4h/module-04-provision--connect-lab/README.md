@@ -22,38 +22,36 @@ type: hands-on
 
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
-# Module 5: Provision & Connect Lab
-**Duration:** 60 minutes  
-**Format:** Hands-On Lab  
+# Module 4: Provision & Connect Lab
+**Duration:** 40 minutes  
+**Format:** Hands-On Lab (Streamlined with IaC templates)  
 **Level:** Intermediate
 
 ---
 
 ## Lab Overview
 
-**Objective:** Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
+**Objective:** Deploy Azure Managed Redis and establish secure connectivity using pre-built IaC templates.
 
 **What You'll Build:**
-- Azure Managed Redis (Enterprise tier with zone redundancy)
-- Virtual Network with subnet configuration
-- Private Endpoint for secure connectivity
+- Azure Managed Redis using provided IaC templates
+- Virtual Network with Private Endpoint
 - Entra ID authentication setup
-- Python application with connection script
-- Monitoring with Log Analytics
+- Python connection verification
 
 **Learning Outcomes:**
-- Deploy Redis using Bicep or Terraform (IaC)
-- Configure Private Endpoint for network isolation
-- Set up Entra ID authentication (no access keys)
-- Write Python code to connect with Azure Identity
-- Troubleshoot common connectivity issues
+- Deploy Redis using provided Bicep/Terraform templates
+- Configure VNET and Private Endpoint
+- Set up Entra ID authentication
+- Connect using Python with Azure Identity
 
 **Prerequisites:**
 - Azure subscription with appropriate permissions
 - Azure CLI installed (`az --version`)
 - Python 3.8+ installed
 - VS Code or preferred IDE
-- Basic understanding of IaC (Bicep or Terraform)
+
+**Note:** This is a streamlined version using pre-built templates for the 4-hour workshop.
 
 ---
 

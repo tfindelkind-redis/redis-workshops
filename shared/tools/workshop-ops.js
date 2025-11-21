@@ -230,7 +230,7 @@ async function updateWorkshop(workshopId, updates) {
             
             // Regenerate the entire README with updated modules table of contents
             const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
-            const modulesTableOfContents = generateModulesTableOfContents(enrichedModules);
+            const modulesTableOfContents = generateModulesTableOfContents(workshopId, enrichedModules);
             
             const newContent = `${newFrontmatterString}
 # ${updatedFrontmatter.title}
@@ -249,6 +249,68 @@ ${modulesTableOfContents}
 `;
             
             await fs.writeFile(readmePath, newContent, 'utf-8');
+            
+            // Check for removed modules and delete their folders
+            // This works for both local modules AND inherited modules that have folders in this workshop
+            if (frontmatter.modules && Array.isArray(frontmatter.modules)) {
+                // Get all module folders that currently exist in the workshop directory
+                const workshopModuleFolders = new Set();
+                try {
+                    const entries = await fs.readdir(workshopPath, { withFileTypes: true });
+                    for (const entry of entries) {
+                        if (entry.isDirectory() && entry.name.startsWith('module-')) {
+                            workshopModuleFolders.add(entry.name);
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`⚠️  Failed to read workshop directory: ${error.message}`);
+                }
+                
+                // Get folder names that should exist (from new module list)
+                const expectedFolders = new Set();
+                for (const mod of updatedFrontmatter.modules) {
+                    const moduleRef = mod.moduleRef;
+                    if (moduleRef && moduleRef.startsWith(`workshops/${workshopId}/`)) {
+                        // Local module - use folder name from moduleRef
+                        expectedFolders.add(path.basename(moduleRef));
+                    } else {
+                        // Inherited module - generate expected folder name
+                        const order = mod.order || (updatedFrontmatter.modules.indexOf(mod) + 1);
+                        const nameSlug = moduleRef ? path.basename(moduleRef).replace(/^module-\d+-/, '') : 'untitled';
+                        expectedFolders.add(`module-${String(order).padStart(2, '0')}-${nameSlug}`);
+                    }
+                }
+                
+                // Find folders that exist but shouldn't (removed modules)
+                const foldersToDelete = Array.from(workshopModuleFolders).filter(folder => !expectedFolders.has(folder));
+                
+                // Delete removed module folders
+                for (const folder of foldersToDelete) {
+                    const folderPath = path.join(workshopPath, folder);
+                    try {
+                        await fs.rm(folderPath, { recursive: true, force: true });
+                        console.log(`🗑️  Deleted removed module folder: ${folder}`);
+                    } catch (error) {
+                        console.warn(`⚠️  Failed to delete ${folder}: ${error.message}`);
+                    }
+                }
+                
+                // Update navigation in all remaining modules after changes
+                // This handles: deletion, reordering, or adding new modules
+                const hasModuleChanges = foldersToDelete.length > 0 || 
+                    !frontmatter.modules || 
+                    frontmatter.modules.length !== updatedFrontmatter.modules.length;
+                
+                if (hasModuleChanges) {
+                    console.log(`🔄 Updating navigation after module changes (deleted: ${foldersToDelete.length}, total: ${updatedFrontmatter.modules.length})...`);
+                    try {
+                        await updateModuleNavigation(workshopId);
+                        console.log(`✅ Navigation updated for all modules`);
+                    } catch (navError) {
+                        console.warn(`⚠️  Failed to update navigation: ${navError.message}`);
+                    }
+                }
+            }
         } else {
             // Just update frontmatter, keep existing content
             const newFrontmatterString = buildFrontmatter(updatedFrontmatter);
@@ -265,10 +327,11 @@ ${modulesTableOfContents}
 
 /**
  * Generate table of contents for workshop modules
+ * @param {string} workshopId - Workshop ID to extract folder names from moduleRef
  * @param {Array} modules - Array of module objects
  * @returns {string} Formatted markdown table of contents
  */
-function generateModulesTableOfContents(modules) {
+function generateModulesTableOfContents(workshopId, modules) {
     if (!modules || modules.length === 0) {
         return `## 📖 Workshop Modules
 
@@ -302,8 +365,15 @@ Complete the modules in order for the best learning experience:
         const type = module.type || 'lecture';
         const required = module.required ? '✅ Yes' : '⚪ Optional';
         
-        // Generate module directory name from order and name
-        const moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        // Get module directory name - use actual folder from moduleRef if it exists in this workshop
+        let moduleDir;
+        if (module.moduleRef && module.moduleRef.startsWith(`workshops/${workshopId}/`)) {
+            // Extract actual folder name from moduleRef (for customized modules)
+            moduleDir = path.basename(module.moduleRef);
+        } else {
+            // Generate directory name from order and name (for inherited modules)
+            moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        }
         const moduleLink = `[${moduleName}](${moduleDir}/README.md)`;
         
         toc += `| ${order} | ${moduleLink} | ${duration} | ${difficulty} | ${type} | ${required} |\n`;
@@ -322,8 +392,15 @@ Complete the modules in order for the best learning experience:
         const difficulty = module.difficulty || 'intermediate';
         const type = module.type || 'lecture';
         
-        // Generate module directory name
-        const moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        // Get module directory name - use actual folder from moduleRef if it exists in this workshop
+        let moduleDir;
+        if (module.moduleRef && module.moduleRef.startsWith(`workshops/${workshopId}/`)) {
+            // Extract actual folder name from moduleRef (for customized modules)
+            moduleDir = path.basename(module.moduleRef);
+        } else {
+            // Generate directory name from order and name (for inherited modules)
+            moduleDir = `module-${String(order).padStart(2, '0')}-${moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        }
         
         toc += `### Module ${order}: ${moduleName}\n\n`;
         toc += `📂 **[Go to Module](${moduleDir}/README.md)**\n\n`;
@@ -379,7 +456,7 @@ async function createWorkshop(workshopData) {
         
         // Build README content with modules table of contents
         const frontmatterString = buildFrontmatter(frontmatter);
-        const modulesTableOfContents = generateModulesTableOfContents(modules || []);
+        const modulesTableOfContents = generateModulesTableOfContents(workshopId, modules || []);
         
         const template = `${frontmatterString}
 # ${frontmatter.title}
@@ -560,13 +637,57 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
     try {
         const workshopPath = path.join(workshopsDir, workshopId);
         
-        // Ensure moduleData.name exists, fallback to 'untitled-module'
-        const moduleName = moduleData.name || 'Untitled Module';
-        const folderName = `module-${String(moduleIndex + 1).padStart(2, '0')}-${moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
-        const modulePath = path.join(workshopPath, folderName);
+        // Check if this module already exists in THIS workshop (it's a customized/local module)
+        if (moduleData.moduleRef && moduleData.moduleRef.startsWith(`workshops/${workshopId}/`)) {
+            const currentFolderName = path.basename(moduleData.moduleRef);
+            const currentModulePath = path.join(repoRoot, moduleData.moduleRef);
+            
+            try {
+                await fs.access(currentModulePath);
+                
+                // Extract the name slug from the EXISTING folder (preserve it, only change order)
+                const currentOrder = currentFolderName.match(/^module-(\d+)-/);
+                const nameSlug = currentFolderName.replace(/^module-\d+-/, ''); // Keep existing slug!
+                
+                // Generate expected folder name with new order but SAME name slug
+                const expectedOrder = String(moduleIndex + 1).padStart(2, '0');
+                const expectedFolderName = `module-${expectedOrder}-${nameSlug}`;
+                const expectedModulePath = path.join(workshopPath, expectedFolderName);
+                
+                // Check if the folder name needs to change (order changed)
+                if (currentFolderName !== expectedFolderName) {
+                    console.log(`🔄 Renaming module: ${currentFolderName} → ${expectedFolderName}`);
+                    await fs.rename(currentModulePath, expectedModulePath);
+                    return { folderName: expectedFolderName, path: expectedModulePath, existed: true, renamed: true, oldFolderName: currentFolderName, skipNavUpdate: false };
+                }
+                
+                console.log(`✅ Module already exists with correct name: ${currentFolderName}`);
+                return { folderName: currentFolderName, path: currentModulePath, existed: true, skipNavUpdate: false };
+            } catch {
+                console.error(`❌ Module path doesn't exist: ${moduleData.moduleRef}`);
+                throw new Error(`Module path not found: ${moduleData.moduleRef}`);
+            }
+        }
         
-        // Check if this module has a parent reference (moduleRef)
-        if (moduleData.moduleRef) {
+        // For NEW modules (not yet in this workshop), generate slug from module name
+        const moduleName = moduleData.name || 'Untitled Module';
+        const nameSlug = moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const expectedOrder = String(moduleIndex + 1).padStart(2, '0');
+        const expectedFolderName = `module-${expectedOrder}-${nameSlug}`;
+        const expectedModulePath = path.join(workshopPath, expectedFolderName);
+        
+        // Check if a module with the expected name already exists (was previously created)
+        try {
+            await fs.access(expectedModulePath);
+            console.log(`✅ Module already exists: ${expectedFolderName}`);
+            return { folderName: expectedFolderName, path: expectedModulePath, existed: true, skipNavUpdate: false };
+        } catch {
+            // Doesn't exist yet, continue with creation
+        }
+        
+        // At this point, module doesn't exist yet - need to create it
+        // Check if this module inherits from ANOTHER workshop
+        if (moduleData.moduleRef && !moduleData.moduleRef.startsWith(`workshops/${workshopId}/`)) {
             const parentPath = path.join(repoRoot, moduleData.moduleRef);
             
             // Check if parent exists
@@ -575,11 +696,34 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
                 
                 // Copy ALL files from parent module
                 console.log(`📦 Copying module from: ${moduleData.moduleRef}`);
-                await copyModuleFiles(parentPath, modulePath);
+                await copyModuleFiles(parentPath, expectedModulePath);
+                
+                // Ensure README.md has frontmatter
+                const readmePath = path.join(expectedModulePath, 'README.md');
+                try {
+                    const content = await fs.readFile(readmePath, 'utf8');
+                    const { frontmatter, content: markdownContent } = parseFrontmatter(content);
+                    
+                    // If no frontmatter exists, create it
+                    if (!frontmatter || Object.keys(frontmatter).length === 0) {
+                        console.log(`📝 Creating frontmatter for inherited module: ${expectedFolderName}`);
+                        const newFrontmatter = {
+                            title: moduleName,
+                            description: moduleData.description || '',
+                            duration: moduleData.duration || 60,
+                            difficulty: moduleData.difficulty || 'intermediate',
+                            type: moduleData.type || 'hands-on'
+                        };
+                        const newContent = buildFrontmatter(newFrontmatter) + '\n' + markdownContent;
+                        await fs.writeFile(readmePath, newContent, 'utf8');
+                    }
+                } catch (error) {
+                    console.warn(`⚠️  Could not update README frontmatter: ${error.message}`);
+                }
                 
                 // Create module.yaml with inheritance info
                 const moduleYaml = {
-                    id: folderName,
+                    id: expectedFolderName,
                     title: moduleName,
                     description: moduleData.description || '',
                     duration: moduleData.duration || 60,
@@ -589,11 +733,11 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
                     }
                 };
                 
-                const moduleYamlPath = path.join(modulePath, 'module.yaml');
+                const moduleYamlPath = path.join(expectedModulePath, 'module.yaml');
                 await fs.writeFile(moduleYamlPath, yaml.dump(moduleYaml), 'utf-8');
                 
-                console.log(`✅ Copied module with inheritance: ${folderName}`);
-                return { folderName, path: modulePath, inherited: true, parentPath: moduleData.moduleRef };
+                console.log(`✅ Copied module with inheritance: ${expectedFolderName}`);
+                return { folderName: expectedFolderName, path: expectedModulePath, inherited: true, parentPath: moduleData.moduleRef };
             } catch (error) {
                 console.warn(`⚠️  Parent module not found: ${moduleData.moduleRef}, creating template instead`);
                 // Fall through to create template
@@ -601,7 +745,7 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
         }
         
         // Create module directory
-        await fs.mkdir(modulePath, { recursive: true });
+        await fs.mkdir(expectedModulePath, { recursive: true });
         
         // Generate navigation
         const header = generateModuleNavigation({
@@ -620,7 +764,7 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
         });
         
         // Check if README already exists
-        const readmePath = path.join(modulePath, 'README.md');
+        const readmePath = path.join(expectedModulePath, 'README.md');
         let content;
         
         try {
@@ -645,7 +789,7 @@ async function createModuleDirectory(workshopId, moduleData, moduleIndex, totalM
             // Preserve existing content with new navigation
             content = header + userContent.trim() + footer;
             
-            console.log(`ℹ️  Preserved existing content for: ${folderName}`);
+            console.log(`ℹ️  Preserved existing content for: ${expectedFolderName}`);
         } catch (error) {
             // README doesn't exist, create new with template
             content = `${header}# ${moduleName}
@@ -687,13 +831,13 @@ Key takeaways from this module...
 
 ${footer}`;
             
-            console.log(`✨ Created new README for: ${folderName}`);
+            console.log(`✨ Created new README for: ${expectedFolderName}`);
         }
         
         // Write README.md
         await fs.writeFile(readmePath, content, 'utf-8');
         
-        return { folderName, path: modulePath };
+        return { folderName: expectedFolderName, path: expectedModulePath };
     } catch (error) {
         throw new Error(`Failed to create module directory: ${error.message}`);
     }
@@ -713,7 +857,7 @@ async function generateModuleStructure(workshopId, workshopTitle, modules) {
         for (let i = 0; i < modules.length; i++) {
             const moduleData = modules[i];
             
-            // Prepare navigation options
+            // Prepare navigation options (still needed for NEW modules)
             const prevModule = i > 0 && modules[i - 1].name ? {
                 name: modules[i - 1].name,
                 folder: `module-${String(i).padStart(2, '0')}-${modules[i - 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
@@ -741,6 +885,38 @@ async function generateModuleStructure(workshopId, workshopTitle, modules) {
             
             createdModules.push(moduleInfo);
         }
+        
+        // Clean up orphaned module directories (folders that don't match current modules)
+        // This handles reordering where old module-XX folders need to be deleted
+        // BUT: Don't delete folders that were renamed (they already moved)
+        const workshopPath = path.join(workshopsDir, workshopId);
+        const expectedFolders = new Set(createdModules.map(m => m.folderName));
+        const renamedOldFolders = new Set(
+            createdModules.filter(m => m.renamed && m.oldFolderName).map(m => m.oldFolderName)
+        );
+        
+        try {
+            const allEntries = await fs.readdir(workshopPath, { withFileTypes: true });
+            const moduleFolders = allEntries
+                .filter(entry => entry.isDirectory() && entry.name.startsWith('module-'))
+                .map(entry => entry.name);
+            
+            for (const folder of moduleFolders) {
+                // Don't delete if it's expected OR if it was already renamed (already gone)
+                if (!expectedFolders.has(folder) && !renamedOldFolders.has(folder)) {
+                    const orphanedPath = path.join(workshopPath, folder);
+                    console.log(`🗑️ Deleting orphaned module folder: ${folder}`);
+                    await fs.rm(orphanedPath, { recursive: true, force: true });
+                }
+            }
+        } catch (error) {
+            console.warn(`⚠️ Failed to clean up orphaned folders: ${error.message}`);
+        }
+        
+        // After all modules are created/verified, update navigation for ALL modules
+        // This updates ONLY the navigation header/footer in README.md, not module.yaml or other files
+        console.log('🔄 Updating navigation for all modules...');
+        await updateModuleNavigation(workshopId);
         
         return createdModules;
     } catch (error) {
@@ -779,6 +955,101 @@ async function updateWorkshopWithModuleLinks(workshopId, modulesWithFolders) {
     } catch (error) {
         throw new Error(`Failed to update workshop with module links: ${error.message}`);
     }
+}
+
+/**
+ * Check if a child module is in sync with its parent
+ * @param {string} childModulePath - Relative path to child module (e.g., "workshops/ws-1/module-01")
+ * @param {string} parentModulePath - Relative path to parent module (e.g., "workshops/ws-2/module-02")
+ * @returns {Promise<string>} Sync status: 'in-sync', 'out-of-sync', or 'unknown'
+ */
+async function checkModuleSyncStatus(childModulePath, parentModulePath) {
+    const crypto = require('crypto');
+    const fsSync = require('fs');
+    
+    try {
+        const childFullPath = path.join(repoRoot, childModulePath);
+        const parentFullPath = path.join(repoRoot, parentModulePath);
+        
+        // Check if both paths exist
+        if (!fsSync.existsSync(childFullPath) || !fsSync.existsSync(parentFullPath)) {
+            return 'unknown';
+        }
+        
+        // Get list of files in both directories (excluding module.yaml which tracks inheritance)
+        const childFiles = await getFileList(childFullPath, childFullPath);
+        const parentFiles = await getFileList(parentFullPath, parentFullPath);
+        
+        // Compare file contents using checksums
+        const filesToCompare = new Set([...childFiles.map(f => f.relativePath), ...parentFiles.map(f => f.relativePath)]);
+        
+        for (const relPath of filesToCompare) {
+            // Skip module.yaml as it's expected to differ (contains inheritance info)
+            if (relPath === 'module.yaml') continue;
+            
+            const childFilePath = path.join(childFullPath, relPath);
+            const parentFilePath = path.join(parentFullPath, relPath);
+            
+            // Check if file exists in both
+            const childExists = fsSync.existsSync(childFilePath);
+            const parentExists = fsSync.existsSync(parentFilePath);
+            
+            if (childExists !== parentExists) {
+                // File exists in one but not the other
+                return 'out-of-sync';
+            }
+            
+            if (childExists && parentExists) {
+                // Compare file contents via checksum
+                const childContent = await fs.readFile(childFilePath, 'utf-8');
+                const parentContent = await fs.readFile(parentFilePath, 'utf-8');
+                
+                const childHash = crypto.createHash('md5').update(childContent).digest('hex');
+                const parentHash = crypto.createHash('md5').update(parentContent).digest('hex');
+                
+                if (childHash !== parentHash) {
+                    return 'out-of-sync';
+                }
+            }
+        }
+        
+        // All files match
+        return 'in-sync';
+    } catch (error) {
+        console.warn(`Error checking sync status: ${error.message}`);
+        return 'unknown';
+    }
+}
+
+/**
+ * Recursively get list of files in a directory
+ * @param {string} dirPath - Full path to directory
+ * @param {string} basePath - Base path for calculating relative paths
+ * @returns {Promise<Array>} Array of objects with relativePath
+ */
+async function getFileList(dirPath, basePath) {
+    const files = [];
+    
+    try {
+        const entries = await fs.readdir(dirPath, { withFileTypes: true });
+        
+        for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+            const relativePath = path.relative(basePath, fullPath);
+            
+            if (entry.isDirectory()) {
+                // Recursively get files from subdirectories
+                const subFiles = await getFileList(fullPath, basePath);
+                files.push(...subFiles);
+            } else {
+                files.push({ relativePath });
+            }
+        }
+    } catch (error) {
+        console.warn(`Error reading directory ${dirPath}: ${error.message}`);
+    }
+    
+    return files;
 }
 
 /**
@@ -907,6 +1178,19 @@ async function findAllModules() {
                     title: c.title,
                     modulePath: c.modulePath
                 }));
+            }
+        }
+        
+        // Add sync status for child modules
+        for (const module of allModules) {
+            if (module.inheritance?.parentPath) {
+                try {
+                    const syncStatus = await checkModuleSyncStatus(module.modulePath, module.inheritance.parentPath);
+                    module.syncStatus = syncStatus;
+                } catch (error) {
+                    console.warn(`Failed to check sync status for ${module.modulePath}: ${error.message}`);
+                    module.syncStatus = 'unknown';
+                }
             }
         }
         
@@ -1482,15 +1766,20 @@ async function copyModule(sourceModulePath, workshopId, newModuleName, newModule
             const content = await fs.readFile(readmePath, 'utf8');
             const { frontmatter, content: markdownContent } = parseFrontmatter(content);
             
+            // Prepare metadata object
+            const metadataToWrite = {
+                title: newModuleMetadata.title,
+                description: newModuleMetadata.description,
+                duration: newModuleMetadata.duration,
+                difficulty: newModuleMetadata.difficulty || 'intermediate',
+                type: newModuleMetadata.type || 'hands-on'
+            };
+            
             if (frontmatter) {
-                // Update frontmatter with new metadata
+                // Update existing frontmatter with new metadata
                 const updatedFrontmatter = {
                     ...frontmatter,
-                    ...(newModuleMetadata.title && { title: newModuleMetadata.title }),
-                    ...(newModuleMetadata.description && { description: newModuleMetadata.description }),
-                    ...(newModuleMetadata.duration && { duration: newModuleMetadata.duration }),
-                    ...(newModuleMetadata.difficulty && { difficulty: newModuleMetadata.difficulty }),
-                    ...(newModuleMetadata.type && { type: newModuleMetadata.type })
+                    ...metadataToWrite
                 };
                 
                 // Rebuild file with updated frontmatter
@@ -1503,6 +1792,22 @@ async function copyModule(sourceModulePath, workshopId, newModuleName, newModule
                     newModulePath: targetModuleRelativePath,
                     moduleDir: newModuleName,
                     metadata: updatedFrontmatter,
+                    isCustomized: hasMetadataCustomization
+                };
+            } else {
+                // No frontmatter exists - CREATE IT!
+                console.log(`📝 Creating new frontmatter for module`);
+                
+                const newFrontmatter = metadataToWrite;
+                const newContent = buildFrontmatter(newFrontmatter) + '\n' + content;
+                await fs.writeFile(readmePath, newContent, 'utf8');
+                
+                console.log(`✓ Created module metadata in README.md`);
+                
+                return {
+                    newModulePath: targetModuleRelativePath,
+                    moduleDir: newModuleName,
+                    metadata: newFrontmatter,
                     isCustomized: hasMetadataCustomization
                 };
             }
@@ -1570,7 +1875,17 @@ async function updateModuleNavigation(workshopId) {
         for (let i = 0; i < modules.length; i++) {
             const moduleData = modules[i];
             const moduleName = moduleData.name || 'Untitled Module';
-            const folderName = `module-${String(i + 1).padStart(2, '0')}-${moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+            
+            // Get folder name - use actual folder from moduleRef if it's in this workshop
+            let folderName;
+            if (moduleData.moduleRef && moduleData.moduleRef.startsWith(`workshops/${workshopId}/`)) {
+                // Extract actual folder name from moduleRef (for customized modules)
+                folderName = path.basename(moduleData.moduleRef);
+            } else {
+                // Generate folder name from index and name (for inherited modules)
+                folderName = `module-${String(i + 1).padStart(2, '0')}-${moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+            }
+            
             const modulePath = path.join(workshopPath, folderName);
             const readmePath = path.join(modulePath, 'README.md');
             
@@ -1585,13 +1900,16 @@ async function updateModuleNavigation(workshopId) {
             // Read current content
             let content = await fs.readFile(readmePath, 'utf-8');
             
-            // Extract user content (between edit markers)
-            let userContent = content;
+            // CRITICAL: Extract frontmatter FIRST to preserve it
+            const { frontmatter, content: contentWithoutFrontmatter } = parseFrontmatter(content);
+            
+            // Extract user content (between edit markers) from content WITHOUT frontmatter
+            let userContent = contentWithoutFrontmatter;
             
             // Remove existing navigation header if present
-            const headerMatch = content.match(/<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->.*?<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->\n\n/s);
+            const headerMatch = contentWithoutFrontmatter.match(/<!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->.*?<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->\n\n/s);
             if (headerMatch) {
-                userContent = content.substring(headerMatch[0].length);
+                userContent = contentWithoutFrontmatter.substring(headerMatch[0].length);
             }
             
             // Remove existing navigation footer if present
@@ -1600,15 +1918,19 @@ async function updateModuleNavigation(workshopId) {
                 userContent = userContent.substring(0, userContent.length - footerMatch[0].length);
             }
             
-            // Prepare navigation options
+            // Prepare navigation options - use actual folder names
             const prevModule = i > 0 ? {
                 name: modules[i - 1].name,
-                folder: `module-${String(i).padStart(2, '0')}-${modules[i - 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
+                folder: modules[i - 1].moduleRef && modules[i - 1].moduleRef.startsWith(`workshops/${workshopId}/`) 
+                    ? path.basename(modules[i - 1].moduleRef)
+                    : `module-${String(i).padStart(2, '0')}-${modules[i - 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
             } : null;
             
             const nextModule = i < modules.length - 1 ? {
                 name: modules[i + 1].name,
-                folder: `module-${String(i + 2).padStart(2, '0')}-${modules[i + 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
+                folder: modules[i + 1].moduleRef && modules[i + 1].moduleRef.startsWith(`workshops/${workshopId}/`) 
+                    ? path.basename(modules[i + 1].moduleRef)
+                    : `module-${String(i + 2).padStart(2, '0')}-${modules[i + 1].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
             } : null;
             
             // Generate new navigation
@@ -1630,8 +1952,16 @@ async function updateModuleNavigation(workshopId) {
                 nextModule
             });
             
-            // Combine navigation + user content
-            const newContent = header + userContent.trim() + footer;
+            // CRITICAL: Rebuild with frontmatter + navigation + user content
+            let newContent = '';
+            
+            // Add frontmatter if it exists
+            if (frontmatter && Object.keys(frontmatter).length > 0) {
+                newContent = buildFrontmatter(frontmatter) + '\n';
+            }
+            
+            // Add navigation header + user content + footer
+            newContent += header + userContent.trim() + footer;
             
             // Write back
             await fs.writeFile(readmePath, newContent, 'utf-8');
@@ -2581,6 +2911,7 @@ module.exports = {
     findSimilarModules,
     linkModuleToParent,
     promoteToRoot,
+    checkModuleSyncStatus,
     // Multi-level hierarchy support
     getTopLevelModules,
     getChildrenOfModule,
