@@ -4,6 +4,10 @@ title: Deploy Redis for Developers - Azure Managed Redis 4h
 description: 4h
 duration: 060 minutes
 difficulty: intermediate
+modules:
+  - order: 1
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
+    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis 4h
@@ -22,7 +26,7 @@ Complete the modules in order for the best learning experience:
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | beginner | hands-on | ✅ Yes |
 
 ---
 
@@ -30,7 +34,7 @@ Complete the modules in order for the best learning experience:
 
 📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 60 minutes minutes | **Difficulty:** beginner | **Type:** hands-on
 
 Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
@@ -43,3 +47,13 @@ Establish foundational understanding of Redis as an in-memory data store, coveri
 ---
 
 **Ready to start?** Click on Module 1 above to begin your learning journey!
+
+
+## 📚 Workshop Modules
+
+### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
+
+**Duration:** 60 minutes minutes | **Difficulty:** beginner | **Type:** hands-on
+
+Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+
