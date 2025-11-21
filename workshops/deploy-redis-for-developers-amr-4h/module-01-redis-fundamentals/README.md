@@ -2,7 +2,7 @@
 title: Redis Fundamentals
 description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 duration: 60 minutes
-difficulty: intermediate
+difficulty: beginner
 type: hands-on
 ---
 
