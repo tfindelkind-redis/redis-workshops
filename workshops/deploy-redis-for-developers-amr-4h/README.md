@@ -2,7 +2,7 @@
 workshopId: deploy-redis-for-developers-amr-4h
 title: Deploy Redis for Developers - Azure Managed Redis 4h
 description: 4h
-duration: 060 minutes60 minutes40
+duration: 060 minutes60 minutes
 difficulty: intermediate
 modules:
   - order: 1
@@ -11,14 +11,11 @@ modules:
   - order: 2
     moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
-  - order: 3
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling
-    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Duration:** 060 minutes60 minutes40 | **Difficulty:** intermediate
+**Duration:** 060 minutes60 minutes | **Difficulty:** intermediate
 
 ## 📋 Overview
 
@@ -26,7 +23,7 @@ modules:
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 2h 40m | **Modules:** 3
+**Total Duration:** 2h 0m | **Modules:** 2
 
 Complete the modules in order for the best learning experience:
 
@@ -34,7 +31,6 @@ Complete the modules in order for the best learning experience:
 |---|--------|----------|------------|------|----------|
 | 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | beginner | hands-on | ✅ Yes |
 | 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
-| 3 | [Perfro](module-03-perfro/README.md) | 40m | intermediate | hands-on | ✅ Yes |
 
 ---
 
@@ -62,18 +58,6 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 
 ---
 
-### Module 3: Perfro
-
-📂 **[Go to Module](module-03-perfro/README.md)**
-
-**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Master performance optimization and data modeling patterns for Redis deployments.
-
-> ✅ **Required Module** - Essential for workshop completion
-
----
-
 
 
 ---
@@ -94,10 +78,4 @@ Establish foundational understanding of Redis as an in-memory data store, coveri
 **Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
 Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-
-### [Module 3: Perfro](module-03-perfro/README.md)
-
-**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Master performance optimization and data modeling patterns for Redis deployments.
 
