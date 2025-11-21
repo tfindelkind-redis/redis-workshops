@@ -1,26 +1,22 @@
+---
+title: Azure Managed Redis Architecture
+description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
+duration: 60 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-03-performance-efficiency--data-modeling/README.md) |
+| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) |  |
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 3**
+[🏠 Workshop Home](../README.md) > **Module 2 of 2**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `██████░░░░` 67%
-
----
-
-<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
-
-framework-overview/README.md) |
-
-[🏠 Workshop Home](../README.md) > **Module 2 of 11**
-
-### Deploy Redis for Developers - Azure Managed Redis
-
-**Progress:** `█░░░░░░░░░` 18%
+**Progress:** `██████████` 100%
 
 ---
 
@@ -553,8 +549,8 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-03-performance-efficiency--data-modeling/README.md) |
+| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
-*Module 2 of 3*
+*Module 2 of 2*
