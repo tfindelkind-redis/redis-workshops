@@ -2,13 +2,13 @@
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) |  |
+| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-03-performance-efficiency--data-modeling/README.md) |
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 2**
+[🏠 Workshop Home](../README.md) > **Module 2 of 3**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `██████████` 100%
+**Progress:** `██████░░░░` 67%
 
 ---
 
@@ -553,8 +553,8 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
+| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-03-performance-efficiency--data-modeling/README.md) |
 
 ---
 
-*Module 2 of 2*
+*Module 2 of 3*

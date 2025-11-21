@@ -2,13 +2,13 @@
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-03-azure-managed-redis-architecture/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) |  |
 
-[🏠 Workshop Home](../README.md) > **Module 2 of 3**
+[🏠 Workshop Home](../README.md) > **Module 3 of 3**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `██████░░░░` 67%
+**Progress:** `██████████` 100%
 
 ---
 
@@ -1407,8 +1407,8 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Redis Fundamentals](../module-01-redis-fundamentals/README.md) | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-03-azure-managed-redis-architecture/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
-*Module 2 of 3*
+*Module 3 of 3*
