@@ -1,127 +1,72 @@
 ---
 workshopId: deploy-redis-for-developers-amr
 title: Deploy Redis for Developers - Azure Managed Redis
-description: egg
-duration: 615
+description: Comprehensive workshop on deploying and managing Redis using Azure Managed Redis services
+duration: 480
 difficulty: intermediate
 modules:
   - order: 1
-    name: Redis Fundamentals
-    description: stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-    duration: 60
-    difficulty: beginner
-    type: lecture
-    moduleRef: custom/redis-fundamentals
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
     required: true
   - order: 2
-    name: Azure Managed Redis Architecture
-    description: Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-    duration: 60
-    difficulty: intermediate
-    type: lecture
-    moduleRef: custom/azure-managed-redis-architecture
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
   - order: 3
-    name: Well-Architected Framework Overview
-    description: Introduce the Azure Well-Architected Framework and understand how its 5 pillars apply to Redis workloads.
-    duration: 45
-    difficulty: intermediate
-    type: lecture
-    moduleRef: custom/well-architected-framework-overview
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-03-well-architected-framework-overview
     required: true
   - order: 4
-    name: Reliability & Security Deep Dive
-    description: Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.
-    duration: 60
-    difficulty: advanced
-    type: lecture
-    moduleRef: custom/reliability--security-deep-dive
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-04-reliability--security-deep-dive
     required: true
   - order: 5
-    name: Cost Optimization & Operational Excellence
-    description: Deep dive into Cost Optimization and Operational Excellence pillars for Redis deployments.
-    duration: 45
-    difficulty: advanced
-    type: lecture
-    moduleRef: custom/cost-optimization--operational-excellence
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-05-cost-optimization--operational-excellence
     required: true
   - order: 6
-    name: Performance Efficiency & Data Modeling
-    description: Master performance optimization and data modeling patterns for Redis deployments.
-    duration: 60
-    difficulty: advanced
-    type: lecture
-    moduleRef: custom/performance-efficiency--data-modeling
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency--data-modeling
     required: true
   - order: 7
-    name: Provision & Connect Lab
-    description: Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
-    duration: 60
-    difficulty: intermediate
-    type: hands-on
-    moduleRef: custom/provision--connect-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-07-provision--connect-lab
     required: true
   - order: 8
-    name: Implement Caching Lab
-    description: Build a real-world Flask API with PostgreSQL backend and implement Redis caching patterns.
-    duration: 60
-    difficulty: intermediate
-    type: hands-on
-    moduleRef: custom/implement-caching-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-08-implement-caching-lab
     required: true
   - order: 9
-    name: Monitoring & Alerts Lab
-    description: In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
-    duration: 45
-    difficulty: intermediate
-    type: hands-on
-    moduleRef: custom/monitoring--alerts-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-09-monitoring--alerts-lab
     required: true
   - order: 10
-    name: Troubleshooting & Migration
-    description: This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
-    duration: 60
-    difficulty: advanced
-    type: hands-on
-    moduleRef: custom/troubleshooting--migration
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-10-troubleshooting--migration
     required: true
   - order: 11
-    name: Advanced Features
-    description: This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
-    duration: 60
-    difficulty: advanced
-    type: hands-on
-    moduleRef: custom/advanced-features
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-11-advanced-features
     required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis
 
-**Duration:** 615 | **Difficulty:** intermediate
+**Duration:** 480 | **Difficulty:** intermediate
 
 ## 📋 Overview
 
-egg
+Comprehensive workshop on deploying and managing Redis using Azure Managed Redis services
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 10h 15m | **Modules:** 11
+**Total Duration:** 9h 45m | **Modules:** 11
 
 Complete the modules in order for the best learning experience:
 
 | # | Module | Duration | Difficulty | Type | Required |
 |---|--------|----------|------------|------|----------|
-| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | beginner | lecture | ✅ Yes |
-| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60m | intermediate | lecture | ✅ Yes |
-| 3 | [Well-Architected Framework Overview](module-03-well-architected-framework-overview/README.md) | 45m | intermediate | lecture | ✅ Yes |
-| 4 | [Reliability & Security Deep Dive](module-04-reliability-security-deep-dive/README.md) | 60m | advanced | lecture | ✅ Yes |
-| 5 | [Cost Optimization & Operational Excellence](module-05-cost-optimization-operational-excellence/README.md) | 45m | advanced | lecture | ✅ Yes |
-| 6 | [Performance Efficiency & Data Modeling](module-06-performance-efficiency-data-modeling/README.md) | 60m | advanced | lecture | ✅ Yes |
-| 7 | [Provision & Connect Lab](module-07-provision-connect-lab/README.md) | 60m | intermediate | hands-on | ✅ Yes |
-| 8 | [Implement Caching Lab](module-08-implement-caching-lab/README.md) | 60m | intermediate | hands-on | ✅ Yes |
-| 9 | [Monitoring & Alerts Lab](module-09-monitoring-alerts-lab/README.md) | 45m | intermediate | hands-on | ✅ Yes |
-| 10 | [Troubleshooting & Migration](module-10-troubleshooting-migration/README.md) | 60m | advanced | hands-on | ✅ Yes |
-| 11 | [Advanced Features](module-11-advanced-features/README.md) | 60m | advanced | hands-on | ✅ Yes |
+| 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | beginner | hands-on | ✅ Yes |
+| 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 3 | [Well-Architected Framework Overview](module-03-well-architected-framework-overview/README.md) | 45 minutesm | intermediate | hands-on | ✅ Yes |
+| 4 | [Reliability & Security Deep Dive](module-04-reliability-security-deep-dive/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 5 | [Cost Optimization & Operational Excellence](module-05-cost-optimization-operational-excellence/README.md) | 45 minutesm | intermediate | hands-on | ✅ Yes |
+| 6 | [Performance Efficiency & Data Modeling](module-06-performance-efficiency-data-modeling/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 7 | [Provision & Connect Lab](module-07-provision-connect-lab/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 8 | [Implement Caching Lab](module-08-implement-caching-lab/README.md) | 30 minutesm | intermediate | hands-on | ✅ Yes |
+| 9 | [Monitoring & Alerts Lab](module-09-monitoring-alerts-lab/README.md) | 45 minutesm | intermediate | hands-on | ✅ Yes |
+| 10 | [Troubleshooting & Migration](module-10-troubleshooting-migration/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
+| 11 | [Advanced Features](module-11-advanced-features/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
 
 ---
 
@@ -129,9 +74,9 @@ Complete the modules in order for the best learning experience:
 
 📂 **[Go to Module](module-01-redis-fundamentals/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** lecture
+**Duration:** 60 minutes minutes | **Difficulty:** beginner | **Type:** hands-on
 
-stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -141,7 +86,7 @@ stablish foundational understanding of Redis as an in-memory data store, coverin
 
 📂 **[Go to Module](module-02-azure-managed-redis-architecture/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
 Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
 
@@ -153,9 +98,9 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 
 📂 **[Go to Module](module-03-well-architected-framework-overview/README.md)**
 
-**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** lecture
+**Duration:** 45 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Introduce the Azure Well-Architected Framework and understand how its 5 pillars apply to Redis workloads.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -165,9 +110,9 @@ Introduce the Azure Well-Architected Framework and understand how its 5 pillars 
 
 📂 **[Go to Module](module-04-reliability-security-deep-dive/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** lecture
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -177,9 +122,9 @@ Deep dive into Reliability and Security pillars of Azure Well-Architected Framew
 
 📂 **[Go to Module](module-05-cost-optimization-operational-excellence/README.md)**
 
-**Duration:** 45 minutes | **Difficulty:** advanced | **Type:** lecture
+**Duration:** 45 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Deep dive into Cost Optimization and Operational Excellence pillars for Redis deployments.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -189,9 +134,9 @@ Deep dive into Cost Optimization and Operational Excellence pillars for Redis de
 
 📂 **[Go to Module](module-06-performance-efficiency-data-modeling/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** lecture
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Master performance optimization and data modeling patterns for Redis deployments.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -201,9 +146,9 @@ Master performance optimization and data modeling patterns for Redis deployments
 
 📂 **[Go to Module](module-07-provision-connect-lab/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -213,9 +158,9 @@ Deploy Azure Managed Redis and establish secure connectivity using Infrastructur
 
 📂 **[Go to Module](module-08-implement-caching-lab/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 30 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-Build a real-world Flask API with PostgreSQL backend and implement Redis caching patterns.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -225,9 +170,9 @@ Build a real-world Flask API with PostgreSQL backend and implement Redis caching
 
 📂 **[Go to Module](module-09-monitoring-alerts-lab/README.md)**
 
-**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** hands-on
+**Duration:** 45 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -237,9 +182,9 @@ In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Re
 
 📂 **[Go to Module](module-10-troubleshooting-migration/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -249,9 +194,9 @@ This advanced module covers troubleshooting techniques for Azure Cache for Redis
 
 📂 **[Go to Module](module-11-advanced-features/README.md)**
 
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
+**Duration:** 60 minutes minutes | **Difficulty:** intermediate | **Type:** hands-on
 
-This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.
+No description available.
 
 > ✅ **Required Module** - Essential for workshop completion
 
@@ -262,72 +207,3 @@ This advanced module explores Redis Stack capabilities beyond traditional cachin
 ---
 
 **Ready to start?** Click on Module 1 above to begin your learning journey!
-
-
-## 📚 Workshop Modules
-
-### [Module 1: Redis Fundamentals](module-01-redis-fundamentals/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** beginner | **Type:** lecture
-
-stablish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-
-### [Module 2: Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** lecture
-
-Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
-
-### [Module 3: Well-Architected Framework Overview](module-03-well-architected-framework-overview/README.md)
-
-**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** lecture
-
-Introduce the Azure Well-Architected Framework and understand how its 5 pillars apply to Redis workloads.
-
-### [Module 4: Reliability & Security Deep Dive](module-04-reliability--security-deep-dive/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** lecture
-
-Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.
-
-### [Module 5: Cost Optimization & Operational Excellence](module-05-cost-optimization--operational-excellence/README.md)
-
-**Duration:** 45 minutes | **Difficulty:** advanced | **Type:** lecture
-
-Deep dive into Cost Optimization and Operational Excellence pillars for Redis deployments.
-
-### [Module 6: Performance Efficiency & Data Modeling](module-06-performance-efficiency--data-modeling/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** lecture
-
-Master performance optimization and data modeling patterns for Redis deployments.
-
-### [Module 7: Provision & Connect Lab](module-07-provision--connect-lab/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
-
-### [Module 8: Implement Caching Lab](module-08-implement-caching-lab/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Build a real-world Flask API with PostgreSQL backend and implement Redis caching patterns.
-
-### [Module 9: Monitoring & Alerts Lab](module-09-monitoring--alerts-lab/README.md)
-
-**Duration:** 45 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-In this hands-on lab, you'll learn how to effectively monitor Azure Cache for Redis using Azure Monitor, Log Analytics, and Azure alerts. You'll set up comprehensive monitoring, create custom dashboards, write KQL queries, and configure intelligent alerting.
-
-### [Module 10: Troubleshooting & Migration](module-10-troubleshooting--migration/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
-
-This advanced module covers troubleshooting techniques for Azure Cache for Redis and provides comprehensive guidance on migrating Redis workloads to Azure. You'll learn diagnostic commands, performance analysis, common pitfalls, and hands-on migration using multiple tools.
-
-### [Module 11: Advanced Features](module-11-advanced-features/README.md)
-
-**Duration:** 60 minutes | **Difficulty:** advanced | **Type:** hands-on
-
-This advanced module explores Redis Stack capabilities beyond traditional caching, including JSON documents, full-text search, vector similarity search, time-series data, probabilistic data structures, and Redis Streams. You'll learn when and how to leverage these features for modern application architectures.

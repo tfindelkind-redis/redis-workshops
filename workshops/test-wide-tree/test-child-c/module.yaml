@@ -1,7 +1,3 @@
-id: test-child-c
-title: "test-child-c (Level 1)"
-description: "Test module at level 1 in hierarchy"
-duration: 15
 inheritance:
-  parentPath: "workshops/test-wide-tree/test-parent"
-  inheritedAt: "2025-11-17T08:04:37Z"
+  parentPath: workshops/test-wide-tree/test-parent
+  inheritedAt: '2025-11-17T08:04:37Z'

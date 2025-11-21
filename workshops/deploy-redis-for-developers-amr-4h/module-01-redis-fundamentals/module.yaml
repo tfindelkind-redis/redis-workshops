@@ -1,0 +1,9 @@
+id: module-01-redis-fundamentals
+title: Redis Fundamentals
+description: >-
+  Establish foundational understanding of Redis as an in-memory data store,
+  covering core data structures, common use cases, and essential tools.
+duration: 60 minutes
+inheritance:
+  parentPath: workshops/deploy-redis-for-developers-amr/module-01-redis-fundamentals
+  inheritedAt: '2025-11-21T14:17:04.208Z'

@@ -1,3 +1,11 @@
+---
+title: Reliability & Security Deep Dive
+description: 'Deep dive into Reliability and Security pillars of Azure Well-Architected Framework as applied to Redis deployments.'
+duration: 60 minutes
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
@@ -16,7 +24,7 @@
 
 # Module 4A: Reliability & Security Deep Dive
 **Duration:** 60 minutes  
-**Format:** WAF Deep Dive - Theory + Scenarios  
+**Format:** WAF Deep Dive - Theory + Scenarios -
 **Level:** Advanced
 
 ---

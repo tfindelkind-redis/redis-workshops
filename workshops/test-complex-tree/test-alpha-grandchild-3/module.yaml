@@ -1,7 +1,3 @@
-id: test-alpha-grandchild-3
-title: "test-alpha-grandchild-3 (Level 2)"
-description: "Test module at level 2 in hierarchy"
-duration: 15
 inheritance:
-  parentPath: "workshops/test-complex-tree/test-alpha-child-2"
-  inheritedAt: "2025-11-17T08:04:38Z"
+  parentPath: workshops/test-complex-tree/test-alpha-child-2
+  inheritedAt: '2025-11-17T08:04:38Z'

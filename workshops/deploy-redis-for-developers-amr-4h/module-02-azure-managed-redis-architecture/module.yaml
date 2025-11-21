@@ -1,0 +1,10 @@
+id: module-02-azure-managed-redis-architecture
+title: Azure Managed Redis Architecture
+description: >-
+  Understand Azure Managed Redis offerings, SKU selection, architecture
+  patterns, and security fundamentals.
+duration: 60 minutes
+inheritance:
+  parentPath: >-
+    workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
+  inheritedAt: '2025-11-21T14:22:41.595Z'
