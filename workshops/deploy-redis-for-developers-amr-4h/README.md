@@ -2,7 +2,7 @@
 workshopId: deploy-redis-for-developers-amr-4h
 title: Deploy Redis for Developers - Azure Managed Redis 4h
 description: 4h
-duration: 060 minutes60 minutes4040
+duration: 060 minutes60 minutes40
 difficulty: intermediate
 modules:
   - order: 1
@@ -14,14 +14,11 @@ modules:
   - order: 3
     moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling-custom
     required: true
-  - order: 4
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-04-provision--connect-lab-custom
-    required: true
 ---
 
 # Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Duration:** 060 minutes60 minutes4040 | **Difficulty:** intermediate
+**Duration:** 060 minutes60 minutes40 | **Difficulty:** intermediate
 
 ## 📋 Overview
 
@@ -29,7 +26,7 @@ modules:
 
 ## 📖 Workshop Modules
 
-**Total Duration:** 3h 20m | **Modules:** 4
+**Total Duration:** 2h 40m | **Modules:** 3
 
 Complete the modules in order for the best learning experience:
 
@@ -38,7 +35,6 @@ Complete the modules in order for the best learning experience:
 | 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60 minutesm | beginner | hands-on | ✅ Yes |
 | 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 60 minutesm | intermediate | hands-on | ✅ Yes |
 | 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency-data-modeling/README.md) | 40m | intermediate | hands-on | ✅ Yes |
-| 4 | [Provision & Connect Lab](module-04-provision-connect-lab/README.md) | 40m | intermediate | hands-on | ✅ Yes |
 
 ---
 
@@ -78,18 +74,6 @@ Master performance optimization and data modeling patterns for Redis deployments
 
 ---
 
-### Module 4: Provision & Connect Lab
-
-📂 **[Go to Module](module-04-provision-connect-lab/README.md)**
-
-**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
-
-> ✅ **Required Module** - Essential for workshop completion
-
----
-
 
 
 ---
@@ -116,10 +100,4 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 **Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
 
 Master performance optimization and data modeling patterns for Redis deployments.
-
-### [Module 4: Provision & Connect Lab](module-04-provision--connect-lab/README.md)
-
-**Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
-
-Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
 
