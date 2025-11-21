@@ -1,26 +1,22 @@
+---
+title: Redis Fundamentals
+description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
+duration: 60 minutes
+difficulty: beginner
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-|  | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-02-azure-managed-redis-architecture/README.md) |
+|  | [🏠 Workshop Home](../README.md) |  |
 
-[🏠 Workshop Home](../README.md) > **Module 1 of 3**
+[🏠 Workshop Home](../README.md) > **Module 1 of 1**
 
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
-**Progress:** `███░░░░░░░` 33%
-
----
-
-<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
-
-le-02-azure-managed-redis-architecture/README.md) |
-
-[🏠 Workshop Home](../README.md) > **Module 1 of 11**
-
-### Deploy Redis for Developers - Azure Managed Redis
-
-**Progress:** `░░░░░░░░░░` 9%
+**Progress:** `██████████` 100%
 
 ---
 
@@ -1046,8 +1042,8 @@ In the next module, we'll explore:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-|  | [🏠 Workshop Home](../README.md) | [Next: Azure Managed Redis Architecture ➡️](../module-02-azure-managed-redis-architecture/README.md) |
+|  | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
-*Module 1 of 3*
+*Module 1 of 1*
