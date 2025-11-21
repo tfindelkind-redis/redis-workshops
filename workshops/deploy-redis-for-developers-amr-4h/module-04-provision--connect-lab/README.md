@@ -910,14 +910,14 @@ az group delete \
 
 ## Next Module Preview
 
-**Module 6: Implement Caching Lab (60 minutes)**
+**Module 5: Implement Caching Lab (60 minutes)**
 
 Preview:
-- Build Flask API with PostgreSQL backend
+- Interactive Jupyter notebook with hands-on exercises
 - Implement cache-aside pattern
 - Add cache invalidation logic
 - Measure performance improvements
-- Load test with Locust
+- Best practices for production (condensed)
 
 ---
 

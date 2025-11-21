@@ -998,14 +998,14 @@ DEL cache:user:1000
 
 ## Next Module Preview
 
-**Module 2: Azure Managed Redis Architecture (60 minutes)**
+**Module 2: Azure Managed Redis Architecture (50 minutes)**
 
 In the next module, we'll explore:
 - Azure Managed Redis overview and benefits
-- SKU selection (Memory, Balanced, Compute, Flash)
-- Clustering and sharding strategies
-- High availability and geo-replication
-- Authentication and network security
+- SKU selection decision framework
+- Clustering and sharding strategies (condensed)
+- High availability and security fundamentals
+- Authentication options overview
 
 **Transition Question:** "Now that we understand Redis fundamentals, how do we deploy and manage Redis in production at enterprise scale? That's what we'll cover next with Azure Managed Redis."
 

@@ -527,13 +527,14 @@ az network private-dns link vnet create   --resource-group myRG   --zone-name pr
 
 ## Next Module Preview
 
-**Module 3: Well-Architected Framework Overview (45 minutes)**
+**Module 3: Performance Efficiency & Data Modeling (50 minutes)**
 
 Preview:
-- Introduction to Azure WAF
-- 5 pillars overview
-- Trade-offs and decision frameworks
-- WAF assessment process
+- Caching patterns (cache-aside, write-through, write-behind)
+- Data modeling best practices
+- Key naming conventions
+- Connection pooling
+- Performance anti-patterns
 
 ---
 

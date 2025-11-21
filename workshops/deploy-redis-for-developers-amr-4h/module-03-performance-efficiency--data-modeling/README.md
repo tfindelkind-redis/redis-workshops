@@ -1379,14 +1379,14 @@ def get_user(user_id):
 
 ## Next Module Preview
 
-**Module 5: Provision & Connect Lab (60 minutes)**
+**Module 4: Provision & Connect Lab (40 minutes)**
 
 Preview:
-- Hands-on: Deploy Redis with Bicep/Terraform
+- Hands-on: Deploy Redis with pre-built IaC templates
 - Configure VNET and Private Endpoint
 - Set up Entra ID authentication
-- Write Python connection script
-- Test connectivity and troubleshoot
+- Test connectivity with Python
+- Streamlined for efficient deployment
 
 ---
 
