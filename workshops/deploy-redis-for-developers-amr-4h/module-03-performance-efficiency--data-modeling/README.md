@@ -1,3 +1,11 @@
+---
+title: Performance Efficiency & Data Modeling
+description: Master performance optimization and data modeling patterns for Redis deployments.
+duration: 50
+difficulty: intermediate
+type: hands-on
+---
+
 <!-- ⚠️ AUTO-GENERATED NAVIGATION - DO NOT EDIT BELOW THIS LINE ⚠️ -->
 
 | Previous | Home | Next |
@@ -9,18 +17,6 @@
 ### Deploy Redis for Developers - Azure Managed Redis 4h
 
 **Progress:** `██████████` 100%
-
----
-
-<!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
-
-d) |
-
-[🏠 Workshop Home](../README.md) > **Module 6 of 11**
-
-### Deploy Redis for Developers - Azure Managed Redis
-
-**Progress:** `█████░░░░░` 55%
 
 ---
 
