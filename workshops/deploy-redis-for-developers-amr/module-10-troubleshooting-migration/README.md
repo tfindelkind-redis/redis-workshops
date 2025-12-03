@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring--alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
+| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring-alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 10 of 11**
 
@@ -65,7 +65,7 @@ By the end of this module, you will be able to:
 
 **Diagnostic Commands:**
 
-```bash
+```sh {"id":"01HZ9WEXNTJ1QGTKWAR9HPNLBC","name":"check-latency"}
 # Check Redis server latency
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls --latency
 
@@ -79,7 +79,7 @@ redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls 
 **Common Causes:**
 
 1. **Network Issues**
-```bash
+```sh {"id":"01HZ9WFYQVK2QHULXBS0JPOMCD","name":"network-diagnostics"}
 # Test network connectivity
 ping <your-cache>.redis.cache.windows.net
 
@@ -88,7 +88,7 @@ openssl s_client -connect <your-cache>.redis.cache.windows.net:6380 -tls1_2
 ```
 
 2. **High Server Load**
-```bash
+```sh {"id":"01HZ9WGZRXM3QJVMYCT1KQPNEF","name":"check-server-load"}
 # Check server statistics
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls INFO SERVER
 
@@ -97,7 +97,7 @@ redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls 
 ```
 
 3. **Memory Pressure**
-```bash
+```sh {"id":"01HZ9WHASYP4QKWNZDU2LRQOFG","name":"check-memory-pressure"}
 # Check memory stats
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls INFO MEMORY
 
@@ -107,7 +107,7 @@ redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls 
 
 **Solutions:**
 
-```bash
+```sh {"id":"01HZ9WJBTAQ5QLXOAEV3MSRPGH","name":"slowlog-monitoring"}
 # Identify slow commands
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls SLOWLOG GET 10
 
@@ -127,7 +127,7 @@ redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls 
 
 **Diagnostic Steps:**
 
-```bash
+```sh {"id":"01HZ9WKCUVR6QMYPBFW4NTSPJH","name":"connection-diagnostics"}
 # Check current connections
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls CLIENT LIST
 
@@ -184,7 +184,7 @@ var connection = ConnectionMultiplexer.Connect(config);
 
 **Diagnostic Commands:**
 
-```bash
+```sh {"id":"01HZ9WLDVXS7QNZQCGX5OUTQKJ","name":"memory-eviction-diagnostics"}
 # Check memory usage and eviction policy
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls INFO MEMORY
 
@@ -253,7 +253,7 @@ if __name__ == "__main__":
 
 **Solutions:**
 
-```bash
+```sh {"id":"01HZ9WMEVYT8QPAQDHW6PVURSL","name":"fix-eviction-policy"}
 # Change eviction policy
 az redis update \
   --name my-redis-cache \
@@ -272,7 +272,7 @@ az redis update \
 
 **Diagnostic Approach:**
 
-```bash
+```sh {"id":"01HZ9WNFWAZ9QRBSEHY7QWVTKM","name":"check-hitrate"}
 # Get hit/miss stats
 redis-cli -h <your-cache>.redis.cache.windows.net -p 6380 -a <access-key> --tls INFO STATS | grep keyspace
 
@@ -339,7 +339,7 @@ def set_with_appropriate_ttl(r, key, value, access_frequency):
 
 **For Premium Tier with Geo-Replication:**
 
-```bash
+```sh {"id":"01HZ9WPGXCB0QSCTEKY8RXWUNP","name":"check-georeplication"}
 # Check replication status
 az redis show \
   --name my-redis-cache \
@@ -382,7 +382,7 @@ def check_replication_lag(primary_host, replica_host, password, port=6380):
 
 #### INFO Commands
 
-```bash
+```sh {"id":"01HZ9WQHYDC1QTDUFLZ9SYWVQR","name":"info-commands"}
 # Server information
 redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY INFO SERVER
 
@@ -410,7 +410,7 @@ redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY INFO KEYSPACE
 
 #### CLIENT Commands
 
-```bash
+```sh {"id":"01HZ9WRJZEF2QUEVGMA0TZXWRS","name":"client-commands"}
 # List all connected clients
 redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY CLIENT LIST
 
@@ -429,7 +429,7 @@ redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY CLIENT PAUSE 5000
 
 #### MEMORY Commands
 
-```bash
+```sh {"id":"01HZ9WSKAGG3QVFWHNA1UYYWST","name":"memory-commands"}
 # Get memory usage of a key
 redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY MEMORY USAGE mykey
 
@@ -445,7 +445,7 @@ redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY MEMORY USAGE mykey SAMPLES 
 
 #### Performance Analysis
 
-```bash
+```sh {"id":"01HZ9WTLBHH4QWGXHOB2VZZYTU","name":"performance-analysis"}
 # Latency monitoring
 redis-cli --tls -h $REDIS_HOST -p 6380 -a $REDIS_KEY LATENCY DOCTOR
 
@@ -1145,7 +1145,7 @@ Continue to **Module 9: Advanced Features** to explore Redis Stack capabilities 
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring--alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
+| [⬅️ Previous: Monitoring & Alerts Lab](../module-09-monitoring-alerts-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Advanced Features ➡️](../module-11-advanced-features/README.md) |
 
 ---
 

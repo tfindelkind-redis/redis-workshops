@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency-data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 4 of 5**
 
@@ -935,7 +935,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-03-performance-efficiency-data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-05-implement-caching-lab/README.md) |
 
 ---
 

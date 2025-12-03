@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Provision & Connect Lab](../module-07-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring--alerts-lab/README.md) |
+| [⬅️ Previous: Provision & Connect Lab](../module-07-provision-connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring-alerts-lab/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 8 of 11**
 
@@ -124,7 +124,7 @@ This ensures **every new Codespace** has automatic styling configured!
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Provision & Connect Lab](../module-07-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring--alerts-lab/README.md) |
+| [⬅️ Previous: Provision & Connect Lab](../module-07-provision-connect-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Monitoring & Alerts Lab ➡️](../module-09-monitoring-alerts-lab/README.md) |
 
 ---
 

@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Reliability & Security Deep Dive](../module-04-reliability--security-deep-dive/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-06-performance-efficiency--data-modeling/README.md) |
+| [⬅️ Previous: Reliability & Security Deep Dive](../module-04-reliability-security-deep-dive/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-06-performance-efficiency-data-modeling/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 5 of 11**
 
@@ -849,7 +849,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Reliability & Security Deep Dive](../module-04-reliability--security-deep-dive/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-06-performance-efficiency--data-modeling/README.md) |
+| [⬅️ Previous: Reliability & Security Deep Dive](../module-04-reliability-security-deep-dive/README.md) | [🏠 Workshop Home](../README.md) | [Next: Performance Efficiency & Data Modeling ➡️](../module-06-performance-efficiency-data-modeling/README.md) |
 
 ---
 

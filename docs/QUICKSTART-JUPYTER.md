@@ -125,12 +125,12 @@ Y               - Convert to Code
    - What you'll learn: Cache-aside pattern, performance measurement
 
 2. **Next:** Module 7 - Monitoring & Alerts
-   - File: `module-09-monitoring--alerts-lab/monitoring-lab.ipynb` *(coming soon)*
+   - File: `module-09-monitoring-alerts-lab/monitoring-lab.ipynb` *(coming soon)*
    - Duration: 45 minutes
    - Difficulty: ⭐⭐ Intermediate
 
 3. **Then:** Module 8 - Troubleshooting & Migration
-   - File: `module-10-troubleshooting--migration/troubleshooting-lab.ipynb` *(coming soon)*
+   - File: `module-10-troubleshooting-migration/troubleshooting-lab.ipynb` *(coming soon)*
    - Duration: 60 minutes
    - Difficulty: ⭐⭐⭐ Advanced
 

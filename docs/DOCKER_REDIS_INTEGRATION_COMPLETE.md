@@ -7,7 +7,7 @@ Successfully updated **5 additional workshop notebooks** to use Docker Redis con
 ## Modules Updated
 
 ### ✅ Module 4: Reliability & Security Deep Dive
-- **File**: `module-04-reliability--security-deep-dive/reliability-security-lab.ipynb`
+- **File**: `module-04-reliability-security-deep-dive/reliability-security-lab.ipynb`
 - **Lines**: 511 total (added 25+ lines)
 - **Changes**:
   - Added Docker Redis startup section after title
@@ -16,7 +16,7 @@ Successfully updated **5 additional workshop notebooks** to use Docker Redis con
   - Special handling for RedisConnectionManager cleanup
 
 ### ✅ Module 5: Cost Optimization & Operational Excellence
-- **File**: `module-05-cost-optimization--operational-excellence/cost-optimization-lab.ipynb`
+- **File**: `module-05-cost-optimization-operational-excellence/cost-optimization-lab.ipynb`
 - **Lines**: 445 total (added 20+ lines)
 - **Changes**:
   - Added Docker Redis startup section after title
@@ -24,7 +24,7 @@ Successfully updated **5 additional workshop notebooks** to use Docker Redis con
   - Updated cleanup cell to stop and remove container
 
 ### ✅ Module 6: Performance Efficiency & Data Modeling
-- **File**: `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
+- **File**: `module-06-performance-efficiency-data-modeling/performance-data-modeling-lab.ipynb`
 - **Lines**: 533 total (added 25+ lines)
 - **Changes**:
   - Added Docker Redis startup section after title
@@ -33,7 +33,7 @@ Successfully updated **5 additional workshop notebooks** to use Docker Redis con
   - Preserves key deletion count in output
 
 ### ✅ Module 10: Troubleshooting & Migration
-- **File**: `module-10-troubleshooting--migration/troubleshooting-migration-lab.ipynb`
+- **File**: `module-10-troubleshooting-migration/troubleshooting-migration-lab.ipynb`
 - **Lines**: 761 total (added 20+ lines)
 - **Changes**:
   - Added Docker Redis startup section after title
@@ -61,7 +61,7 @@ Successfully updated **5 additional workshop notebooks** to use Docker Redis con
 - **Content**: Azure resource management, pricing tiers, SKU analysis
 
 ### ℹ️ Module 7: Provision & Connect Lab
-- **File**: `module-07-provision--connect-lab/provision-connect-lab.ipynb`
+- **File**: `module-07-provision-connect-lab/provision-connect-lab.ipynb`
 - **Reason**: Connects to Azure Managed Redis (not local)
 - **Content**: Azure deployment, Bicep templates, cloud connections
 
@@ -158,7 +158,7 @@ Each module uses a unique container name to avoid conflicts:
 source .activate-local
 
 # Navigate to module
-cd workshops/deploy-redis-for-developers-amr/module-05-cost-optimization--operational-excellence
+cd workshops/deploy-redis-for-developers-amr/module-05-cost-optimization-operational-excellence
 
 # Test with Docker
 test-notebooks -d
@@ -175,7 +175,7 @@ cd ~/Code/redis-workshops
 test-notebooks -a -d
 
 # Or use specific module
-cd workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency--data-modeling
+cd workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency-data-modeling
 test-notebooks -m -d
 ```
 
@@ -197,11 +197,11 @@ test-notebooks -m -d
 🎯 Testing 7 notebooks...
 
 ✅ module-02-azure-managed-redis-architecture/azure-architecture-lab.ipynb (45s)
-✅ module-04-reliability--security-deep-dive/reliability-security-lab.ipynb (52s)
-✅ module-05-cost-optimization--operational-excellence/cost-optimization-lab.ipynb (38s)
-✅ module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb (67s)
+✅ module-04-reliability-security-deep-dive/reliability-security-lab.ipynb (52s)
+✅ module-05-cost-optimization-operational-excellence/cost-optimization-lab.ipynb (38s)
+✅ module-06-performance-efficiency-data-modeling/performance-data-modeling-lab.ipynb (67s)
 ✅ module-08-implement-caching-lab/implement-caching-lab.ipynb (89s)
-✅ module-10-troubleshooting--migration/troubleshooting-migration-lab.ipynb (71s)
+✅ module-10-troubleshooting-migration/troubleshooting-migration-lab.ipynb (71s)
 ✅ module-11-advanced-features/advanced-features-lab.ipynb (55s)
 
 📊 Results:
@@ -221,13 +221,13 @@ test-notebooks -m -d
 
 ```
 workshops/deploy-redis-for-developers-amr/
-├── module-04-reliability--security-deep-dive/
+├── module-04-reliability-security-deep-dive/
 │   └── reliability-security-lab.ipynb          (511 lines, +25 lines)
-├── module-05-cost-optimization--operational-excellence/
+├── module-05-cost-optimization-operational-excellence/
 │   └── cost-optimization-lab.ipynb             (445 lines, +20 lines)
-├── module-06-performance-efficiency--data-modeling/
+├── module-06-performance-efficiency-data-modeling/
 │   └── performance-data-modeling-lab.ipynb     (533 lines, +25 lines)
-├── module-10-troubleshooting--migration/
+├── module-10-troubleshooting-migration/
 │   └── troubleshooting-migration-lab.ipynb     (761 lines, +20 lines)
 └── module-11-advanced-features/
     └── advanced-features-lab.ipynb             (468 lines, +20 lines)

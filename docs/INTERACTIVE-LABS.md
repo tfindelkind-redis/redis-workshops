@@ -107,7 +107,7 @@ Each interactive lab includes:
 ---
 
 ### Module 2: Azure Managed Redis Architecture
-**File:** `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
+**File:** `module-06-performance-efficiency-data-modeling/performance-data-modeling-lab.ipynb`
 
 **What You'll Learn:**
 - Master Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets)
@@ -153,7 +153,7 @@ Each interactive lab includes:
 ---
 
 ### Module 4: Reliability & Security Deep Dive
-**File:** `module-04-reliability--security-deep-dive/reliability-security-lab.ipynb`
+**File:** `module-04-reliability-security-deep-dive/reliability-security-lab.ipynb`
 
 **What You'll Build:**
 - Production-ready connection manager with pooling
@@ -175,7 +175,7 @@ Each interactive lab includes:
 ---
 
 ### Module 5: Cost Optimization & Operational Excellence
-**File:** `module-05-cost-optimization--operational-excellence/cost-optimization-lab.ipynb`
+**File:** `module-05-cost-optimization-operational-excellence/cost-optimization-lab.ipynb`
 
 **What You'll Optimize:**
 - Memory usage analysis and reduction
@@ -197,7 +197,7 @@ Each interactive lab includes:
 ---
 
 ### Module 6: Performance Efficiency & Data Modeling
-**File:** `module-06-performance-efficiency--data-modeling/performance-data-modeling-lab.ipynb`
+**File:** `module-06-performance-efficiency-data-modeling/performance-data-modeling-lab.ipynb`
 
 **What You'll Master:**
 - Master Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets)
@@ -218,7 +218,7 @@ Each interactive lab includes:
 ---
 
 ### Module 7: Provision & Connect Lab
-**File:** `module-07-provision--connect-lab/provision-connect-lab.ipynb`
+**File:** `module-07-provision-connect-lab/provision-connect-lab.ipynb`
 
 **What You'll Do:**
 - Deploy Azure Managed Redis programmatically with Python SDK
@@ -281,7 +281,7 @@ Each interactive lab includes:
 ---
 
 ### Module 10: Troubleshooting & Migration
-**File:** `module-10-troubleshooting--migration/troubleshooting-migration-lab.ipynb`
+**File:** `module-10-troubleshooting-migration/troubleshooting-migration-lab.ipynb`
 
 **What You'll Master:**
 - Comprehensive Redis diagnostics (INFO, SLOWLOG, CLIENT LIST)
@@ -303,7 +303,7 @@ Each interactive lab includes:
 ---
 
 ### Module 9: Monitoring & Alerts Lab
-**File:** `module-09-monitoring--alerts-lab/monitoring-alerts-lab.ipynb` *(Not included - Azure Portal/KQL based)*
+**File:** `module-09-monitoring-alerts-lab/monitoring-alerts-lab.ipynb` *(Not included - Azure Portal/KQL based)*
 
 **Note:** This module focuses on Azure Portal, Log Analytics KQL queries, and Azure Monitor alerts rather than programmatic Python code. The interactive notebook format is less suitable for this content.
 

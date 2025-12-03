@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting--migration/README.md) |
+| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting-migration/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 9 of 11**
 
@@ -56,7 +56,7 @@ By the end of this module, you will be able to:
 
 First, configure your Redis instance to send logs and metrics to Log Analytics.
 
-```bash
+```sh {"id":"01HZ9W3QNHP5RYVT8WFXJA2BKP","name":"enable-diagnostics"}
 # Create a Log Analytics workspace
 az monitor log-analytics workspace create \
   --resource-group rg-redis-workshop \
@@ -86,7 +86,7 @@ az monitor diagnostic-settings create \
 
 ### 2. Verify Diagnostic Settings
 
-```bash
+```sh {"id":"01HZ9W4BVKX3QYFHTP9NMAJE7T","name":"verify-diagnostics"}
 # Check diagnostic settings
 az monitor diagnostic-settings show \
   --name redis-diagnostics \
@@ -139,7 +139,7 @@ Time range: Last 24 hours
 
 ### Create a Metrics Chart
 
-```bash
+```sh {"id":"01HZ9W5MYTJ4QAZMN8DGKPTXRW","name":"metrics-chart-info","interactive":false}
 # Example: Create a chart showing server load and cache hits
 # This would be done in the Azure Portal UI
 ```
@@ -274,7 +274,7 @@ AzureMetrics
 
 ### Create Dashboard via Azure CLI
 
-```bash
+```sh {"id":"01HZ9W6AKVF7QXSTPN5BMWRHYT","name":"create-dashboard"}
 # Create a dashboard JSON configuration
 cat > redis-dashboard.json << 'EOF'
 {
@@ -324,7 +324,7 @@ EOF
 
 #### High Server Load Alert
 
-```bash
+```sh {"id":"01HZ9W7MNXC8QZFJ2WRKT4VBPE","name":"alert-high-server-load"}
 # Create action group for notifications
 az monitor action-group create \
   --name ag-redis-alerts \
@@ -346,7 +346,7 @@ az monitor metrics alert create \
 
 #### High Memory Usage Alert
 
-```bash
+```sh {"id":"01HZ9W8QRHJ5QZTKVPN4BWMDXS","name":"alert-high-memory"}
 az monitor metrics alert create \
   --name alert-high-memory \
   --resource-group rg-redis-workshop \
@@ -360,7 +360,7 @@ az monitor metrics alert create \
 
 #### Low Cache Hit Rate Alert
 
-```bash
+```sh {"id":"01HZ9W9VTBK6QANFWXM5CYJEST","name":"alert-low-hitrate"}
 az monitor metrics alert create \
   --name alert-low-cache-hitrate \
   --resource-group rg-redis-workshop \
@@ -374,7 +374,7 @@ az monitor metrics alert create \
 
 #### Connection Limit Alert
 
-```bash
+```sh {"id":"01HZ9WACXKM7QBPGTYN6DZJFUV","name":"alert-high-connections"}
 az monitor metrics alert create \
   --name alert-high-connections \
   --resource-group rg-redis-workshop \
@@ -390,7 +390,7 @@ az monitor metrics alert create \
 
 #### Repeated Connection Failures Alert
 
-```bash
+```sh {"id":"01HZ9WBNWRP8QCSJVZQ7EAKGXW","name":"alert-connection-failures"}
 # Create a log alert for connection errors
 az monitor scheduled-query create \
   --name alert-connection-failures \
@@ -410,7 +410,7 @@ az monitor scheduled-query create \
 
 Create alerts that combine multiple metrics:
 
-```bash
+```sh {"id":"01HZ9WCSAYQ9QDFKWAP8FBLHZY","name":"alert-combined-pressure"}
 # Alert when both server load AND memory are high
 az monitor metrics alert create \
   --name alert-combined-pressure \
@@ -428,7 +428,7 @@ az monitor metrics alert create \
 
 Use machine learning to detect anomalies:
 
-```bash
+```sh {"id":"01HZ9WDVMCT0QEHBXR9GFMNKAZ","name":"alert-anomaly-detection"}
 az monitor metrics alert create \
   --name alert-anomaly-ops \
   --resource-group rg-redis-workshop \
@@ -612,7 +612,7 @@ Continue to **Module 8: Troubleshooting & Migration** to learn advanced diagnost
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting--migration/README.md) |
+| [⬅️ Previous: Implement Caching Lab](../module-08-implement-caching-lab/README.md) | [🏠 Workshop Home](../README.md) | [Next: Troubleshooting & Migration ➡️](../module-10-troubleshooting-migration/README.md) |
 
 ---
 

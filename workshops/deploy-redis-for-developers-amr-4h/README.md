@@ -12,10 +12,10 @@ modules:
     moduleRef: workshops/deploy-redis-for-developers-amr/module-02-azure-managed-redis-architecture
     required: true
   - order: 3
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency--data-modeling
+    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-03-performance-efficiency-data-modeling
     required: true
   - order: 4
-    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-04-provision--connect-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-04-provision-connect-lab
     required: true
   - order: 5
     moduleRef: workshops/deploy-redis-for-developers-amr-4h/module-05-implement-caching-lab
@@ -48,8 +48,8 @@ Complete the modules in order for the best learning experience. Total includes 2
 |---|--------|----------|------------|------|----------|
 | 1 | [Redis Fundamentals](module-01-redis-fundamentals/README.md) | 60m | beginner | theory + demo | ✅ Yes |
 | 2 | [Azure Managed Redis Architecture](module-02-azure-managed-redis-architecture/README.md) | 50m | intermediate | theory + architecture | ✅ Yes |
-| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md) | 50m | intermediate | theory + patterns | ✅ Yes |
-| 4 | [Provision & Connect Lab](module-04-provision--connect-lab/README.md) | 40m | intermediate | hands-on lab | ✅ Yes |
+| 3 | [Performance Efficiency & Data Modeling](module-03-performance-efficiency-data-modeling/README.md) | 50m | intermediate | theory + patterns | ✅ Yes |
+| 4 | [Provision & Connect Lab](module-04-provision-connect-lab/README.md) | 40m | intermediate | hands-on lab | ✅ Yes |
 | 5 | [Implement Caching Lab](module-05-implement-caching-lab/README.md) | 60m | intermediate | hands-on lab | ✅ Yes |
 
 **☕ Break Schedule:** 10-minute breaks recommended after Module 1 and Module 3.
@@ -82,7 +82,7 @@ Understand Azure Managed Redis offerings, SKU selection, architecture patterns, 
 
 ### Module 3: Performance Efficiency & Data Modeling
 
-📂 **[Go to Module](module-03-performance-efficiency--data-modeling/README.md)**
+📂 **[Go to Module](module-03-performance-efficiency-data-modeling/README.md)**
 
 **Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** theory + patterns
 
@@ -94,7 +94,7 @@ Learn performance optimization and data modeling patterns for Redis, with focus 
 
 ### Module 4: Provision & Connect Lab
 
-📂 **[Go to Module](module-04-provision--connect-lab/README.md)**
+📂 **[Go to Module](module-04-provision-connect-lab/README.md)**
 
 **Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on lab
 
@@ -137,13 +137,13 @@ Establish foundational understanding of Redis as an in-memory data store, coveri
 
 Understand Azure Managed Redis offerings, SKU selection, architecture patterns, and security fundamentals.
 
-### [Module 3: Performance Efficiency & Data Modeling](module-03-performance-efficiency--data-modeling/README.md)
+### [Module 3: Performance Efficiency & Data Modeling](module-03-performance-efficiency-data-modeling/README.md)
 
 **Duration:** 50 minutes | **Difficulty:** intermediate | **Type:** hands-on
 
 Master performance optimization and data modeling patterns for Redis deployments.
 
-### [Module 4: Provision & Connect Lab](module-04-provision--connect-lab/README.md)
+### [Module 4: Provision & Connect Lab](module-04-provision-connect-lab/README.md)
 
 **Duration:** 40 minutes | **Difficulty:** intermediate | **Type:** hands-on
 

@@ -15,25 +15,25 @@ modules:
     moduleRef: workshops/deploy-redis-for-developers-amr/module-03-well-architected-framework-overview
     required: true
   - order: 4
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-04-reliability--security-deep-dive
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-04-reliability-security-deep-dive
     required: true
   - order: 5
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-05-cost-optimization--operational-excellence
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-05-cost-optimization-operational-excellence
     required: true
   - order: 6
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency--data-modeling
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-06-performance-efficiency-data-modeling
     required: true
   - order: 7
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-07-provision--connect-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-07-provision-connect-lab
     required: true
   - order: 8
     moduleRef: workshops/deploy-redis-for-developers-amr/module-08-implement-caching-lab
     required: true
   - order: 9
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-09-monitoring--alerts-lab
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-09-monitoring-alerts-lab
     required: true
   - order: 10
-    moduleRef: workshops/deploy-redis-for-developers-amr/module-10-troubleshooting--migration
+    moduleRef: workshops/deploy-redis-for-developers-amr/module-10-troubleshooting-migration
     required: true
   - order: 11
     moduleRef: workshops/deploy-redis-for-developers-amr/module-11-advanced-features
@@ -47,6 +47,22 @@ modules:
 ## 📋 Overview
 
 Comprehensive workshop on deploying and managing Redis using Azure Managed Redis services
+
+## 🚀 Workshop Format
+
+This workshop uses **two interactive notebook formats**:
+
+### 📓 Jupyter Notebooks (Python)
+For hands-on coding with Redis and Azure Python SDKs
+- **Modules:** 01, 05, 06, 07, 08, 11
+- **Best for:** Python code, data structures, caching patterns
+
+### ▶️ Runme Notebooks (Shell/CLI)
+For executable Azure CLI and redis-cli commands
+- **Modules:** 02, 09, 10
+- **Best for:** Azure setup, monitoring, diagnostics
+
+> 💡 **New to Runme?** Check out the [Runme Guide](../../docs/RUNME_GUIDE.md) to learn how to execute shell commands directly from documentation!
 
 ## 📖 Workshop Modules
 

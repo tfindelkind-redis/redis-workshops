@@ -351,7 +351,7 @@ cd workshops/deploy-redis-for-developers-amr/module-08-implement-caching-lab
 test-notebooks -d
 
 # Module 7 (Azure provisioning)
-cd workshops/deploy-redis-for-developers-amr/module-07-provision--connect-lab
+cd workshops/deploy-redis-for-developers-amr/module-07-provision-connect-lab
 jupyter notebook provision-connect-lab.ipynb
 ```
 

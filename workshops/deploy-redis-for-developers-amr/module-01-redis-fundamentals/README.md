@@ -1,8 +1,8 @@
 ---
-title: Redis Fundamentals
 description: Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
-duration: 60 minutes
 difficulty: beginner
+duration: 60 minutes
+title: Redis Fundamentals
 type: hands-on
 ---
 
@@ -23,6 +23,7 @@ type: hands-on
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
 # Module 1: Redis Fundamentals
+
 **Duration:** 60 minutes  
 **Format:** Theory + Demo
 **Level:** Foundation
@@ -34,12 +35,14 @@ type: hands-on
 **Objective:** Establish foundational understanding of Redis as an in-memory data store, covering core data structures, common use cases, and essential tools.
 
 **Learning Outcomes:**
+
 - Understand what Redis is and why it's valuable
 - Work with 5 core Redis data structures
 - Identify appropriate use cases for Redis
 - Use redis-cli and RedisInsight for operations
 
 **Prerequisites:**
+
 - Basic understanding of databases
 - Familiarity with key-value concepts
 - Command line experience
@@ -65,21 +68,34 @@ type: hands-on
 **Key Points to Cover:**
 
 - **Redis = REmote DIctionary Server**
-  - Open-source, in-memory data structure store
-  - Created by Salvatore Sanfilippo in 2009
-  - Written in C, highly optimized
+
+   - Open-source, in-memory data structure store
+   - Created by Salvatore Sanfilippo in 2009
+   - Written in C, highly optimized
 
 - **Core Characteristics:**
-  - In-memory: All data stored in RAM for microsecond latency
-  - Data structures: Not just key-value, but rich data types
-  - Persistence: Optional disk writes (RDB, AOF)
-  - Single-threaded: Atomic operations, simple concurrency model
-  - Fast: 100k+ ops/second on commodity hardware
+
+   - In-memory: All data stored in RAM for microsecond latency
+   - Data structures: Not just key-value, but rich data types
+   - Persistence: Optional disk writes (RDB, AOF)
+   - Single-threaded: Atomic operations, simple concurrency model
+   - Fast: 100k+ ops/second on commodity hardware
 
 **Demo Command:**
+
 ```bash
-# Show Redis version and info
-redis-cli INFO server | grep redis_version
+# Deploy Redis container
+docker run --name redis-local -d -p 6379:6379 redis:latest
+
+# Wait for Redis to start
+sleep 3
+
+# Connect to Redis and run commands
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+PING
+SET greeting "Hello from Redis Workshop!"
+GET greeting
+REDIS_EOF
 ```
 
 ---
@@ -89,27 +105,32 @@ redis-cli INFO server | grep redis_version
 **Key Benefits:**
 
 1. **Speed**
+
    - Microsecond latency (sub-millisecond)
    - In-memory operations
    - Optimized C implementation
 
 2. **Versatility**
+
    - Multiple data structures
    - Pub/Sub messaging
    - Lua scripting
    - Streams for event processing
 
 3. **Simplicity**
+
    - Simple command interface
    - Easy to learn and use
    - Clear documentation
 
 4. **Scalability**
+
    - Clustering support
    - Replication for HA
    - Partitioning strategies
 
 **Use Case Categories:**
+
 - Caching (most common: 60-70% of Redis usage)
 - Session storage
 - Real-time analytics
@@ -119,27 +140,12 @@ redis-cli INFO server | grep redis_version
 
 ---
 
-### 1.3 Redis vs Other Technologies (3 minutes)
-
-**Comparison Table:**
-
-| Feature | Redis | Memcached | DynamoDB | MongoDB |
-|---------|-------|-----------|----------|---------|
-| Data Structures | ✅ Rich | ❌ Simple | ❌ Limited | ✅ Rich |
-| Performance | ✅ <1ms | ✅ <1ms | ⚠️ Single-digit ms | ⚠️ Varies |
-| Persistence | ✅ Optional | ❌ No | ✅ Yes | ✅ Yes |
-| Complex Queries | ⚠️ Limited | ❌ No | ⚠️ Limited | ✅ Yes |
-| Best For | Cache, Real-time | Simple cache | Serverless DB | Document store |
-
-**Key Differentiator:** Redis offers the speed of in-memory systems with the richness of data structures and optional persistence.
-
----
-
 ## Section 2: Core Data Structures (25 minutes)
 
 ### 2.1 Strings (5 minutes)
 
-**Description:** 
+**Description:**
+
 - Most basic Redis type
 - Binary-safe (can store any data)
 - Max size: 512 MB per value
@@ -148,52 +154,56 @@ redis-cli INFO server | grep redis_version
 **Common Commands:**
 
 ```bash
-# SET and GET
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== SET and GET ==="
 SET user:1000:name "John Doe"
 GET user:1000:name
 
-# SET with expiration (TTL in seconds)
+GET "=== SET with expiration (TTL in seconds) ==="
 SETEX session:abc123 3600 "user_data"
 
-# SET only if not exists
+GET "=== SET only if not exists ==="
 SETNX lock:resource1 "locked"
 
-# Increment (atomic counter)
+GET "=== Increment (atomic counter) ==="
 INCR page:views
 INCRBY page:views 10
 
-# Decrement
+GET "=== Decrement ==="
 DECR inventory:item:42
 
-# Multiple operations
+GET "=== Multiple operations ==="
 MSET user:1:name "Alice" user:2:name "Bob"
 MGET user:1:name user:2:name
 
-# Append
+GET "=== Append ==="
 APPEND log:app "New log entry\n"
 
-# Get string length
+GET "=== Get string length ==="
 STRLEN user:1000:name
+REDIS_EOF
 ```
 
 **Demo Scenario: Page View Counter**
+
 ```bash
-# Initialize counter
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Initialize counter ==="
 SET page:/home:views 0
 
-# Each page view
+GET "=== Each page view ==="
 INCR page:/home:views
 
-# Check current count
+GET "=== Check current count ==="
 GET page:/home:views
-# Output: "1"
 
-# Add 100 views
+GET "=== Add 100 views ==="
 INCRBY page:/home:views 100
-# Output: 101
+REDIS_EOF
 ```
 
 **Use Cases:**
+
 - Session tokens
 - API rate limit counters
 - Feature flags
@@ -205,6 +215,7 @@ INCRBY page:/home:views 100
 ### 2.2 Lists (5 minutes)
 
 **Description:**
+
 - Ordered collection of strings
 - Implemented as linked lists
 - Fast head/tail operations O(1)
@@ -214,55 +225,59 @@ INCRBY page:/home:views 100
 **Common Commands:**
 
 ```bash
-# Push to head (left)
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Push to head (left) ==="
 LPUSH queue:jobs "job1"
 LPUSH queue:jobs "job2"
 
-# Push to tail (right)
+GET "=== Push to tail (right) ==="
 RPUSH queue:jobs "job3"
 
-# Pop from head
+GET "=== Pop from head ==="
 LPOP queue:jobs
-# Output: "job2"
 
-# Pop from tail
+GET "=== Pop from tail ==="
 RPOP queue:jobs
-# Output: "job3"
 
-# Blocking pop (wait up to 5 seconds)
+GET "=== Blocking pop (wait up to 5 seconds) ==="
 BLPOP queue:jobs 5
 
-# Get range (0 = first, -1 = last)
+GET "=== Get range (0 = first, -1 = last) ==="
 LRANGE queue:jobs 0 -1
 
-# Get list length
+GET "=== Get list length ==="
 LLEN queue:jobs
 
-# Get element at index
+GET "=== Get element at index ==="
 LINDEX queue:jobs 0
 
-# Insert before/after
+GET "=== Insert before/after ==="
 LINSERT queue:jobs BEFORE "job1" "job0"
 
-# Trim list
-LTRIM queue:jobs 0 99  # Keep first 100 items
+GET "=== Trim list ==="
+LTRIM queue:jobs 0 99
+REDIS_EOF
 ```
 
 **Demo Scenario: Activity Feed**
+
 ```bash
-# Add new activities
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Add new activities ==="
 LPUSH user:123:feed "Posted a photo"
 LPUSH user:123:feed "Liked a post"
 LPUSH user:123:feed "Followed user:456"
 
-# Get recent 10 activities
+GET "=== Get recent 10 activities ==="
 LRANGE user:123:feed 0 9
 
-# Keep only recent 100 activities
+GET "=== Keep only recent 100 activities ==="
 LTRIM user:123:feed 0 99
+REDIS_EOF
 ```
 
 **Use Cases:**
+
 - Message queues
 - Activity feeds
 - Recent items list
@@ -274,6 +289,7 @@ LTRIM user:123:feed 0 99
 ### 2.3 Sets (5 minutes)
 
 **Description:**
+
 - Unordered collection of unique strings
 - Fast membership testing O(1)
 - Set operations: union, intersection, difference
@@ -282,69 +298,68 @@ LTRIM user:123:feed 0 99
 **Common Commands:**
 
 ```bash
-# Add members
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Add members ==="
 SADD tags:post:1 "redis" "database" "nosql"
 
-# Check membership
+GET "=== Check membership ==="
 SISMEMBER tags:post:1 "redis"
-# Output: 1 (true)
 
-# Remove member
+GET "=== Remove member ==="
 SREM tags:post:1 "nosql"
 
-# Get all members
+GET "=== Get all members ==="
 SMEMBERS tags:post:1
 
-# Get random member
+GET "=== Get random member ==="
 SRANDMEMBER tags:post:1
 
-# Pop random member
+GET "=== Pop random member ==="
 SPOP tags:post:1
 
-# Get set size
+GET "=== Get set size ==="
 SCARD tags:post:1
 
-# Set operations
+GET "=== Set operations ==="
 SADD set1 "a" "b" "c"
 SADD set2 "b" "c" "d"
 
-# Union
+GET "=== Union ==="
 SUNION set1 set2
-# Output: "a" "b" "c" "d"
 
-# Intersection
+GET "=== Intersection ==="
 SINTER set1 set2
-# Output: "b" "c"
 
-# Difference
+GET "=== Difference ==="
 SDIFF set1 set2
-# Output: "a"
 
-# Move member between sets
+GET "=== Move member between sets ==="
 SMOVE set1 set2 "a"
+REDIS_EOF
 ```
 
 **Demo Scenario: Tags and Filtering**
+
 ```bash
-# Tag blog posts
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Tag blog posts ==="
 SADD tags:redis "post:1" "post:2" "post:5"
 SADD tags:python "post:2" "post:3" "post:4"
 SADD tags:azure "post:1" "post:3" "post:5"
 
-# Find posts tagged with both redis AND python
+GET "=== Find posts tagged with both redis AND python ==="
 SINTER tags:redis tags:python
-# Output: "post:2"
 
-# Find posts tagged with redis OR azure
+GET "=== Find posts tagged with redis OR azure ==="
 SUNION tags:redis tags:azure
-# Output: "post:1" "post:2" "post:3" "post:5"
 
-# Find posts tagged with azure but NOT redis
+GET "=== Find posts tagged with azure but NOT redis ==="
 SDIFF tags:azure tags:redis
-# Output: "post:3"
+REDIS_EOF
 ```
 
 **Use Cases:**
+
 - Tagging systems
 - Unique visitor tracking
 - Social graph (followers/following)
@@ -356,6 +371,7 @@ SDIFF tags:azure tags:redis
 ### 2.4 Hashes (5 minutes)
 
 **Description:**
+
 - Maps between string fields and values
 - Perfect for representing objects
 - Efficient memory usage for small hashes
@@ -364,64 +380,65 @@ SDIFF tags:azure tags:redis
 **Common Commands:**
 
 ```bash
-# Set single field
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Set single field ==="
 HSET user:1000 name "John Doe"
 HSET user:1000 email "john@example.com"
 HSET user:1000 age 30
 
-# Set multiple fields at once
+GET "=== Set multiple fields at once ==="
 HMSET user:1001 name "Jane Smith" email "jane@example.com" age 28
 
-# Get single field
+GET "=== Get single field ==="
 HGET user:1000 name
 
-# Get multiple fields
+GET "=== Get multiple fields ==="
 HMGET user:1000 name email
 
-# Get all fields and values
+GET "=== Get all fields and values ==="
 HGETALL user:1000
 
-# Check if field exists
+GET "=== Check if field exists ==="
 HEXISTS user:1000 email
 
-# Delete field
+GET "=== Delete field ==="
 HDEL user:1000 age
 
-# Get all field names
+GET "=== Get all field names ==="
 HKEYS user:1000
 
-# Get all values
+GET "=== Get all values ==="
 HVALS user:1000
 
-# Get number of fields
+GET "=== Get number of fields ==="
 HLEN user:1000
 
-# Increment field value
+GET "=== Increment field value ==="
 HINCRBY user:1000 login_count 1
+REDIS_EOF
 ```
 
 **Demo Scenario: User Profile**
-```bash
-# Create user profile
-HMSET user:5000 \
-  username "alice" \
-  email "alice@example.com" \
-  created_at "2025-01-15" \
-  last_login "2025-11-19" \
-  login_count 42
 
-# Get full profile
+```bash
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Create user profile ==="
+HMSET user:5000 username "alice" email "alice@example.com" created_at "2025-01-15" last_login "2025-11-19" login_count 42
+
+GET "=== Get full profile ==="
 HGETALL user:5000
 
-# Update last login
+GET "=== Update last login ==="
 HSET user:5000 last_login "2025-11-19T09:30:00Z"
 HINCRBY user:5000 login_count 1
 
-# Get specific fields
+GET "=== Get specific fields ==="
 HMGET user:5000 username email login_count
+REDIS_EOF
 ```
 
 **Use Cases:**
+
 - User profiles
 - Product catalogs
 - Session data
@@ -433,6 +450,7 @@ HMGET user:5000 username email login_count
 ### 2.5 Sorted Sets (5 minutes)
 
 **Description:**
+
 - Set of unique members, each with a score
 - Ordered by score (low to high by default)
 - Fast range queries by score or rank
@@ -441,81 +459,82 @@ HMGET user:5000 username email login_count
 **Common Commands:**
 
 ```bash
-# Add members with scores
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Add members with scores ==="
 ZADD leaderboard 100 "player1"
 ZADD leaderboard 250 "player2"
 ZADD leaderboard 180 "player3"
 
-# Add multiple members
+GET "=== Add multiple members ==="
 ZADD leaderboard 90 "player4" 300 "player5"
 
-# Get rank (0-based, lowest score = rank 0)
+GET "=== Get rank (0-based, lowest score = rank 0) ==="
 ZRANK leaderboard "player1"
 
-# Get reverse rank (highest score = rank 0)
+GET "=== Get reverse rank (highest score = rank 0) ==="
 ZREVRANK leaderboard "player5"
 
-# Get score
+GET "=== Get score ==="
 ZSCORE leaderboard "player2"
 
-# Increment score
+GET "=== Increment score ==="
 ZINCRBY leaderboard 50 "player1"
 
-# Get range by rank (ascending)
+GET "=== Get range by rank (ascending) ==="
 ZRANGE leaderboard 0 2
 
-# Get range by rank (descending)
+GET "=== Get range by rank (descending) ==="
 ZREVRANGE leaderboard 0 2
 
-# Get range with scores
+GET "=== Get range with scores ==="
 ZRANGE leaderboard 0 -1 WITHSCORES
 
-# Get range by score
+GET "=== Get range by score ==="
 ZRANGEBYSCORE leaderboard 100 200
 
-# Count members in score range
+GET "=== Count members in score range ==="
 ZCOUNT leaderboard 100 200
 
-# Get sorted set size
+GET "=== Get sorted set size ==="
 ZCARD leaderboard
 
-# Remove member
+GET "=== Remove member ==="
 ZREM leaderboard "player4"
 
-# Remove by rank range
-ZREMRANGEBYRANK leaderboard 0 0  # Remove lowest
+GET "=== Remove by rank range ==="
+ZREMRANGEBYRANK leaderboard 0 0
 
-# Remove by score range
+GET "=== Remove by score range ==="
 ZREMRANGEBYSCORE leaderboard 0 100
+REDIS_EOF
 ```
 
 **Demo Scenario: Real-Time Leaderboard**
+
 ```bash
-# Initialize leaderboard
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Initialize leaderboard ==="
 ZADD game:scores 1500 "alice"
 ZADD game:scores 2200 "bob"
 ZADD game:scores 1800 "charlie"
 ZADD game:scores 2500 "diana"
 
-# Player scores points
+GET "=== Player scores points ==="
 ZINCRBY game:scores 300 "alice"
 
-# Get top 3 players
+GET "=== Get top 3 players ==="
 ZREVRANGE game:scores 0 2 WITHSCORES
-# Output:
-# 1) "diana"    "2500"
-# 2) "bob"      "2200"
-# 3) "alice"    "1800"
 
-# Get player rank (1-based for display)
+GET "=== Get player rank (1-based for display) ==="
 ZREVRANK game:scores "alice"
-# Output: 2 (add 1 for display: rank 3)
 
-# Get players in score range
+GET "=== Get players in score range ==="
 ZRANGEBYSCORE game:scores 1500 2000 WITHSCORES
+REDIS_EOF
 ```
 
 **Use Cases:**
+
 - Leaderboards and rankings
 - Priority queues
 - Trending items (score = timestamp or popularity)
@@ -529,6 +548,7 @@ ZRANGEBYSCORE game:scores 1500 2000 WITHSCORES
 ### 3.1 Caching (4 minutes)
 
 **Overview:**
+
 - Most common Redis use case (60-70% of deployments)
 - Reduce database load
 - Improve response times
@@ -554,12 +574,14 @@ def get_user(user_id):
 ```
 
 **TTL Strategy:**
+
 - Short-lived data: 5-15 minutes
 - User sessions: 30-60 minutes
 - Product catalog: 1-24 hours
 - Static content: Days to weeks
 
 **Eviction Policies:**
+
 - `allkeys-lru`: Remove least recently used keys
 - `volatile-lru`: Remove LRU among keys with TTL
 - `allkeys-lfu`: Remove least frequently used
@@ -570,6 +592,7 @@ def get_user(user_id):
 ### 3.2 Session Storage (3 minutes)
 
 **Overview:**
+
 - Store user session data
 - Share sessions across application servers
 - Fast read/write for every request
@@ -598,6 +621,7 @@ if session:
 ```
 
 **Best Practices:**
+
 - Use hash structure for complex sessions
 - Set appropriate TTL (30-60 minutes)
 - Refresh TTL on activity
@@ -608,6 +632,7 @@ if session:
 ### 3.3 Real-Time Analytics (3 minutes)
 
 **Overview:**
+
 - Count events in real-time
 - Track metrics and KPIs
 - Low latency requirements
@@ -615,33 +640,41 @@ if session:
 **Examples:**
 
 **1. Page Views Counter:**
+
 ```bash
-# Increment view count
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Increment view count ==="
 INCR page:/products:views
 
-# Get current count
+GET "=== Get current count ==="
 GET page:/products:views
+REDIS_EOF
 ```
 
 **2. Unique Visitors (HyperLogLog):**
+
 ```bash
-# Add visitor (deduplication automatic)
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Add visitor (deduplication automatic) ==="
 PFADD unique:visitors:2025-11-19 "user123"
 PFADD unique:visitors:2025-11-19 "user456"
-PFADD unique:visitors:2025-11-19 "user123"  # Duplicate ignored
+PFADD unique:visitors:2025-11-19 "user123"
 
-# Get unique count
+GET "=== Get unique count ==="
 PFCOUNT unique:visitors:2025-11-19
-# Output: 2
+REDIS_EOF
 ```
 
 **3. Trending Items:**
+
 ```bash
-# Increment item popularity
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Increment item popularity ==="
 ZINCRBY trending:products 1 "product:42"
 
-# Get top 10 trending
+GET "=== Get top 10 trending ==="
 ZREVRANGE trending:products 0 9 WITHSCORES
+REDIS_EOF
 ```
 
 ---
@@ -649,6 +682,7 @@ ZREVRANGE trending:products 0 9 WITHSCORES
 ### 3.4 Rate Limiting (3 minutes)
 
 **Overview:**
+
 - Prevent abuse (API throttling, DDoS protection)
 - Enforce quotas (requests per minute/hour)
 - Multiple algorithms available
@@ -693,6 +727,7 @@ def rate_limit_sliding_window(user_id, limit=100, window=60):
 ```
 
 **Token Bucket (Advanced):**
+
 - More complex but fairer
 - Allows bursts
 - Use Redis Lua script for atomicity
@@ -702,6 +737,7 @@ def rate_limit_sliding_window(user_id, limit=100, window=60):
 ### 3.5 Message Queues (2 minutes)
 
 **Overview:**
+
 - Decouple services
 - Background job processing
 - Event-driven architecture
@@ -720,6 +756,7 @@ while True:
 ```
 
 **Better Alternative: Redis Streams** (covered in Module 9)
+
 - Supports consumer groups
 - Automatic retry
 - Message acknowledgment
@@ -731,6 +768,7 @@ while True:
 ### 4.1 redis-cli (5 minutes)
 
 **Overview:**
+
 - Command-line interface
 - Included with Redis installation
 - Essential for debugging and administration
@@ -738,76 +776,82 @@ while True:
 **Basic Usage:**
 
 ```bash
-# Connect to local Redis
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Connect to local Redis ==="
 redis-cli
 
-# Connect to remote Redis
+GET "=== Connect to remote Redis ==="
 redis-cli -h redis.example.com -p 6379
 
-# Authenticate
+GET "=== Authenticate ==="
 redis-cli -a yourpassword
 
-# Execute single command
+GET "=== Execute single command ==="
 redis-cli GET user:1000
 
-# Execute multiple commands
+GET "=== Execute multiple commands ==="
 redis-cli <<EOF
 SET key1 "value1"
 SET key2 "value2"
 GET key1
 EOF
+REDIS_EOF
 ```
 
 **Useful Commands:**
 
 ```bash
-# Get server info
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Get server info ==="
 INFO
 
-# Get specific section
+GET "=== Get specific section ==="
 INFO memory
 INFO stats
 INFO replication
 
-# Monitor all commands in real-time
+GET "=== Monitor all commands in real-time ==="
 MONITOR
 
-# Get slow queries
+GET "=== Get slow queries ==="
 SLOWLOG GET 10
 
-# Check memory usage of key
+GET "=== Check memory usage of key ==="
 MEMORY USAGE user:1000
 
-# Scan keys (better than KEYS for production)
+GET "=== Scan keys (better than KEYS for production) ==="
 SCAN 0 MATCH user:* COUNT 100
 
-# Get database size
+GET "=== Get database size ==="
 DBSIZE
 
-# Flush database (DANGEROUS)
-FLUSHDB  # Current database
-FLUSHALL # All databases
+GET "=== Flush database (DANGEROUS) ==="
+FLUSHDB
+FLUSHALL
 
-# Client list
+GET "=== Client list ==="
 CLIENT LIST
 
-# Configuration
+GET "=== Configuration ==="
 CONFIG GET maxmemory
 CONFIG SET maxmemory 2gb
+REDIS_EOF
 ```
 
 **Performance Testing:**
 
 ```bash
-# Benchmark Redis
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== Benchmark Redis ==="
 redis-benchmark -q -n 100000
 
-# Benchmark specific commands
+GET "=== Benchmark specific commands ==="
 redis-benchmark -t set,get -q -n 100000
 
-# Test latency
+GET "=== Test latency ==="
 redis-cli --latency
 redis-cli --latency-history
+REDIS_EOF
 ```
 
 ---
@@ -815,6 +859,7 @@ redis-cli --latency-history
 ### 4.2 RedisInsight (5 minutes)
 
 **Overview:**
+
 - Official Redis GUI
 - Free, cross-platform
 - Features: Browser, Profiler, CLI, Slowlog
@@ -822,33 +867,39 @@ redis-cli --latency-history
 **Key Features:**
 
 1. **Browser:**
+
    - Visual key explorer
    - Filter and search keys
    - View/edit values
    - TTL management
 
 2. **Workbench:**
+
    - Command execution
    - Multi-command support
    - Command history
    - Syntax highlighting
 
 3. **Profiler:**
+
    - Real-time command monitoring
    - Performance analysis
    - Identify slow operations
 
 4. **Memory Analysis:**
+
    - Memory usage by key pattern
    - Identify memory hogs
    - Optimize memory usage
 
 5. **Slowlog:**
+
    - View slow queries
    - Identify performance issues
    - Tune commands
 
 **Demo:**
+
 - Show connecting to Redis
 - Browse keys with different data types
 - Execute commands in workbench
@@ -863,53 +914,66 @@ redis-cli --latency-history
 ### ❌ Don't Do These:
 
 1. **Using KEYS command in production**
-   ```bash
-   # BAD: Blocks server, O(N) complexity
-   KEYS user:*
-   
-   # GOOD: Use SCAN instead
-   SCAN 0 MATCH user:* COUNT 100
-   ```
+
+```bash
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== BAD: Blocks server, O(N) complexity ==="
+KEYS user:*
+
+GET "=== GOOD: Use SCAN instead ==="
+SCAN 0 MATCH user:* COUNT 100
+REDIS_EOF
+```
 
 2. **Storing large objects as strings**
-   ```bash
-   # BAD: 10MB JSON as single string
-   SET user:1000 "{ huge JSON with 10MB data }"
-   
-   # GOOD: Use hashes or break into smaller parts
-   HMSET user:1000 name "Alice" email "alice@example.com"
-   ```
+
+```bash
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== BAD: 10MB JSON as single string ==="
+SET user:1000 "{ huge JSON with 10MB data }"
+
+GET "=== GOOD: Use hashes or break into smaller parts ==="
+HMSET user:1000 name "Alice" email "alice@example.com"
+REDIS_EOF
+```
 
 3. **Not setting TTLs on cache data**
-   ```bash
-   # BAD: Memory leak, data never expires
-   SET cache:product:42 "data"
-   
-   # GOOD: Always set TTL
-   SETEX cache:product:42 3600 "data"
-   ```
+
+```bash
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== BAD: Memory leak, data never expires ==="
+SET cache:product:42 "data"
+
+GET "=== GOOD: Always set TTL ==="
+SETEX cache:product:42 3600 "data"
+REDIS_EOF
+```
 
 4. **Using SELECT to switch databases**
-   ```bash
-   # BAD: Multiple databases are deprecated
-   SELECT 1
-   
-   # GOOD: Use key prefixes or multiple Redis instances
-   SET app1:user:1000 "data"
-   SET app2:user:1000 "data"
-   ```
+
+```bash
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== BAD: Multiple databases are deprecated ==="
+SELECT 1
+
+GET "=== GOOD: Use key prefixes or multiple Redis instances ==="
+SET app1:user:1000 "data"
+SET app2:user:1000 "data"
+REDIS_EOF
+```
 
 5. **Not using connection pooling**
-   ```python
-   # BAD: New connection per request
-   def get_data():
-       r = redis.Redis()
-       return r.get("key")
-   
-   # GOOD: Reuse connection pool
-   pool = redis.ConnectionPool()
-   r = redis.Redis(connection_pool=pool)
-   ```
+
+```python
+# BAD: New connection per request
+def get_data():
+    r = redis.Redis()
+    return r.get("key")
+
+# GOOD: Reuse connection pool
+pool = redis.ConnectionPool()
+r = redis.Redis(connection_pool=pool)
+```
 
 ---
 
@@ -920,27 +984,25 @@ redis-cli --latency-history
 **Scenario:** Build a simple blog post system
 
 ```bash
-# 1. Create a blog post (hash)
-HMSET post:1 \
-  title "Getting Started with Redis" \
-  author "alice" \
-  created "2025-11-19" \
-  views 0
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== 1. Create a blog post (hash) ==="
+HMSET post:1 title "Getting Started with Redis" author "alice" created "2025-11-19" views 0
 
-# 2. Add tags (set)
+GET "=== 2. Add tags (set) ==="
 SADD post:1:tags "redis" "database" "tutorial"
 
-# 3. Track views (counter)
+GET "=== 3. Track views (counter) ==="
 INCR post:1:views
 
-# 4. Add to author's posts (list)
+GET "=== 4. Add to author's posts (list) ==="
 LPUSH author:alice:posts "post:1"
 
-# 5. Add to trending (sorted set with score = views)
+GET "=== 5. Add to trending (sorted set with score = views) ==="
 ZADD trending:posts 1 "post:1"
 
-# Later, increment trend score
+GET "=== Later, increment trend score ==="
 ZINCRBY trending:posts 10 "post:1"
+REDIS_EOF
 ```
 
 ### Exercise 2: Caching Pattern (5 minutes)
@@ -948,23 +1010,25 @@ ZINCRBY trending:posts 10 "post:1"
 **Scenario:** Implement cache-aside pattern
 
 ```bash
-# 1. Try to get from cache
+redis-cli -h localhost -p 6379 <<'REDIS_EOF'
+GET "=== 1. Try to get from cache ==="
 GET cache:user:1000
 
-# 2. Cache miss - would fetch from DB here
-# ... database query ...
+GET "=== 2. Cache miss - would fetch from DB here ==="
+GET "... database query ..."
 
-# 3. Store in cache with 1-hour TTL
+GET "=== 3. Store in cache with 1-hour TTL ==="
 SETEX cache:user:1000 3600 '{"id":1000,"name":"Alice"}'
 
-# 4. Verify TTL
+GET "=== 4. Verify TTL ==="
 TTL cache:user:1000
 
-# 5. Get cached value
+GET "=== 5. Get cached value ==="
 GET cache:user:1000
 
-# 6. Invalidate cache (on update)
+GET "=== 6. Invalidate cache (on update) ==="
 DEL cache:user:1000
+REDIS_EOF
 ```
 
 ---
@@ -975,6 +1039,7 @@ DEL cache:user:1000
 
 1. **Redis is fast** because it's in-memory and single-threaded
 2. **Choose the right data structure** for your use case:
+
    - Strings: Simple values, counters
    - Lists: Queues, feeds
    - Sets: Unique items, tags
@@ -1001,6 +1066,7 @@ DEL cache:user:1000
 **Module 2: Azure Managed Redis Architecture (60 minutes)**
 
 In the next module, we'll explore:
+
 - Azure Managed Redis overview and benefits
 - SKU selection (Memory, Balanced, Compute, Flash)
 - Clustering and sharding strategies
@@ -1014,15 +1080,18 @@ In the next module, we'll explore:
 ## Additional Resources
 
 **Official Documentation:**
+
 - Redis Commands: https://redis.io/commands/
 - Redis Data Types: https://redis.io/docs/data-types/
 - Redis Best Practices: https://redis.io/docs/management/optimization/
 
 **Interactive Learning:**
+
 - Try Redis: https://try.redis.io/
 - Redis University: https://university.redis.com/
 
 **Community:**
+
 - Redis Discord: https://discord.gg/redis
 - Redis Forums: https://forum.redis.com/
 

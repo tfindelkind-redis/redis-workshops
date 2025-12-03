@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Well-Architected Framework Overview](../module-03-well-architected-framework-overview/README.md) | [🏠 Workshop Home](../README.md) | [Next: Cost Optimization & Operational Excellence ➡️](../module-05-cost-optimization--operational-excellence/README.md) |
+| [⬅️ Previous: Well-Architected Framework Overview](../module-03-well-architected-framework-overview/README.md) | [🏠 Workshop Home](../README.md) | [Next: Cost Optimization & Operational Excellence ➡️](../module-05-cost-optimization-operational-excellence/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 4 of 11**
 
@@ -861,7 +861,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Well-Architected Framework Overview](../module-03-well-architected-framework-overview/README.md) | [🏠 Workshop Home](../README.md) | [Next: Cost Optimization & Operational Excellence ➡️](../module-05-cost-optimization--operational-excellence/README.md) |
+| [⬅️ Previous: Well-Architected Framework Overview](../module-03-well-architected-framework-overview/README.md) | [🏠 Workshop Home](../README.md) | [Next: Cost Optimization & Operational Excellence ➡️](../module-05-cost-optimization-operational-excellence/README.md) |
 
 ---
 

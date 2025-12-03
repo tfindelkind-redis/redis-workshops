@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Provision & Connect Lab](../module-04-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) |  |
+| [⬅️ Previous: Provision & Connect Lab](../module-04-provision-connect-lab/README.md) | [🏠 Workshop Home](../README.md) |  |
 
 [🏠 Workshop Home](../README.md) > **Module 5 of 5**
 
@@ -127,7 +127,7 @@ This ensures **every new Codespace** has automatic styling configured!
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Provision & Connect Lab](../module-04-provision--connect-lab/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
+| [⬅️ Previous: Provision & Connect Lab](../module-04-provision-connect-lab/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 

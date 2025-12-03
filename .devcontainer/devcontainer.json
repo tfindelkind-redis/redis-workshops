@@ -22,7 +22,8 @@
         "ms-toolsai.jupyter-keymap",
         "ms-toolsai.jupyter-renderers",
         "redhat.vscode-yaml",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "stateful.runme"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",

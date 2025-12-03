@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-04-provision--connect-lab/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-04-provision-connect-lab/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 3 of 5**
 
@@ -1404,7 +1404,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-04-provision--connect-lab/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-04-provision-connect-lab/README.md) |
 
 ---
 

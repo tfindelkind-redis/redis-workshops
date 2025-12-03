@@ -1,8 +1,8 @@
 ---
-title: Provision & Connect Lab
-description: 'Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.'
-duration: 60 minutes
+description: Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
 difficulty: intermediate
+duration: 60 minutes
+title: Provision & Connect Lab
 type: hands-on
 ---
 
@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency-data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 7 of 11**
 
@@ -23,6 +23,7 @@ type: hands-on
 <!-- ✏️ EDIT YOUR CONTENT BELOW THIS LINE ✏️ -->
 
 # Module 5: Provision & Connect Lab
+
 **Duration:** 60 minutes  
 **Format:** Hands-On Lab  
 **Level:** Intermediate
@@ -34,6 +35,7 @@ type: hands-on
 **Objective:** Deploy Azure Managed Redis and establish secure connectivity using Infrastructure as Code.
 
 **What You'll Build:**
+
 - Azure Managed Redis (Enterprise tier with zone redundancy)
 - Virtual Network with subnet configuration
 - Private Endpoint for secure connectivity
@@ -42,6 +44,7 @@ type: hands-on
 - Monitoring with Log Analytics
 
 **Learning Outcomes:**
+
 - Deploy Redis using Bicep or Terraform (IaC)
 - Configure Private Endpoint for network isolation
 - Set up Entra ID authentication (no access keys)
@@ -49,6 +52,7 @@ type: hands-on
 - Troubleshoot common connectivity issues
 
 **Prerequisites:**
+
 - Azure subscription with appropriate permissions
 - Azure CLI installed (`az --version`)
 - Python 3.8+ installed
@@ -59,42 +63,42 @@ type: hands-on
 
 ## Lab Architecture
 
-```
+```ini
 ┌──────────────────────────────────────────────────────────────┐
 │ Azure Region: East US                                        │
 │ ┌──────────────────────────────────────────────────────────┐ │
 │ │ Resource Group: rg-redis-workshop                        │ │
-│ │                                                            │ │
+│ │                                                          │ │
 │ │ ┌────────────────────────────────────────┐               │ │
 │ │ │ Virtual Network (10.0.0.0/16)          │               │ │
 │ │ │                                        │               │ │
 │ │ │  ┌─────────────────────────────────┐   │               │ │
-│ │ │  │ Subnet: dataSubnet             │   │               │ │
-│ │ │  │ (10.0.2.0/24)                  │   │               │ │
+│ │ │  │ Subnet: dataSubnet              │   │               │ │
+│ │ │  │ (10.0.2.0/24)                   │   │               │ │
 │ │ │  │                                 │   │               │ │
-│ │ │  │  ┌───────────────────────┐     │   │               │ │
-│ │ │  │  │ Private Endpoint      │     │   │               │ │
-│ │ │  │  │ (10.0.2.4)            │     │   │               │ │
-│ │ │  │  └───────────┬───────────┘     │   │               │ │
+│ │ │  │  ┌───────────────────────┐      │   │               │ │
+│ │ │  │  │ Private Endpoint      │      │   │               │ │
+│ │ │  │  │ (10.0.2.4)            │      │   │               │ │
+│ │ │  │  └───────────┬───────────┘      │   │               │ │
 │ │ │  │              │                  │   │               │ │
 │ │ │  └──────────────┼──────────────────┘   │               │ │
-│ │ │                 │                       │               │ │
-│ │ └─────────────────┼───────────────────────┘               │ │
-│ │                   │                                       │ │
-│ │                   │ Private Link                          │ │
-│ │                   ▼                                       │ │
-│ │ ┌───────────────────────────────────────────┐             │ │
-│ │ │ Azure Managed Redis (Enterprise E10)      │             │ │
+│ │ │                 │                      │               │ │
+│ │ └─────────────────┼──────────────────────┘               │ │
+│ │                   │                                      │ │
+│ │                   │ Private Link                         │ │
+│ │                   ▼                                      │ │
+│ │ ┌──────────────────────────────────────────┐             │ │
+│ │ │ Azure Managed Redis (Enterprise E10)     │             │ │
 │ │ │ - Zone Redundant (Zones 1,2,3)           │             │ │
 │ │ │ - Private Access Only                    │             │ │
 │ │ │ - Entra ID Authentication                │             │ │
 │ │ │ - 12 GB Memory                           │             │ │
-│ │ └───────────────────────────────────────────┘             │ │
-│ │                                                           │ │
-│ │ ┌───────────────────────────────────────────┐             │ │
+│ │ └──────────────────────────────────────────┘             │ │
+│ │                                                          │ │
+│ │ ┌──────────────────────────────────────────┐             │ │
 │ │ │ Log Analytics Workspace                  │             │ │
 │ │ │ - Diagnostic logs & metrics              │             │ │
-│ │ └───────────────────────────────────────────┘             │ │
+│ │ └──────────────────────────────────────────┘             │ │
 │ └──────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 
@@ -128,6 +132,7 @@ Application Server (Your Machine)
 ### Task 1.1: Verify Prerequisites
 
 **Check Azure CLI:**
+
 ```bash
 # Verify Azure CLI installed
 az --version
@@ -144,6 +149,7 @@ az account show --output table
 ```
 
 **Check Python:**
+
 ```bash
 # Verify Python installed
 python3 --version
@@ -411,6 +417,7 @@ output logWorkspaceId string = logWorkspace.id
 ```
 
 **Get your Object ID:**
+
 ```bash
 # Get your Azure AD user object ID
 az ad signed-in-user show --query id -o tsv
@@ -450,6 +457,7 @@ az deployment group show \
 ```
 
 **Expected Output:**
+
 ```json
 {
   "redisHostName": {
@@ -759,7 +767,8 @@ python src/connect.py
 ```
 
 **Expected Output:**
-```
+
+```ini
 ============================================================
 Redis Workshop - Connection Test
 ============================================================
@@ -812,11 +821,13 @@ Redis Workshop - Connection Test
 ### Common Issues and Solutions
 
 **Issue 1: Connection Timeout**
-```
+
+```ini
 ❌ Connection failed: Error connecting to redis-workshop-abc123.redis.cache.windows.net:10001. Timeout
 ```
 
 **Solution:**
+
 ```bash
 # Check if Private Endpoint is correctly configured
 az network private-endpoint show \
@@ -834,11 +845,13 @@ az network private-dns link vnet list \
 ```
 
 **Issue 2: Authentication Failed**
-```
+
+```sh
 ❌ WRONGPASS invalid username-password pair
 ```
 
 **Solution:**
+
 ```bash
 # Verify RBAC role assignment
 az role assignment list \
@@ -854,11 +867,13 @@ az account get-access-token --resource https://redis.azure.com
 ```
 
 **Issue 3: SSL/TLS Error**
-```
+
+```ini
 ❌ SSL: CERTIFICATE_VERIFY_FAILED
 ```
 
 **Solution:**
+
 ```python
 # Update Redis client with proper SSL config
 redis_client = redis.Redis(
@@ -875,6 +890,7 @@ redis_client = redis.Redis(
 ## Cleanup (Optional)
 
 **Delete all resources:**
+
 ```bash
 # Delete resource group (deletes all resources)
 az group delete \
@@ -888,6 +904,7 @@ az group delete \
 ## Key Takeaways
 
 ### ✅ What You Learned:
+
 1. Deploy Redis with Bicep (IaC)
 2. Configure Private Endpoint for secure connectivity
 3. Set up Entra ID authentication (no access keys!)
@@ -895,6 +912,7 @@ az group delete \
 5. Troubleshoot common connection issues
 
 ### ✅ Best Practices Applied:
+
 - **No public access**: Private Endpoint only
 - **No access keys**: Entra ID authentication
 - **Zone redundancy**: 99.99% SLA
@@ -902,6 +920,7 @@ az group delete \
 - **IaC**: Infrastructure as Code (reproducible)
 
 ### 🎯 Skills Acquired:
+
 - ✅ Deploy Azure infrastructure with Bicep
 - ✅ Configure network security (Private Endpoint)
 - ✅ Implement Entra ID authentication
@@ -915,6 +934,7 @@ az group delete \
 **Module 6: Implement Caching Lab (60 minutes)**
 
 Preview:
+
 - Build Flask API with PostgreSQL backend
 - Implement cache-aside pattern
 - Add cache invalidation logic
@@ -937,7 +957,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency--data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
+| [⬅️ Previous: Performance Efficiency & Data Modeling](../module-06-performance-efficiency-data-modeling/README.md) | [🏠 Workshop Home](../README.md) | [Next: Implement Caching Lab ➡️](../module-08-implement-caching-lab/README.md) |
 
 ---
 

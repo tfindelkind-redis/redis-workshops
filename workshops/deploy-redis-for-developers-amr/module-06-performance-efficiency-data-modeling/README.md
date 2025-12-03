@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization--operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision--connect-lab/README.md) |
+| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization-operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision-connect-lab/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 6 of 11**
 
@@ -1403,7 +1403,7 @@ Preview:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization--operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision--connect-lab/README.md) |
+| [⬅️ Previous: Cost Optimization & Operational Excellence](../module-05-cost-optimization-operational-excellence/README.md) | [🏠 Workshop Home](../README.md) | [Next: Provision & Connect Lab ➡️](../module-07-provision-connect-lab/README.md) |
 
 ---
 

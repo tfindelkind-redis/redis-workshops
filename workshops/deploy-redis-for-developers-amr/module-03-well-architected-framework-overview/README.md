@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Reliability & Security Deep Dive ➡️](../module-04-reliability--security-deep-dive/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Reliability & Security Deep Dive ➡️](../module-04-reliability-security-deep-dive/README.md) |
 
 [🏠 Workshop Home](../README.md) > **Module 3 of 11**
 
@@ -800,7 +800,7 @@ In the next module, we'll dive deep into:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Reliability & Security Deep Dive ➡️](../module-04-reliability--security-deep-dive/README.md) |
+| [⬅️ Previous: Azure Managed Redis Architecture](../module-02-azure-managed-redis-architecture/README.md) | [🏠 Workshop Home](../README.md) | [Next: Reliability & Security Deep Dive ➡️](../module-04-reliability-security-deep-dive/README.md) |
 
 ---
 

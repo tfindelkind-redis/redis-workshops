@@ -10,7 +10,7 @@ type: hands-on
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting--migration/README.md) | [🏠 Workshop Home](../README.md) |  |
+| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting-migration/README.md) | [🏠 Workshop Home](../README.md) |  |
 
 [🏠 Workshop Home](../README.md) > **Module 11 of 11**
 
@@ -1282,7 +1282,7 @@ You've completed the advanced Redis workshop. You now have the knowledge to:
 
 | Previous | Home | Next |
 |----------|:----:|------:|
-| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting--migration/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
+| [⬅️ Previous: Troubleshooting & Migration](../module-10-troubleshooting-migration/README.md) | [🏠 Workshop Home](../README.md) | ✅ **Workshop Complete!** |
 
 ---
 
