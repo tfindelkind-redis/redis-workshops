@@ -16,7 +16,7 @@ The platform processes 1,000+ signals per second while maintaining <2 second res
 
 ## 🏗️ System Architecture
 
-```ini
+```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         USER INTERFACE LAYER                            │
 │                    (FastAPI REST API + WebSocket)                       │
