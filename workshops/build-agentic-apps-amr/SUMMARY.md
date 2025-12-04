@@ -1,5 +1,3 @@
----
-
 ## 🎯 What Is This App?
 
 A **real-time AI trading agent system** that combines multiple specialized agents to analyze financial markets, detect fraud, and make trading recommendations. The system leverages:
@@ -16,7 +14,7 @@ The platform processes 1,000+ signals per second while maintaining <2 second res
 
 ## 🏗️ System Architecture
 
-```
+```ini
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         USER INTERFACE LAYER                            │
 │                    (FastAPI REST API + WebSocket)                       │
